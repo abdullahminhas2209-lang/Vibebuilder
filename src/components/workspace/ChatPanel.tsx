@@ -6,14 +6,9 @@ import { Paperclip, SendHorizontal, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ChatMessage } from "@/components/workspace/ChatMessage";
-import {
-  createMockMessageId,
-  createTimestamp,
-  getMockAssistantReply,
-  MOCK_STATUS_STEPS,
-  MOCK_THINKING_DELAY_MS,
-} from "@/lib/mock-chat";
-import type { ChatMessage as ChatMessageType } from "@/lib/types";
+import { createMockMessageId, createTimestamp } from "@/lib/mock-chat";
+import { parseGeneratedFiles, buildFileTree, extractProse } from "@/lib/parse-ai-response";
+import type { ChatMessage as ChatMessageType, ProjectFile, FileNode } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const SUGGESTED_PROMPTS = [
@@ -21,76 +16,136 @@ const SUGGESTED_PROMPTS = [
   "Create a personal portfolio with a projects and writing section.",
 ] as const;
 
-export function ChatPanel({
-  initialMessages,
-}: {
+interface ChatPanelProps {
   initialMessages: ChatMessageType[];
-}) {
+  onFilesGenerated?: (files: ProjectFile[], tree: FileNode[]) => void;
+}
+
+export function ChatPanel({ initialMessages, onFilesGenerated }: ChatPanelProps) {
   const [messages, setMessages] = useState<ChatMessageType[]>(initialMessages);
   const [input, setInput] = useState("");
   const [responding, setResponding] = useState(false);
   const [statusText, setStatusText] = useState<string | null>(null);
 
   const bottomRef = useRef<HTMLDivElement>(null);
-  const timersRef = useRef<number[]>([]);
+  const abortRef = useRef<AbortController | null>(null);
 
-  // Clear any pending mock-response timers when the panel unmounts.
   useEffect(() => {
-    const timers = timersRef.current;
-    return () => timers.forEach((timer) => window.clearTimeout(timer));
+    return () => abortRef.current?.abort();
   }, []);
 
-  // Keep the conversation pinned to the latest message.
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages.length, statusText]);
 
-  function scheduleTimer(callback: () => void, delayMs: number) {
-    const timer = window.setTimeout(callback, delayMs);
-    timersRef.current.push(timer);
-  }
-
-  function handleSubmit() {
+  async function handleSubmit() {
     const content = input.trim();
-    if (!content || responding) {
-      return;
-    }
+    if (!content || responding) return;
 
-    setMessages((previous) => [
-      ...previous,
-      {
-        id: createMockMessageId("msg-user"),
-        role: "user",
-        content,
-        createdAt: createTimestamp(),
-      },
-    ]);
+    const userMessage: ChatMessageType = {
+      id: createMockMessageId("msg-user"),
+      role: "user",
+      content,
+      createdAt: createTimestamp(),
+    };
+
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInput("");
     setResponding(true);
-    setStatusText(null);
+    setStatusText("Thinking...");
 
-    // Mock assistant run — frontend only. Phase 2 replaces this block
-    // with a real agent API call; the surrounding UI stays unchanged.
-    scheduleTimer(() => setStatusText(MOCK_STATUS_STEPS[0].text), 0);
-    let elapsed = MOCK_STATUS_STEPS[0].delayMs;
-    for (const step of MOCK_STATUS_STEPS.slice(1)) {
-      scheduleTimer(() => setStatusText(step.text), elapsed);
-      elapsed += step.delayMs;
-    }
+    // Placeholder assistant message that streams in
+    const assistantId = createMockMessageId("msg-assistant");
+    const assistantPlaceholder: ChatMessageType = {
+      id: assistantId,
+      role: "assistant",
+      content: "",
+      createdAt: createTimestamp(),
+      pending: true,
+    };
+    setMessages((prev) => [...prev, assistantPlaceholder]);
 
-    scheduleTimer(() => {
-      setMessages((previous) => [
-        ...previous,
-        {
-          id: createMockMessageId("msg-assistant"),
-          role: "assistant",
-          content: getMockAssistantReply(content),
-          createdAt: createTimestamp(),
-        },
-      ]);
+    try {
+      abortRef.current = new AbortController();
+
+      // Build conversation history for Gemini
+      const history = updatedMessages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
+
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: history }),
+        signal: abortRef.current.signal,
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("No response body");
+
+      const decoder = new TextDecoder();
+      let fullText = "";
+      setStatusText("Generating...");
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        fullText += chunk;
+
+        // Stream text into the assistant message
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantId
+              ? { ...m, content: extractProse(fullText) || fullText, pending: true }
+              : m
+          )
+        );
+      }
+
+      // Parse generated files from the complete response
+      const generatedFiles = parseGeneratedFiles(fullText);
+      const fileTree = buildFileTree(generatedFiles);
+
+      // Finalize assistant message with prose only
+      const finalContent = extractProse(fullText) || fullText;
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === assistantId ? { ...m, content: finalContent, pending: false } : m
+        )
+      );
+
+      // Notify parent of new files
+      if (generatedFiles.length > 0 && onFilesGenerated) {
+        onFilesGenerated(generatedFiles, fileTree);
+      }
+    } catch (error) {
+      if ((error as Error).name === "AbortError") return;
+
+      console.error("Chat error:", error);
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === assistantId
+            ? {
+                ...m,
+                content:
+                  "Sorry, I encountered an error. Please check your API key and try again.",
+                pending: false,
+              }
+            : m
+        )
+      );
+    } finally {
       setResponding(false);
       setStatusText(null);
-    }, elapsed + MOCK_THINKING_DELAY_MS);
+    }
   }
 
   return (
@@ -107,7 +162,7 @@ export function ChatPanel({
                 : "bg-muted-foreground/50",
             )}
           />
-          {responding ? "Working..." : "Agent ready"}
+          {responding ? "Working..." : "Gemini ready"}
         </p>
       </div>
 
@@ -124,8 +179,8 @@ export function ChatPanel({
               Start the conversation
             </h2>
             <p className="mt-1.5 max-w-xs text-sm text-muted-foreground">
-              Describe the application you want and the agent will plan it,
-              generate the code, and open a live preview.
+              Describe the application you want and the AI will generate the
+              code and open a live preview.
             </p>
             <div className="mt-5 w-full space-y-2">
               {SUGGESTED_PROMPTS.map((prompt) => (
@@ -169,7 +224,7 @@ export function ChatPanel({
       >
         <div className="rounded-lg border border-border bg-card transition-colors focus-within:border-ring/50">
           <label htmlFor="chat-input" className="sr-only">
-            Describe a change for the agent
+            Describe what you want to build
           </label>
           <Textarea
             id="chat-input"
@@ -181,7 +236,7 @@ export function ChatPanel({
                 handleSubmit();
               }
             }}
-            placeholder="Describe a change..."
+            placeholder="Describe what you want to build..."
             rows={2}
             className="max-h-32 resize-none border-0 shadow-none focus-visible:ring-0"
           />
@@ -206,7 +261,7 @@ export function ChatPanel({
           </div>
         </div>
         <p className="mt-2 text-[11px] text-muted-foreground">
-          Prototype — the agent is simulated and no code is actually generated.
+          Powered by Gemini 2.0 Flash · Generated code appears in the editor.
         </p>
       </form>
     </div>

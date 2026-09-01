@@ -26,7 +26,13 @@ const viewportClasses: Record<ViewportSize, string> = {
   mobile: "w-full max-w-[390px] border-x border-border",
 };
 
-export function PreviewPanel({ project }: { project: Project }) {
+export function PreviewPanel({
+  project,
+  generatedHtml,
+}: {
+  project: Project;
+  generatedHtml?: string | null;
+}) {
   const [viewport, setViewport] = useState<ViewportSize>("desktop");
   const [isReloading, setIsReloading] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -55,7 +61,7 @@ export function PreviewPanel({ project }: { project: Project }) {
     }
   }
 
-  if (!project.generated || !project.preview) {
+  if (!project.generated && !generatedHtml) {
     return (
       <div className="flex h-full flex-col items-center justify-center p-8 text-center">
         <div className="flex size-12 items-center justify-center rounded-xl border border-dashed border-border bg-muted/50">
@@ -173,11 +179,19 @@ export function PreviewPanel({ project }: { project: Project }) {
                 aria-hidden="true"
               />
             </div>
-          ) : (
+          ) : generatedHtml ? (
+            <iframe
+              srcDoc={generatedHtml}
+              title="Generated preview"
+              className="h-full min-h-[600px] w-full border-0"
+              sandbox="allow-scripts"
+            />
+          ) : project.preview ? (
             <MockSite config={project.preview} />
-          )}
+          ) : null}
         </div>
       </div>
     </div>
   );
 }
+
