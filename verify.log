@@ -1,0 +1,14 @@
+﻿Landing: status=200(OK) text='Build websites by describing what you want'(OK)
+Dashboard: status=200(OK) text='Your Projects'(OK)
+Restaurant: status=200(OK) text='Restaurant Booking'(OK)
+SaaS: status=200(OK) text='SaaS Analytics'(OK)
+Portfolio: status=200(OK) text='Personal Portfolio'(OK)
+E-commerce: status=200(OK) text='E-commerce Store'(OK)
+Fitness: status=200(OK) text='Fitness Landing'(OK)
+Demo: status=200(OK) text='New project'(OK)
+Unknown-404: status=404(OK)
+Random-404: status=404(OK)
+Restaurant page leak-check (should be CLEAN): CLEAN
+SaaS page leak-check (should be CLEAN): CLEAN
+Dashboard logo->home link: PRESENT
+Workspace logo->home link: PRESENT
