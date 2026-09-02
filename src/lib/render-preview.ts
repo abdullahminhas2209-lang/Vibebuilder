@@ -71,7 +71,6 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
     html {
       scroll-behavior: smooth;
     }
-    /* Hide scrollbars during render */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -91,11 +90,6 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
   </div>
 
   <script>
-    // Global error listener to show immediate error screen instead of hanging
-    window.addEventListener('error', function(e) {
-      showError(e.message, e.filename + ':' + e.lineno);
-    });
-
     function showError(msg, details) {
       const root = document.getElementById('root');
       if (!root) return;
@@ -104,7 +98,7 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
           <div class="max-w-xl w-full bg-white rounded-2xl border border-red-200 p-6 shadow-xl">
             <div class="flex items-center gap-3 text-red-600 mb-2">
               <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-              <h3 class="font-bold text-base">Preview Render Message</h3>
+              <h3 class="font-bold text-base">Preview Render Notice</h3>
             </div>
             <p class="text-sm text-slate-700 mb-3 font-medium">\${escapeHtml(msg || 'An issue occurred during component rendering.')}</p>
             \${details ? \`<div class="bg-slate-900 rounded-xl p-3 overflow-x-auto text-xs font-mono text-red-300">\${escapeHtml(details)}</div>\` : ''}
@@ -117,6 +111,10 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
+    window.addEventListener('error', function(e) {
+      showError(e.message, (e.filename || '') + ':' + (e.lineno || ''));
+    });
+
     (function() {
       try {
         const files = ${filesJson};
@@ -128,7 +126,7 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
         // 1. Setup Lucide SVG Icon Proxy
         const LucideIcons = new Proxy({}, {
           get: function(target, prop) {
-            if (typeof prop !== 'string' || prop === '$$typeof' || prop === 'default') return undefined;
+            if (typeof prop !== 'string' || prop === '$$typeof' || prop === 'default' || prop === '__esModule') return undefined;
             
             return function DynamicIcon(props) {
               props = props || {};
@@ -143,10 +141,11 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
               if (name.includes('arrow') && name.includes('right')) pathData = "M5 12h14M12 5l7 7-7 7";
               else if (name.includes('arrow') && name.includes('left')) pathData = "M19 12H5M12 19l-7-7 7-7";
               else if (name.includes('check')) pathData = "M20 6L9 17l-5-5";
-              else if (name.includes('close') || name.includes('x')) pathData = "M18 6L6 18M6 6l12 12";
+              else if (name.includes('close') || name.includes('x') || name.includes('delete') || name.includes('trash')) pathData = "M18 6L6 18M6 6l12 12";
               else if (name.includes('star')) pathData = "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z";
               else if (name.includes('calendar')) pathData = "M19 4H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zM16 2v4M8 2v4M3 10h18";
-              else if (name.includes('clock') || name.includes('time')) pathData = "M12 22a10 10 0 100-20 10 10 0 000 20zM12 6v6l4 2";
+              else if (name.includes('clock') || name.includes('time') || name.includes('history')) pathData = "M12 22a10 10 0 100-20 10 10 0 000 20zM12 6v6l4 2";
+              else if (name.includes('calculator')) pathData = "M4 2h16a2 2 0 012 2v16a2 2 0 01-2 2H4a2 2 0 01-2-2V4a2 2 0 012-2zM8 6h8M8 10h2M14 10h2M8 14h2M14 14h2M8 18h2M14 18h2";
               else if (name.includes('map') || name.includes('pin')) pathData = "M12 21s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 7.2c0 7.3-8 11.8-8 11.8zM12 11a2 2 0 100-4 2 2 0 000 4z";
               else if (name.includes('phone')) pathData = "M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z";
               else if (name.includes('mail')) pathData = "M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6";
@@ -156,13 +155,12 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
               else if (name.includes('heart')) pathData = "M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z";
               else if (name.includes('search')) pathData = "M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.35-4.35";
               else if (name.includes('sparkle') || name.includes('sparkles')) pathData = "M12 2l2.4 7.2L21 12l-6.6 2.8L12 22l-2.4-7.2L3 12l6.6-2.8z";
-              else if (name.includes('utensil') || name.includes('food') || name.includes('coffee') || name.includes('fork') || name.includes('knife')) pathData = "M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3";
-              else if (name.includes('globe')) pathData = "M12 2a10 10 0 100 20 10 10 0 000-20zM2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z";
-              else if (name.includes('terminal') || name.includes('code')) pathData = "M4 17l6-6-6-6M12 19h8";
-              else if (name.includes('chevron') && name.includes('down')) pathData = "M6 9l6 6 6-6";
-              else if (name.includes('chevron') && name.includes('up')) pathData = "M18 15l-6-6-6 6";
-              else if (name.includes('chevron') && name.includes('right')) pathData = "M9 18l6-6-6-6";
-              else if (name.includes('chevron') && name.includes('left')) pathData = "M15 18l-6-6 6-6";
+              else if (name.includes('rotate') || name.includes('refresh') || name.includes('undo')) pathData = "M1 4v6h6M23 20v-6h-6M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15";
+              else if (name.includes('plus')) pathData = "M12 5v14M5 12h14";
+              else if (name.includes('minus')) pathData = "M5 12h14";
+              else if (name.includes('divide')) pathData = "M12 6a1 1 0 100-2 1 1 0 000 2zM5 12h14M12 20a1 1 0 100-2 1 1 0 000 2z";
+              else if (name.includes('percent')) pathData = "M19 5L5 19M6.5 6.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM17.5 17.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z";
+              else if (name.includes('equal')) pathData = "M5 9h14M5 15h14";
 
               return React.createElement('svg', {
                 xmlns: 'http://www.w3.org/2000/svg',
@@ -181,14 +179,22 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
           }
         });
 
-        // 2. Setup In-Memory Module Environment
+        // 2. Setup In-Memory CommonJS Module Environment
         const moduleRegistry = {};
         const moduleCache = {};
 
         function requireModule(specifier) {
-          if (specifier === 'react') return window.React;
-          if (specifier === 'react-dom' || specifier === 'react-dom/client') return window.ReactDOM;
-          if (specifier === 'lucide-react') return LucideIcons;
+          if (specifier === 'react') {
+            const r = window.React;
+            return Object.assign({ default: r }, r);
+          }
+          if (specifier === 'react-dom' || specifier === 'react-dom/client') {
+            const rd = window.ReactDOM;
+            return Object.assign({ default: rd }, rd);
+          }
+          if (specifier === 'lucide-react') {
+            return Object.assign({ default: LucideIcons }, LucideIcons);
+          }
 
           // Normalize path
           const clean = specifier.replace(/^@\//, '').replace(/^\.\//, '').replace(/^\.\.\//, '').replace(/\.(tsx|ts|jsx|js)$/, '');
@@ -214,53 +220,33 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
           // Fallback dummy component if an unknown sub-component is imported
           console.warn('Unknown module requested in preview:', specifier);
           const fallbackName = specifier.split('/').pop() || 'Component';
-          return new Proxy({}, {
-            get: () => () => React.createElement('div', { className: 'p-2 text-xs bg-slate-100 text-slate-700 rounded border my-1' }, fallbackName)
-          });
+          const DummyComponent = function(props) {
+            return React.createElement('div', { className: 'p-2 text-xs bg-slate-100 text-slate-700 rounded border my-1' }, fallbackName);
+          };
+          return { default: DummyComponent, [fallbackName]: DummyComponent };
         }
 
-        // 3. Compile all files with Babel
+        // 3. Compile all files with Babel using 'env', 'react', 'typescript' presets
         files.forEach(function(file) {
           try {
             let src = file.code || '';
-            
-            // Clean Next.js directives & TypeScript import types
+            // Remove Next.js directives
             src = src.replace(/["']use client["'];?/g, '');
-            src = src.replace(/import\s+type\s+[^;]+;/g, '');
 
-            // Transpile using Babel Standalone
+            // Transpile using Babel Standalone with full CommonJS module transformation
             const transpiled = Babel.transform(src, {
-              presets: ['react', 'typescript'],
+              presets: [
+                ['env', { modules: 'commonjs' }],
+                'react',
+                'typescript'
+              ],
               filename: file.name
             }).code;
 
-            // Transform ES imports/exports into CommonJS wrapper
-            // 1. replace 'import ... from "..."' with require
-            let cjsCode = transpiled
-              // import default & named: import React, { useState } from 'react';
-              .replace(/import\s+([A-Za-z0-9_$]+)\s*,\s*\{([^}]+)\}\s*from\s*['"]([^'"]+)['"];?/g, function(_, def, named, mod) {
-                return 'const ' + def + ' = require("' + mod + '").default || require("' + mod + '"); const { ' + named + ' } = require("' + mod + '");';
-              })
-              // import named: import { X, Y } from 'mod';
-              .replace(/import\s*\{([^}]+)\}\s*from\s*['"]([^'"]+)['"];?/g, function(_, named, mod) {
-                return 'const { ' + named + ' } = require("' + mod + '");';
-              })
-              // import default: import X from 'mod';
-              .replace(/import\s+([A-Za-z0-9_$]+)\s*from\s*['"]([^'"]+)['"];?/g, function(_, def, mod) {
-                return 'const ' + def + ' = (require("' + mod + '").default !== undefined) ? require("' + mod + '").default : require("' + mod + '");';
-              })
-              // export default function/class
-              .replace(/export\s+default\s+function\s+([A-Za-z0-9_$]+)/g, 'exports.default = $1; function $1')
-              .replace(/export\s+default\s+class\s+([A-Za-z0-9_$]+)/g, 'exports.default = $1; class $1')
-              // export default variable/expr
-              .replace(/export\s+default\s+/g, 'exports.default = ')
-              // export named: export const/let/var/function
-              .replace(/export\s+(const|let|var)\s+([A-Za-z0-9_$]+)/g, '$1 $2 = exports.$2')
-              .replace(/export\s+function\s+([A-Za-z0-9_$]+)/g, 'exports.$1 = $1; function $1');
-
-            moduleRegistry[file.path] = new Function('module', 'exports', 'require', cjsCode);
+            moduleRegistry[file.path] = new Function('module', 'exports', 'require', transpiled);
           } catch (compErr) {
             console.error('File compile error for ' + file.path + ':', compErr);
+            showError('Compile Error in ' + file.path, compErr.message);
           }
         });
 
@@ -275,11 +261,11 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
         const RootComponent = rootModule.default || rootModule.Page || rootModule.Home || rootModule.App || (typeof rootModule === 'function' ? rootModule : null) || Object.values(rootModule).find(v => typeof v === 'function');
 
         if (!RootComponent) {
-          showError('Root component in ' + rootCandidate.path + ' could not be resolved.', 'Exports found: ' + Object.keys(rootModule).join(', '));
+          showError('Root component in ' + rootCandidate.path + ' could not be resolved.', 'Exports: ' + Object.keys(rootModule).join(', '));
           return;
         }
 
-        // 5. Mount Component to Root
+        // 5. Mount Component to Root DOM
         const rootEl = document.getElementById('root');
         if (ReactDOM.createRoot) {
           const root = ReactDOM.createRoot(rootEl);
