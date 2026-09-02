@@ -184,7 +184,7 @@ export function PreviewPanel({
               srcDoc={generatedHtml}
               title="Generated preview"
               className="h-full min-h-[600px] w-full border-0"
-              sandbox="allow-scripts"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"
             />
           ) : project.preview ? (
             <MockSite config={project.preview} />
