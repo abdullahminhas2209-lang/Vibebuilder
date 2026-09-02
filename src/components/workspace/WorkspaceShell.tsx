@@ -14,6 +14,7 @@ import { FileExplorer } from "@/components/workspace/FileExplorer";
 import { PreviewPanel } from "@/components/workspace/PreviewPanel";
 import { WorkspaceHeader } from "@/components/workspace/WorkspaceHeader";
 import { WorkspaceTabs } from "@/components/workspace/WorkspaceTabs";
+import { generateLivePreviewHtml } from "@/lib/render-preview";
 import type {
   ChatMessage,
   FileNode,
@@ -160,17 +161,15 @@ export function WorkspaceShell({
     const firstPath = firstFilePath(tree);
     if (firstPath) setSelectedFilePath(firstPath);
 
-    // Build a simple HTML preview from the generated files
-    const pageFile = files.find(
-      (f) => f.path === "app/page.tsx" || f.name === "page.tsx"
-    );
-    if (pageFile) {
-      setGeneratedHtml(buildHtmlPreview(pageFile.code, files));
+    // Build real live interactive React preview HTML
+    if (files.length > 0) {
+      const allFilesList = Object.values(newFileMap);
+      setGeneratedHtml(generateLivePreviewHtml(allFilesList));
     }
 
-    // Switch to code tab to show generated files
-    setActiveTab("code");
-    setMobileView("code");
+    // Switch to preview tab so user sees the live site immediately!
+    setActiveTab("preview");
+    setMobileView("preview");
   }
 
   return (
@@ -250,52 +249,4 @@ export function WorkspaceShell({
       </Sheet>
     </div>
   );
-}
-
-/**
- * Build a minimal HTML string from generated TSX code for iframe preview.
- * This is a best-effort display — not a real renderer.
- */
-function buildHtmlPreview(pageCode: string, allFiles: ProjectFile[]): string {
-  // Extract JSX return content (very simplified)
-  const tailwindCdn = `<script src="https://cdn.tailwindcss.com"></script>`;
-
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Preview</title>
-  ${tailwindCdn}
-</head>
-<body class="bg-white font-sans">
-  <div id="root" class="min-h-screen">
-    <div class="flex flex-col items-center justify-center min-h-screen p-8 text-center bg-gradient-to-br from-slate-50 to-slate-100">
-      <div class="max-w-2xl w-full bg-white rounded-2xl shadow-lg p-8 border border-slate-200">
-        <div class="flex items-center justify-center w-12 h-12 bg-indigo-100 rounded-xl mx-auto mb-4">
-          <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-          </svg>
-        </div>
-        <h1 class="text-2xl font-bold text-slate-900 mb-2">Code Generated</h1>
-        <p class="text-slate-600 mb-6">
-          Your application has been generated. View the files in the Code tab on the right.
-          A full live preview requires running the Next.js dev server locally.
-        </p>
-        <div class="text-left bg-slate-900 rounded-xl p-4 overflow-auto max-h-96">
-          <pre class="text-xs text-green-400 whitespace-pre-wrap">${escapeHtml(pageCode.slice(0, 1500))}${pageCode.length > 1500 ? "\n\n... (truncated, view in Code tab)" : ""}</pre>
-        </div>
-      </div>
-    </div>
-  </div>
-</body>
-</html>`;
-}
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
