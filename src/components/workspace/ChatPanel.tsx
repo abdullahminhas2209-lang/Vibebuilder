@@ -261,7 +261,7 @@ export function ChatPanel({ initialMessages, onFilesGenerated }: ChatPanelProps)
           </div>
         </div>
         <p className="mt-2 text-[11px] text-muted-foreground">
-          Powered by Gemini 2.0 Flash · Generated code appears in the editor.
+          Powered by Google Gemini Flash · Generated code appears in the editor.
         </p>
       </form>
     </div>

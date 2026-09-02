@@ -24,9 +24,16 @@ Rules:
 - Do not import external libraries other than react and lucide-react
 - Make the UI look polished and professional`;
 
+const SUPPORTED_MODELS = [
+  "gemini-3.6-flash",
+  "gemini-3.5-flash",
+  "gemini-2.5-flash",
+  "gemini-flash-latest",
+];
+
 export async function POST(req: NextRequest) {
   try {
-    const { messages } = await req.json() as {
+    const { messages } = (await req.json()) as {
       messages: { role: "user" | "assistant"; content: string }[];
     };
 
@@ -46,29 +53,44 @@ export async function POST(req: NextRequest) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
-      systemInstruction: SYSTEM_PROMPT,
-    });
 
     // Build conversation history (all but last message)
     const history = messages.slice(0, -1).map((m) => ({
-      role: m.role === "assistant" ? "model" : "user" as const,
+      role: m.role === "assistant" ? "model" : ("user" as const),
       parts: [{ text: m.content }],
     }));
 
     const lastMessage = messages[messages.length - 1];
 
-    const chat = model.startChat({ history });
+    // Try primary and fallback models in case of temporary rate limits or deprecations
+    let streamResult = null;
+    let lastError = null;
 
-    // Stream the response
-    const result = await chat.sendMessageStream(lastMessage.content);
+    for (const modelName of SUPPORTED_MODELS) {
+      try {
+        const model = genAI.getGenerativeModel({
+          model: modelName,
+          systemInstruction: SYSTEM_PROMPT,
+        });
+
+        const chat = model.startChat({ history });
+        streamResult = await chat.sendMessageStream(lastMessage.content);
+        if (streamResult) break;
+      } catch (err) {
+        lastError = err;
+        console.warn(`Model ${modelName} failed, trying next fallback...`);
+      }
+    }
+
+    if (!streamResult) {
+      throw lastError || new Error("All Gemini models failed to respond.");
+    }
 
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       async start(controller) {
         try {
-          for await (const chunk of result.stream) {
+          for await (const chunk of streamResult.stream) {
             const text = chunk.text();
             if (text) {
               controller.enqueue(encoder.encode(text));
@@ -91,7 +113,10 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Chat API error:", error);
     return NextResponse.json(
-      { error: "Failed to generate response" },
+      {
+        error:
+          error instanceof Error ? error.message : "Failed to generate response",
+      },
       { status: 500 }
     );
   }
