@@ -63,7 +63,7 @@ body {
 export function makeFooter(
   brand: string,
   links: string[],
-  note: string,
+  _note: string,
 ): ProjectFile {
   return {
     path: "components/Footer.tsx",

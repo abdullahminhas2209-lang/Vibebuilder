@@ -260,11 +260,6 @@ function buildHtmlPreview(pageCode: string, allFiles: ProjectFile[]): string {
   // Extract JSX return content (very simplified)
   const tailwindCdn = `<script src="https://cdn.tailwindcss.com"></script>`;
 
-  // Collect all component code for display
-  const allCode = allFiles
-    .map((f) => `/* ${f.path} */\n${f.code}`)
-    .join("\n\n");
-
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
