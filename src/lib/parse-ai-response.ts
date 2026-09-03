@@ -12,7 +12,9 @@
 import type { ProjectFile, ProjectFileLanguage } from "@/lib/types";
 
 const CODE_BLOCK_REGEX = /```([a-zA-Z0-9_+-]+)?\n([\s\S]*?)```/g;
-const FILENAME_REGEX = /(?:\/\/|\/\*|#)\s*(?:file(?:path)?:?\s*)?([a-zA-Z0-9_\-./\\]+\.[a-zA-Z0-9]+)/i;
+const FILENAME_COMMENT_REGEX = /(?:\/\/|\/\*|#|<!--)\s*(?:file(?:path)?:?\s*|filename:?\s*)?([a-zA-Z0-9_\-./\\]+\.[a-zA-Z0-9]+)/i;
+const PRECEDING_FILENAME_REGEX = /(?:###|\*\*|`|File:|Filename:)\s*([a-zA-Z0-9_\-./\\]+\.[a-zA-Z0-9]+)/i;
+const COMPONENT_EXPORT_REGEX = /export\s+(?:default\s+)?(?:function|const|class)\s+([A-Z][a-zA-Z0-9_]*)/;
 
 function inferLanguage(
   ext: string,
@@ -26,6 +28,15 @@ function inferLanguage(
   return "tsx"; // default
 }
 
+function cleanPath(raw: string): string {
+  return raw
+    .trim()
+    .replace(/^[`'"*#\s]+|[`'"*#\s]+$/g, "")
+    .replace(/^[./\\]+/, "")
+    .replace(/\\/g, "/")
+    .replace(/^src\//, "");
+}
+
 export function parseGeneratedFiles(aiResponse: string): ProjectFile[] {
   const files: ProjectFile[] = [];
   const seen = new Set<string>();
@@ -36,40 +47,74 @@ export function parseGeneratedFiles(aiResponse: string): ProjectFile[] {
   while ((match = CODE_BLOCK_REGEX.exec(aiResponse)) !== null) {
     const langHint = match[1] ?? "";
     const body = match[2] ?? "";
+    const matchIndex = match.index;
 
     const lines = body.split("\n");
     let foundPath: string | null = null;
     let commentLineIndex = -1;
 
-    // Scan the first 6 lines of code block for filename comment
-    for (let i = 0; i < Math.min(lines.length, 6); i++) {
+    // 1. Scan the first 8 lines of code block for filename comment
+    for (let i = 0; i < Math.min(lines.length, 8); i++) {
       const line = lines[i].trim();
-      const filenameMatch = FILENAME_REGEX.exec(line);
+      const filenameMatch = FILENAME_COMMENT_REGEX.exec(line);
       if (filenameMatch) {
-        foundPath = filenameMatch[1]
-          .trim()
-          .replace(/^[./\\]+/, "")
-          .replace(/\\/g, "/");
+        foundPath = cleanPath(filenameMatch[1]);
         commentLineIndex = i;
         break;
       }
     }
 
+    // 2. If not found in code comments, inspect preceding markdown text (up to 250 chars)
+    if (!foundPath && matchIndex > 0) {
+      const precedingText = aiResponse.slice(Math.max(0, matchIndex - 250), matchIndex);
+      const precedingLines = precedingText.split("\n").filter((l) => l.trim().length > 0);
+      for (let i = precedingLines.length - 1; i >= 0; i--) {
+        const pMatch = PRECEDING_FILENAME_REGEX.exec(precedingLines[i]);
+        if (pMatch) {
+          foundPath = cleanPath(pMatch[1]);
+          break;
+        }
+      }
+    }
+
+    // 3. If still not found, inspect exported component name in body
     if (!foundPath) {
-      if (
+      const compMatch = COMPONENT_EXPORT_REGEX.exec(body);
+      if (compMatch) {
+        const compName = compMatch[1];
+        if (["Page", "Home", "HomePage", "MainPage", "App"].includes(compName)) {
+          foundPath = "app/page.tsx";
+        } else if (compName.toLowerCase().includes("layout")) {
+          foundPath = "app/layout.tsx";
+        } else {
+          foundPath = `components/${compName}.tsx`;
+        }
+      } else if (
         body.includes("export default") ||
         body.includes("function Page") ||
         body.includes("HomePage")
       ) {
-        foundPath = "app/page.tsx";
+        foundPath = seen.has("app/page.tsx")
+          ? `components/Component${files.length + 1}.tsx`
+          : "app/page.tsx";
       } else {
-        continue;
+        // Fallback generic component
+        foundPath = `components/Component${files.length + 1}.tsx`;
       }
     }
 
-    // Strip unwanted leading "src/" if present
-    const normalizedPath = foundPath.replace(/^src\//, "");
-    if (seen.has(normalizedPath)) continue;
+    // Normalize path
+    let normalizedPath = cleanPath(foundPath);
+    if (!normalizedPath.includes(".")) {
+      normalizedPath += ".tsx";
+    }
+
+    // Avoid collision by appending index if already seen
+    if (seen.has(normalizedPath)) {
+      const ext = normalizedPath.split(".").pop() ?? "tsx";
+      const base = normalizedPath.slice(0, -(ext.length + 1));
+      normalizedPath = `${base}-${files.length + 1}.${ext}`;
+    }
     seen.add(normalizedPath);
 
     const name = normalizedPath.split("/").pop() ?? normalizedPath;
