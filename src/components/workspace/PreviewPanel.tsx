@@ -41,7 +41,7 @@ export function PreviewPanel({
   const previewUrl = `https://${project.id}.preview.vibebuilder.app`;
 
   function handleReload() {
-    if (isReloading || !project.generated) {
+    if (isReloading || (!project.generated && !generatedHtml)) {
       return;
     }
     setIsReloading(true);

@@ -11,8 +11,8 @@
 
 import type { ProjectFile, ProjectFileLanguage } from "@/lib/types";
 
-const CODE_BLOCK_REGEX = /```(\w+)?\n([\s\S]*?)```/g;
-const FILENAME_COMMENT_REGEX = /^\/\/\s*(.+\.\w+)/;
+const CODE_BLOCK_REGEX = /```([a-zA-Z0-9_+-]+)?\n([\s\S]*?)```/g;
+const FILENAME_REGEX = /(?:\/\/|\/\*|#)\s*(?:file(?:path)?:?\s*)?([a-zA-Z0-9_\-./\\]+\.[a-zA-Z0-9]+)/i;
 
 function inferLanguage(
   ext: string,
@@ -37,20 +37,53 @@ export function parseGeneratedFiles(aiResponse: string): ProjectFile[] {
     const langHint = match[1] ?? "";
     const body = match[2] ?? "";
 
-    const firstLine = body.split("\n")[0] ?? "";
-    const filenameMatch = FILENAME_COMMENT_REGEX.exec(firstLine.trim());
-    if (!filenameMatch) continue;
+    const lines = body.split("\n");
+    let foundPath: string | null = null;
+    let commentLineIndex = -1;
 
-    const path = filenameMatch[1].trim();
-    if (seen.has(path)) continue;
-    seen.add(path);
+    // Scan the first 6 lines of code block for filename comment
+    for (let i = 0; i < Math.min(lines.length, 6); i++) {
+      const line = lines[i].trim();
+      const filenameMatch = FILENAME_REGEX.exec(line);
+      if (filenameMatch) {
+        foundPath = filenameMatch[1]
+          .trim()
+          .replace(/^[./\\]+/, "")
+          .replace(/\\/g, "/");
+        commentLineIndex = i;
+        break;
+      }
+    }
 
-    const ext = path.split(".").pop() ?? "tsx";
-    const name = path.split("/").pop() ?? path;
-    const code = body.replace(/^.*\n/, ""); // strip filename comment line
+    if (!foundPath) {
+      if (
+        body.includes("export default") ||
+        body.includes("function Page") ||
+        body.includes("HomePage")
+      ) {
+        foundPath = "app/page.tsx";
+      } else {
+        continue;
+      }
+    }
+
+    // Strip unwanted leading "src/" if present
+    const normalizedPath = foundPath.replace(/^src\//, "");
+    if (seen.has(normalizedPath)) continue;
+    seen.add(normalizedPath);
+
+    const name = normalizedPath.split("/").pop() ?? normalizedPath;
+    const ext = name.split(".").pop() ?? "tsx";
+
+    // Remove the comment line if found
+    const codeLines = [...lines];
+    if (commentLineIndex !== -1) {
+      codeLines.splice(commentLineIndex, 1);
+    }
+    const code = codeLines.join("\n").trim();
 
     files.push({
-      path,
+      path: normalizedPath,
       name,
       language: inferLanguage(ext, langHint),
       code,
