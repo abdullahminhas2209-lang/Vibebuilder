@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 import {
   Sheet,
@@ -15,6 +16,7 @@ import { PreviewPanel } from "@/components/workspace/PreviewPanel";
 import { WorkspaceHeader } from "@/components/workspace/WorkspaceHeader";
 import { WorkspaceTabs } from "@/components/workspace/WorkspaceTabs";
 import { generateLivePreviewHtml } from "@/lib/render-preview";
+import { saveProjectFiles } from "@/lib/supabase/db";
 import type {
   ChatMessage,
   FileNode,
@@ -117,22 +119,34 @@ function firstFilePath(nodes: FileNode[]): string | null {
 }
 
 export function WorkspaceShell({
-  project,
+  project: initialProject,
   fileTree: initialFileTree,
   fileMap: initialFileMap,
   initialMessages,
 }: WorkspaceShellProps) {
+  const searchParams = useSearchParams();
+  const urlPrompt = searchParams ? searchParams.get("prompt") : null;
+
+  const [project, setProject] = useState<Project>(initialProject);
   const [activeTab, setActiveTab] = useState<WorkspaceTab>("preview");
   const [fileTree, setFileTree] = useState<FileNode[]>(initialFileTree);
   const [fileMap, setFileMap] = useState<Record<string, ProjectFile>>(initialFileMap);
   const [selectedFilePath, setSelectedFilePath] = useState<string | null>(() =>
-    project.generated ? firstFilePath(initialFileTree) : null,
+    initialProject.generated ? firstFilePath(initialFileTree) : null,
   );
   const [mobileView, setMobileView] = useState<MobileView>("chat");
   const [filesOpen, setFilesOpen] = useState(false);
   const [generatedHtml, setGeneratedHtml] = useState<string | null>(null);
 
   const selectedFile = selectedFilePath ? fileMap[selectedFilePath] : undefined;
+  const filesList = Object.values(fileMap);
+
+  // Clean URL prompt after mounting
+  useEffect(() => {
+    if (urlPrompt && typeof window !== "undefined") {
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, [urlPrompt]);
 
   function handleMobileViewChange(view: MobileView) {
     setMobileView(view);
@@ -161,9 +175,13 @@ export function WorkspaceShell({
     const firstPath = firstFilePath(tree);
     if (firstPath) setSelectedFilePath(firstPath);
 
+    const allFilesList = Object.values(newFileMap);
+
+    // Save to DB / local store
+    saveProjectFiles(project.id, allFilesList);
+
     // Build real live interactive React preview HTML
     if (files.length > 0) {
-      const allFilesList = Object.values(newFileMap);
       setGeneratedHtml(generateLivePreviewHtml(allFilesList));
     }
 
@@ -176,8 +194,10 @@ export function WorkspaceShell({
     <div className="flex h-dvh min-h-0 flex-col bg-background">
       <WorkspaceHeader
         project={project}
+        filesList={filesList}
         onShowPreview={handleShowPreview}
         onToggleFiles={() => setFilesOpen(true)}
+        onProjectRenamed={(newName) => setProject((prev) => ({ ...prev, name: newName }))}
         mobileSwitcher={
           <MobileSwitcher value={mobileView} onChange={handleMobileViewChange} />
         }
@@ -187,11 +207,13 @@ export function WorkspaceShell({
         {/* Chat panel — full width on mobile, left column from md up. */}
         <aside
           className={cn(
-            "w-full shrink-0 border-r border-border bg-card md:block md:w-[300px] lg:w-[320px]",
+            "w-full shrink-0 border-r border-border bg-card md:block md:w-[320px] lg:w-[350px]",
             mobileView === "chat" ? "block" : "hidden",
           )}
         >
           <ChatPanel
+            projectId={project.id}
+            initialPrompt={urlPrompt}
             initialMessages={initialMessages}
             onFilesGenerated={handleFilesGenerated}
           />

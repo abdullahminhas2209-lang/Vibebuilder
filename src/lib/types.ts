@@ -84,7 +84,7 @@ export interface Project {
   preview?: MockPreviewConfig;
 }
 
-export type ChatRole = "user" | "assistant";
+export type ChatRole = "user" | "assistant" | "system";
 
 export interface ChatMessage {
   id: string;

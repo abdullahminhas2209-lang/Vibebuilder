@@ -14,8 +14,19 @@ export function Hero() {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    router.push("/project/demo");
+    const trimmed = prompt.trim();
+    const targetUrl = trimmed
+      ? `/project/demo?prompt=${encodeURIComponent(trimmed)}`
+      : "/project/demo";
+    router.push(targetUrl);
   }
+
+  const promptSuggestions = [
+    "Modern SaaS landing page with pricing and testimonials",
+    "Luxury restaurant website with table reservation flow",
+    "Developer portfolio with interactive project showcase",
+    "E-commerce store with product catalog and checkout",
+  ];
 
   return (
     <section className="relative overflow-hidden">
@@ -69,13 +80,31 @@ export function Hero() {
             />
             <div className="flex items-center justify-between gap-3 px-2 pb-1">
               <p className="text-xs text-muted-foreground">
-                Prototype — responses are simulated.
+                Powered by Gemini Flash · Instant live preview
               </p>
               <Button type="submit" size="sm">
                 Start Building
                 <ArrowUpRight className="size-4" aria-hidden="true" />
               </Button>
             </div>
+          </div>
+
+          <div className="mt-3 flex flex-wrap items-center gap-1.5 justify-center sm:justify-start">
+            <span className="text-xs text-muted-foreground mr-1">Try:</span>
+            {promptSuggestions.map((suggestion) => (
+              <button
+                key={suggestion}
+                type="button"
+                onClick={() => {
+                  setPrompt(suggestion);
+                  const targetUrl = `/project/demo?prompt=${encodeURIComponent(suggestion)}`;
+                  router.push(targetUrl);
+                }}
+                className="inline-flex items-center rounded-full border border-border/80 bg-background/50 px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:bg-card hover:text-foreground"
+              >
+                {suggestion.split(" with ")[0]}
+              </button>
+            ))}
           </div>
         </form>
 

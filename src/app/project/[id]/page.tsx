@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 
 import { WorkspaceShell } from "@/components/workspace/WorkspaceShell";
 import {
@@ -10,12 +9,13 @@ import {
   getProjectFileTree,
   projects,
 } from "@/lib/mock-data";
+import type { Project } from "@/lib/types";
 
 interface ProjectPageProps {
   params: Promise<{ id: string }>;
 }
 
-/** Prerender every known mock project; unknown ids get a real 404. */
+/** Prerender preset mock projects */
 export function generateStaticParams() {
   return [
     ...projects.map((project) => ({ id: project.id })),
@@ -23,22 +23,33 @@ export function generateStaticParams() {
   ];
 }
 
-export const dynamicParams = false;
+// Allow dynamic project IDs for newly created projects
+export const dynamicParams = true;
 
 export async function generateMetadata({
   params,
 }: ProjectPageProps): Promise<Metadata> {
   const { id } = await params;
   const project = getProjectById(id);
-  return { title: project ? project.name : "Project" };
+  return { title: project ? project.name : "VibeBuilder Workspace" };
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { id } = await params;
-  const project = getProjectById(id);
+  let project: Project | undefined = getProjectById(id);
 
+  // If newly created project ID not in static presets, initialize empty workspace
   if (!project) {
-    notFound();
+    project = {
+      id,
+      name: "Custom Project",
+      description: "A new workspace ready for your prompts.",
+      type: "Web Application",
+      status: "active",
+      lastUpdated: "Just now",
+      createdAt: "Today",
+      generated: false,
+    };
   }
 
   return (
