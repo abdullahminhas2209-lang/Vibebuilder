@@ -1,70 +1,106 @@
-import { Eye, MessageSquare, RefreshCw, Sparkles } from "lucide-react";
+"use client";
 
+import { ArrowRight, Code2, Eye, MessageSquare, Rocket, Sparkles } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
+import { cn } from "@/lib/utils";
 
-const steps = [
+const STEPS = [
   {
-    icon: MessageSquare,
+    step: "01",
     title: "Prompt",
-    description: "Describe the application you want to build.",
+    icon: MessageSquare,
+    badge: "Input",
+    description: "Describe what you want to build in plain English or paste any design reference.",
+    color: "from-blue-500/20 to-indigo-500/20 text-indigo-600",
   },
   {
+    step: "02",
+    title: "Understand",
     icon: Sparkles,
-    title: "Generate",
-    description: "The agent plans the interface and creates the code.",
+    badge: "AI Reasoning",
+    description: "Klyro analyzes your requirements, architecture, layouts, state, and component hierarchy.",
+    color: "from-indigo-500/20 to-purple-500/20 text-purple-600",
   },
   {
-    icon: Eye,
+    step: "03",
+    title: "Build",
+    icon: Code2,
+    badge: "Code Generation",
+    description: "Generates clean, multi-file Next.js 15, React, and Tailwind CSS code in seconds.",
+    color: "from-purple-500/20 to-pink-500/20 text-pink-600",
+  },
+  {
+    step: "04",
     title: "Preview",
-    description: "See the running result immediately in the workspace.",
+    icon: Eye,
+    badge: "Live Sandbox",
+    description: "Test your running interactive application in real-time across Desktop, Tablet, and Mobile.",
+    color: "from-pink-500/20 to-rose-500/20 text-rose-600",
   },
   {
-    icon: RefreshCw,
-    title: "Refine",
-    description: "Ask for changes in natural language and iterate.",
+    step: "05",
+    title: "Launch",
+    icon: Rocket,
+    badge: "Production Ready",
+    description: "One-click export full source code ZIP or deploy directly to Vercel and your custom domain.",
+    color: "from-rose-500/20 to-emerald-500/20 text-emerald-600",
   },
-] as const;
+];
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="border-t border-border">
-      <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+    <section id="how-it-works" className="relative py-20 lg:py-28 border-t border-slate-200/60 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-950/30">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <Reveal>
-          <div className="max-w-2xl">
-            <h2 className="text-2xl font-semibold tracking-tight text-pretty sm:text-3xl">
-              How it works
+          <div className="mx-auto max-w-2xl text-center">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200/80 bg-indigo-50/80 dark:border-indigo-900/50 dark:bg-indigo-950/40 px-3 py-1 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-3 shadow-xs">
+              <span>Workflow</span>
+            </div>
+            <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+              How Klyro Works
             </h2>
-            <p className="mt-3 text-base text-muted-foreground">
-              Four steps, one continuous loop — from a sentence to a working
-              interface.
+            <p className="mt-3 text-base text-slate-600 dark:text-slate-300">
+              Five continuous steps from a natural language sentence to a production-ready application.
             </p>
           </div>
         </Reveal>
 
-        <ol className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
-          {steps.map((step, index) => (
-            <li key={step.title} className="relative">
-              {index < steps.length - 1 && (
-                <span
-                  aria-hidden="true"
-                  className="absolute top-5 left-14 hidden h-px w-[calc(100%-3.5rem)] bg-border lg:block"
-                />
-              )}
-              <Reveal delay={index * 80}>
-                <div className="flex size-10 items-center justify-center rounded-full border border-border bg-card text-primary shadow-sm">
-                  <step.icon className="size-4.5" aria-hidden="true" />
+        {/* Workflow Steps Grid */}
+        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {STEPS.map((item, index) => (
+            <Reveal key={item.title} delay={index * 60}>
+              <div className="group relative flex flex-col justify-between h-full rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-5 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-indigo-400/80 hover:shadow-md">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-xs font-mono font-bold text-slate-400 dark:text-slate-600">
+                      {item.step}
+                    </span>
+                    <span className="rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] font-semibold text-slate-600 dark:text-slate-300">
+                      {item.badge}
+                    </span>
+                  </div>
+
+                  <div className={cn("flex size-10 items-center justify-center rounded-xl bg-gradient-to-br shadow-inner mb-4", item.color)}>
+                    <item.icon className="size-5" />
+                  </div>
+
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    {item.description}
+                  </p>
                 </div>
-                <p className="mt-4 text-xs font-medium text-primary uppercase">
-                  Step {index + 1}
-                </p>
-                <h3 className="mt-1 text-base font-semibold">{step.title}</h3>
-                <p className="mt-1.5 text-sm text-muted-foreground">
-                  {step.description}
-                </p>
-              </Reveal>
-            </li>
+
+                {index < STEPS.length - 1 && (
+                  <div className="hidden lg:flex items-center justify-end pt-3 text-slate-300 dark:text-slate-700">
+                    <ArrowRight className="size-4" />
+                  </div>
+                )}
+              </div>
+            </Reveal>
           ))}
-        </ol>
+        </div>
       </div>
     </section>
   );

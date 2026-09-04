@@ -39,7 +39,7 @@ export function PreviewPanel({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const previewUrl = `https://${project.id}.preview.vibebuilder.app`;
+  const previewUrl = `https://${project.id}.preview.klyro.app`;
 
   function handleReload() {
     if (isReloading || (!project.generated && !generatedHtml)) {

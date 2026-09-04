@@ -6,7 +6,7 @@ import type { ProjectFile } from "@/lib/types";
  */
 export async function downloadProjectZip(projectName: string, files: ProjectFile[]) {
   const zip = new JSZip();
-  const safeProjectSlug = (projectName || "vibebuilder-project")
+  const safeProjectSlug = (projectName || "klyro-project")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
@@ -130,8 +130,8 @@ export default config;
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "${projectName || "VibeBuilder Generated App"}",
-  description: "Built with VibeBuilder AI",
+  title: "${projectName || "Klyro Generated App"}",
+  description: "Built with Klyro AI",
 };
 
 export default function RootLayout({
@@ -177,9 +177,9 @@ export function cn(...inputs: ClassValue[]) {
   // README.md
   zip.file(
     "README.md",
-    `# ${projectName || "VibeBuilder Project"}
+    `# ${projectName || "Klyro Project"}
 
-This application was generated with **VibeBuilder AI**.
+This application was generated with **Klyro AI** — From prompt to product.
 
 ## 🚀 Getting Started
 

@@ -108,7 +108,7 @@ export default function AuthPage() {
               <Sparkles className="size-6" />
             </div>
             <h1 className="text-xl font-bold tracking-tight">
-              {tab === "signin" ? "Sign in to VibeBuilder" : "Register a New Account"}
+              {tab === "signin" ? "Sign in to Klyro" : "Register a New Account"}
             </h1>
             <p className="mt-1 text-xs text-muted-foreground">
               {tab === "signin"

@@ -41,7 +41,7 @@ export function ChatMessage({ message }: { message: ChatMessageType }) {
             isUser && "text-right",
           )}
         >
-          {isUser ? "You" : "VibeBuilder"} · {message.createdAt}
+          {isUser ? "You" : "Klyro"} · {message.createdAt}
         </p>
       </div>
     </div>

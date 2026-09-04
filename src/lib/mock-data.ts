@@ -106,7 +106,7 @@ export function getProjectById(id: string): Project | undefined {
  * Static preview-site configuration per generated project. Rendered by
  * components/workspace/MockSite.tsx — purely visual, no real functionality.
  */
-const previewConfigs: Record<string, MockPreviewConfig> = {
+export const previewConfigs: Record<string, MockPreviewConfig> = {
   "restaurant-booking": {
     variant: "marketing",
     brand: "Ember & Oak",

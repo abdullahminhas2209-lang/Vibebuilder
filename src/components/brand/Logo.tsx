@@ -1,5 +1,4 @@
 import Link from "next/link";
-
 import { cn } from "@/lib/utils";
 
 export function LogoMark({ className }: { className?: string }) {
@@ -7,17 +6,33 @@ export function LogoMark({ className }: { className?: string }) {
     <span
       aria-hidden="true"
       className={cn(
-        "flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground",
+        "relative flex size-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-600 to-blue-600 text-white shadow-md shadow-indigo-500/20 ring-1 ring-white/20",
         className,
       )}
     >
       <svg
         viewBox="0 0 24 24"
-        fill="currentColor"
-        className="size-4"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="size-4.5 drop-shadow"
         aria-hidden="true"
       >
-        <path d="M13.7 2.1a.55.55 0 0 1 .95.48l-1.06 5.1h5.06a.55.55 0 0 1 .42.9l-8.7 10.4a.55.55 0 0 1-.96-.44l1.28-5.64H5.4a.55.55 0 0 1-.43-.9l8.73-9.9Z" />
+        {/* Geometric stylized K with forward movement chevron */}
+        <path
+          d="M6 4.5V19.5"
+          stroke="currentColor"
+          strokeWidth="2.75"
+          strokeLinecap="round"
+        />
+        <path
+          d="M17.5 5L9.5 12L18 19"
+          stroke="currentColor"
+          strokeWidth="2.75"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <circle cx="17.5" cy="5" r="1" fill="currentColor" />
+        <circle cx="18" cy="19" r="1" fill="currentColor" />
       </svg>
     </span>
   );
@@ -43,16 +58,17 @@ export function Logo({
     <Link
       href={href}
       onClick={onClick}
-      aria-label="VibeBuilder home"
+      aria-label="Klyro home"
       className={cn(
-        "inline-flex items-center gap-2 rounded-md focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none",
+        "group inline-flex items-center gap-2.5 rounded-xl focus-visible:ring-[3px] focus-visible:ring-indigo-500/50 focus-visible:outline-none transition-transform hover:scale-[1.02]",
         className,
       )}
     >
       <LogoMark />
       {!markOnly && (
-        <span className="text-[15px] font-semibold tracking-tight">
-          VibeBuilder
+        <span className="flex items-center gap-0.5 text-lg font-bold tracking-tight text-slate-900 dark:text-white">
+          Klyro
+          <span className="size-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-blue-500 ml-0.5"></span>
         </span>
       )}
     </Link>

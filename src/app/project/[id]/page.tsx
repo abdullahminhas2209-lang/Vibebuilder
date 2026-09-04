@@ -31,7 +31,7 @@ export async function generateMetadata({
 }: ProjectPageProps): Promise<Metadata> {
   const { id } = await params;
   const project = getProjectById(id);
-  return { title: project ? project.name : "VibeBuilder Workspace" };
+  return { title: project ? `${project.name} · Klyro` : "Klyro Workspace" };
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {

@@ -69,7 +69,7 @@ export function WorkspaceHeader({
   const [downloading, setDownloading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
 
-  const shareUrl = typeof window !== "undefined" ? window.location.href : `https://vibebuilder.app/project/${project.id}`;
+  const shareUrl = typeof window !== "undefined" ? window.location.href : `https://klyro.app/project/${project.id}`;
 
   async function handleCopyShareUrl() {
     try {

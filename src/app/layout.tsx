@@ -16,11 +16,14 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "VibeBuilder — Build websites by describing what you want",
-    template: "%s · VibeBuilder",
+    default: "Klyro — From prompt to product",
+    template: "%s · Klyro",
   },
   description:
-    "VibeBuilder is an AI development environment. Describe your idea in plain language, preview it live, and refine it through conversation.",
+    "Klyro turns natural language descriptions into interactive, production-ready web applications. From prompt to product.",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
@@ -33,7 +36,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-dvh flex-col">
+      <body className="flex min-h-dvh flex-col bg-[#F8FAFC] dark:bg-slate-950 text-slate-900 dark:text-slate-100">
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

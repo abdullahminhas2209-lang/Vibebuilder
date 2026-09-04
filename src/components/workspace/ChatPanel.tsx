@@ -213,7 +213,7 @@ export function ChatPanel({
               What would you like to build?
             </h2>
             <p className="mt-1 max-w-xs text-xs text-muted-foreground mb-4">
-              Describe any website, landing page, or web app and VibeBuilder will generate all components and render a live preview.
+              Describe any website, landing page, or web app and Klyro will generate all components and render a live preview.
             </p>
             <div className="w-full space-y-2 text-left">
               <p className="text-[11px] font-medium text-muted-foreground px-1">Suggested Prompts:</p>

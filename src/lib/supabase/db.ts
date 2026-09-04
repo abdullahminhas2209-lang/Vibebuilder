@@ -114,7 +114,7 @@ export async function createProject(project: Partial<Project> & { name: string }
   const newProject: Project = {
     id,
     name: project.name,
-    description: project.description || "Created with VibeBuilder AI",
+    description: project.description || "Created with Klyro AI",
     type: project.type || "Web Application",
     status: project.status || "active",
     lastUpdated: "Just now",

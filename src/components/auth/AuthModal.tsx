@@ -124,7 +124,7 @@ export function AuthModal({
             <Sparkles className="size-5.5" />
           </div>
           <DialogTitle className="text-xl font-bold tracking-tight">
-            {tab === "signin" ? "Welcome back to VibeBuilder" : "Create your VibeBuilder account"}
+            {tab === "signin" ? "Welcome back to Klyro" : "Create your Klyro account"}
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             {tab === "signin"

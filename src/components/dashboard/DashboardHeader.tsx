@@ -41,7 +41,7 @@ export function DashboardHeader({ title, description, onProjectCreated }: Dashbo
       const newProj = await createProject({
         name: name.trim(),
         type,
-        description: prompt.trim() || `Created with VibeBuilder AI`,
+        description: prompt.trim() || `Created with Klyro AI`,
         status: "active",
       });
 

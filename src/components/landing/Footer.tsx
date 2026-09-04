@@ -1,95 +1,86 @@
 import Link from "next/link";
-import { AtSign, Globe } from "lucide-react";
-
 import { Logo } from "@/components/brand/Logo";
 
-const footerColumns = [
+const footerLinks = [
   {
-    heading: "Product",
+    title: "Product",
     links: [
-      { label: "Features", href: "/#features" },
-      { label: "How It Works", href: "/#how-it-works" },
-      { label: "Pricing", href: "/#pricing" },
+      { label: "AI Builder", href: "/#hero-builder" },
+      { label: "How It Works", href: "#how-it-works" },
+      { label: "Templates", href: "#templates" },
       { label: "Dashboard", href: "/dashboard" },
     ],
   },
   {
-    heading: "Resources",
+    title: "Developers",
     links: [
-      { label: "Documentation", href: "#" },
-      { label: "Changelog", href: "#" },
+      { label: "Next.js 15", href: "#" },
+      { label: "Tailwind CSS", href: "#" },
+      { label: "Supabase", href: "#" },
+      { label: "Export ZIP", href: "/dashboard" },
     ],
   },
   {
-    heading: "Company",
+    title: "Account",
     links: [
-      { label: "About", href: "#" },
-      { label: "Contact", href: "#" },
+      { label: "Sign In", href: "/auth" },
+      { label: "Register Account", href: "/auth" },
+      { label: "My Projects", href: "/dashboard" },
     ],
   },
-  {
-    heading: "Legal",
-    links: [
-      { label: "Privacy", href: "#" },
-      { label: "Terms", href: "#" },
-    ],
-  },
-] as const;
+];
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-card/50">
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
-        <div className="grid gap-10 lg:grid-cols-[1.5fr_repeat(4,1fr)]">
-          <div>
+    <footer className="border-t border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-950 py-12 lg:py-16">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
+          {/* Brand Col */}
+          <div className="lg:col-span-2">
             <Logo />
-            <p className="mt-3 max-w-xs text-sm text-muted-foreground">
-              Build websites by describing what you want.
+            <p className="mt-3 max-w-sm text-xs text-slate-500 leading-relaxed">
+              Klyro turns natural language descriptions into interactive, production-ready web applications. From prompt to product in seconds.
             </p>
-            <div className="mt-4 flex gap-1">
-              <a
-                href="#"
-                aria-label="VibeBuilder website"
-                className="flex size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              >
-                <Globe className="size-4" aria-hidden="true" />
-              </a>
-              <a
-                href="#"
-                aria-label="VibeBuilder contact"
-                className="flex size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              >
-                <AtSign className="size-4" aria-hidden="true" />
-              </a>
-            </div>
+            <p className="mt-4 text-[11px] text-slate-400 font-mono">
+              Powered by Google Gemini &amp; Supabase
+            </p>
           </div>
 
-          {footerColumns.map((column) => (
-            <nav key={column.heading} aria-label={column.heading}>
-              <h3 className="text-sm font-semibold">{column.heading}</h3>
-              <ul className="mt-3 space-y-2.5">
-                {column.links.map((link) => (
+          {/* Nav Links */}
+          {footerLinks.map((section) => (
+            <div key={section.title}>
+              <p className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider">
+                {section.title}
+              </p>
+              <ul className="mt-3 space-y-2">
+                {section.links.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      className="text-xs text-slate-500 hover:text-indigo-600 transition-colors"
                     >
                       {link.label}
                     </Link>
                   </li>
                 ))}
               </ul>
-            </nav>
+            </div>
           ))}
         </div>
 
-        <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-border pt-6 sm:flex-row sm:items-center">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} VibeBuilder. All rights reserved.
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Phase 1 prototype — no AI or backend functionality yet.
-          </p>
+        <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-100 dark:border-slate-800/80 pt-6 text-xs text-slate-400">
+          <p>© {new Date().getFullYear()} Klyro. All rights reserved.</p>
+          <div className="flex items-center gap-6">
+            <Link href="#" className="hover:text-slate-600">
+              Privacy Policy
+            </Link>
+            <Link href="#" className="hover:text-slate-600">
+              Terms of Service
+            </Link>
+            <Link href="#" className="hover:text-slate-600">
+              Documentation
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
