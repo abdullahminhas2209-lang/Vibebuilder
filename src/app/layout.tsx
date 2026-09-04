@@ -24,7 +24,11 @@ export const metadata: Metadata = {
   description:
     "Klyro turns natural language descriptions into interactive, production-ready web applications. From prompt to product.",
   icons: {
-    icon: "/icon.svg",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
   },
 };
 
