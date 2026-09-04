@@ -16,7 +16,6 @@ import { Reveal } from "@/components/Reveal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { projects } from "@/lib/mock-data";
 
 const TEMPLATE_CARDS = [
   {
@@ -68,26 +67,31 @@ const TEMPLATE_CARDS = [
 
 export function TemplatesSection() {
   return (
-    <section id="templates" className="py-20 lg:py-28 border-t border-slate-200/60 dark:border-slate-800/60 bg-white dark:bg-slate-900/40">
+    <section id="templates" className="py-20 lg:py-28 border-t border-slate-800/80 bg-[#0B0F19] text-slate-100">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <Reveal>
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
             <div>
-              <div className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200/80 bg-indigo-50/80 dark:border-indigo-900/50 dark:bg-indigo-950/40 px-3 py-1 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-3 shadow-xs">
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3.5 py-1 text-xs font-semibold text-indigo-400 mb-3 shadow-xs">
+                <Sparkles className="size-3.5 text-indigo-400" />
                 <span>Starter Templates</span>
               </div>
-              <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+              <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
                 Ready-to-use Template Library
               </h2>
-              <p className="mt-2 max-w-xl text-base text-slate-600 dark:text-slate-300">
+              <p className="mt-2 max-w-xl text-xs sm:text-sm text-slate-400 leading-relaxed">
                 Kickstart your project with pre-built production architecture. Customize every detail with Klyro AI.
               </p>
             </div>
 
-            <Button variant="outline" asChild className="rounded-xl border-slate-200 dark:border-slate-700">
-              <Link href="/dashboard" className="gap-1.5">
+            {/* Gradient 'View All Templates' Button matching 'Build with Klyro' */}
+            <Button
+              asChild
+              className="rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-xs sm:text-sm font-semibold text-white px-5 py-2.5 shadow-lg shadow-indigo-600/30 hover:from-indigo-500 hover:to-blue-500 hover:scale-[1.02] transition-all"
+            >
+              <Link href="/dashboard" className="gap-2 flex items-center">
                 <span>View All Templates</span>
-                <ArrowRight className="size-3.5" />
+                <ArrowRight className="size-4" />
               </Link>
             </Button>
           </div>
@@ -97,7 +101,7 @@ export function TemplatesSection() {
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {TEMPLATE_CARDS.map((template, index) => (
             <Reveal key={template.id} delay={index * 50}>
-              <Card className="group relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-0 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-indigo-400/80">
+              <Card className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-[#0F172A]/90 text-slate-100 p-0 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:border-indigo-500/50">
                 <Link
                   href={`/project/${template.id}`}
                   className="absolute inset-0 z-0 focus-visible:ring-[3px] focus-visible:ring-indigo-500/50 focus-visible:outline-none"
@@ -107,7 +111,7 @@ export function TemplatesSection() {
                 {/* Banner Gradient */}
                 <div className={`relative flex h-32 items-center justify-center bg-gradient-to-br ${template.gradient}`}>
                   <template.icon className="size-10 text-white/90 transition-transform duration-300 group-hover:scale-110 drop-shadow-md" />
-                  <Badge className="absolute top-3 left-3 bg-black/30 text-white border-0 backdrop-blur-md text-[10px] font-semibold">
+                  <Badge className="absolute top-3 left-3 bg-black/40 text-white border-0 backdrop-blur-md text-[10px] font-semibold">
                     {template.category}
                   </Badge>
                 </div>
@@ -115,21 +119,21 @@ export function TemplatesSection() {
                 {/* Card Content */}
                 <div className="p-5">
                   <div className="flex items-center justify-between gap-2">
-                    <h3 className="font-bold text-base text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors">
+                    <h3 className="font-bold text-base text-white group-hover:text-indigo-400 transition-colors">
                       {template.title}
                     </h3>
-                    <ExternalLink className="size-4 text-slate-400 group-hover:text-indigo-600 transition-colors" />
+                    <ExternalLink className="size-4 text-slate-400 group-hover:text-indigo-400 transition-colors" />
                   </div>
 
-                  <p className="mt-2 text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">
+                  <p className="mt-2 text-xs text-slate-400 line-clamp-2 leading-relaxed">
                     {template.description}
                   </p>
 
-                  <div className="mt-4 flex flex-wrap gap-1.5 pt-3 border-t border-slate-100 dark:border-slate-800">
+                  <div className="mt-4 flex flex-wrap gap-1.5 pt-3 border-t border-slate-800/80">
                     {template.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] font-medium text-slate-600 dark:text-slate-400"
+                        className="rounded-lg bg-slate-950 border border-slate-800/80 px-2 py-0.5 text-[10px] font-medium text-slate-400"
                       >
                         {tag}
                       </span>
