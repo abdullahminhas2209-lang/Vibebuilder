@@ -30,10 +30,12 @@ export function Navbar() {
   const [authOpen, setAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState<"signin" | "signup">("signin");
   const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const { profile, signOut } = useAuth();
 
   useEffect(() => {
+    setMounted(true);
     function handleScroll() {
       if (window.scrollY > 20) {
         setScrolled(true);
@@ -105,7 +107,7 @@ export function Navbar() {
 
           {/* RIGHT SIDE: Auth & Primary CTA */}
           <div className="hidden items-center gap-3 md:flex">
-            {profile ? (
+            {mounted && profile ? (
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
@@ -236,7 +238,7 @@ export function Navbar() {
               </nav>
 
               <div className="mt-auto flex flex-col gap-2.5 pt-6 border-t border-border">
-                {profile ? (
+                {mounted && profile ? (
                   <>
                     <div className="flex items-center gap-3 px-1 py-2">
                       <span className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-xs font-bold text-white shadow-sm">
