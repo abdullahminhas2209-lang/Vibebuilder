@@ -32,16 +32,16 @@ const footerLinks = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-950 py-12 lg:py-16">
+    <footer className="border-t border-slate-800/80 bg-[#0B0F19] text-slate-100 py-12 lg:py-16">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
           {/* Brand Col */}
           <div className="lg:col-span-2">
             <Logo />
-            <p className="mt-3 max-w-sm text-xs text-slate-500 leading-relaxed">
+            <p className="mt-3 max-w-sm text-xs text-slate-400 leading-relaxed">
               Klyro turns natural language descriptions into interactive, production-ready web applications. From prompt to product in seconds.
             </p>
-            <p className="mt-4 text-[11px] text-slate-400 font-mono">
+            <p className="mt-4 text-[11px] text-slate-500 font-mono">
               Powered by Google Gemini &amp; Supabase
             </p>
           </div>
@@ -49,7 +49,7 @@ export function Footer() {
           {/* Nav Links */}
           {footerLinks.map((section) => (
             <div key={section.title}>
-              <p className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider">
+              <p className="text-xs font-semibold text-white uppercase tracking-wider">
                 {section.title}
               </p>
               <ul className="mt-3 space-y-2">
@@ -57,7 +57,7 @@ export function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-xs text-slate-500 hover:text-indigo-600 transition-colors"
+                      className="text-xs text-slate-400 hover:text-indigo-400 transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -68,16 +68,16 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-100 dark:border-slate-800/80 pt-6 text-xs text-slate-400">
+        <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-800/80 pt-6 text-xs text-slate-500">
           <p>© {new Date().getFullYear()} Klyro. All rights reserved.</p>
           <div className="flex items-center gap-6">
-            <Link href="#" className="hover:text-slate-600">
+            <Link href="#" className="hover:text-slate-400">
               Privacy Policy
             </Link>
-            <Link href="#" className="hover:text-slate-600">
+            <Link href="#" className="hover:text-slate-400">
               Terms of Service
             </Link>
-            <Link href="#" className="hover:text-slate-600">
+            <Link href="#" className="hover:text-slate-400">
               Documentation
             </Link>
           </div>
