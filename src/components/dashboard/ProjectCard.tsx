@@ -39,9 +39,9 @@ import { cn } from "@/lib/utils";
 
 const statusConfig: Record<ProjectStatus, { label: string; className: string }> =
   {
-    draft: { label: "Draft", className: "bg-secondary text-secondary-foreground" },
-    active: { label: "Active", className: "bg-primary/10 text-primary" },
-    updated: { label: "Updated", className: "bg-card text-foreground ring-1 ring-border" },
+    draft: { label: "Draft", className: "bg-slate-800 text-slate-300 border border-slate-700/50" },
+    active: { label: "Active", className: "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" },
+    updated: { label: "Updated", className: "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30" },
   };
 
 const thumbnailConfig: Record<string, { gradient: string; icon: typeof Sparkles }> =
@@ -98,11 +98,11 @@ export function ProjectCard({
 
   return (
     <>
-      <Card className="group relative gap-0 overflow-hidden rounded-xl py-0 transition-[box-shadow,transform] duration-300 ease-out hover:-translate-y-0.5 hover:shadow-md focus-within:shadow-md">
+      <Card className="group relative gap-0 overflow-hidden rounded-2xl border border-slate-800 bg-[#0F172A]/90 text-slate-100 py-0 shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:border-indigo-500/50 hover:shadow-xl">
         {/* Card-level link overlay */}
         <Link
           href={`/project/${project.id}`}
-          className="absolute inset-0 z-0 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+          className="absolute inset-0 z-0 focus-visible:ring-[3px] focus-visible:ring-indigo-500/50 focus-visible:outline-none"
           aria-label={`Open project: ${project.name}`}
         />
 
@@ -113,12 +113,12 @@ export function ProjectCard({
           )}
         >
           <ThumbnailIcon
-            className="size-9 text-white/90 transition-transform duration-300 ease-out group-hover:scale-110"
+            className="size-9 text-white/90 transition-transform duration-300 ease-out group-hover:scale-110 drop-shadow"
             aria-hidden="true"
           />
           <Badge
             className={cn(
-              "absolute top-3 left-3 border-none shadow-sm",
+              "absolute top-3 left-3 border-0 shadow-sm text-[10px] font-semibold",
               status.className,
             )}
           >
@@ -128,46 +128,48 @@ export function ProjectCard({
 
         <div className="p-4">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="truncate text-sm font-semibold">{project.name}</h3>
+            <h3 className="truncate text-sm font-bold text-white group-hover:text-indigo-400 transition-colors">
+              {project.name}
+            </h3>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="relative z-10 -mt-1.5 -mr-1.5 size-7 text-muted-foreground hover:text-foreground"
+                  className="relative z-10 -mt-1.5 -mr-1.5 size-7 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg"
                   aria-label={`Project options for ${project.name}`}
                 >
                   <MoreVertical className="size-4" aria-hidden="true" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-44">
-                <DropdownMenuItem asChild>
+              <DropdownMenuContent align="end" className="w-44 bg-[#0F172A] border-slate-800 text-slate-100 shadow-2xl rounded-xl p-1">
+                <DropdownMenuItem asChild className="rounded-lg text-xs cursor-pointer focus:bg-slate-800 focus:text-white">
                   <Link href={`/project/${project.id}`}>
-                    <ExternalLink className="size-4 mr-2" aria-hidden="true" />
+                    <ExternalLink className="size-3.5 mr-2 text-indigo-400" aria-hidden="true" />
                     Open project
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleDuplicate}>
-                  <Copy className="size-4 mr-2" aria-hidden="true" />
+                <DropdownMenuItem onClick={handleDuplicate} className="rounded-lg text-xs cursor-pointer focus:bg-slate-800 focus:text-white">
+                  <Copy className="size-3.5 mr-2 text-slate-400" aria-hidden="true" />
                   Duplicate
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator className="bg-slate-800" />
                 <DropdownMenuItem
-                  className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+                  className="rounded-lg text-xs text-rose-400 focus:bg-rose-950/40 focus:text-rose-300 cursor-pointer"
                   onClick={() => setDeleteOpen(true)}
                 >
-                  <Trash2 className="size-4 mr-2" aria-hidden="true" />
+                  <Trash2 className="size-3.5 mr-2" aria-hidden="true" />
                   Delete
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
 
-          <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+          <p className="mt-1 line-clamp-2 text-xs text-slate-400 leading-relaxed">
             {project.description}
           </p>
 
-          <div className="mt-4 flex items-center justify-between border-t border-border pt-3 text-xs text-muted-foreground">
+          <div className="mt-4 flex items-center justify-between border-t border-slate-800/80 pt-3 text-[11px] text-slate-400 font-medium">
             <span className="truncate">{project.type}</span>
             <span className="shrink-0">Updated {project.lastUpdated}</span>
           </div>
@@ -176,24 +178,30 @@ export function ProjectCard({
 
       {/* Delete Confirmation Modal */}
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md bg-[#0B0F19] border-slate-800 text-slate-100">
           <DialogHeader>
-            <DialogTitle className="text-destructive">Delete Project</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete <strong className="text-foreground">{project.name}</strong>?
+            <DialogTitle className="text-rose-400 font-bold">Delete Project</DialogTitle>
+            <DialogDescription className="text-slate-400 text-xs">
+              Are you sure you want to delete <strong className="text-white">{project.name}</strong>? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="mt-4">
-            <Button type="button" variant="outline" onClick={() => setDeleteOpen(false)}>
+          <DialogFooter className="mt-4 gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDeleteOpen(false)}
+              className="rounded-xl border-slate-700 bg-slate-800/80 text-white text-xs hover:bg-slate-700"
+            >
               Cancel
             </Button>
             <Button
               type="button"
               variant="destructive"
-              onClick={handleDeleteConfirm}
               disabled={deleting}
+              onClick={handleDeleteConfirm}
+              className="rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold"
             >
-              {deleting ? "Deleting..." : "Delete"}
+              {deleting ? "Deleting..." : "Delete Project"}
             </Button>
           </DialogFooter>
         </DialogContent>
