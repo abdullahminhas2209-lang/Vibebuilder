@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   ChevronsUpDown,
   FolderKanban,
   LayoutDashboard,
   LogOut,
   Settings,
+  Sparkles,
   UserRound,
 } from "lucide-react";
 
@@ -22,17 +23,29 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { mockUser } from "@/lib/mock-data";
+import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 
 const navigation = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, soon: false },
   { label: "Projects", href: "/dashboard#projects", icon: FolderKanban, soon: false },
+  { label: "Templates", href: "/dashboard", icon: Sparkles, soon: false },
   { label: "Settings", href: "#", icon: Settings, soon: true },
 ] as const;
 
 export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { profile, signOut } = useAuth();
+
+  const userName = profile?.fullName || "Guest User";
+  const userEmail = profile?.email || "guest@vibebuilder.app";
+  const userInitials = profile?.initials || "GU";
+
+  async function handleSignOut() {
+    await signOut();
+    router.push("/");
+  }
 
   return (
     <div className="flex h-full flex-col">
@@ -73,7 +86,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
               className={cn(
                 "flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium transition-colors",
                 isActive
-                  ? "bg-accent text-primary"
+                  ? "bg-accent text-primary font-semibold"
                   : "text-muted-foreground hover:bg-accent hover:text-accent-foreground hover:text-foreground",
               )}
             >
@@ -93,14 +106,14 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
               aria-label="Open account menu"
             >
               <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
-                {mockUser.initials}
+                {userInitials}
               </span>
               <span className="flex min-w-0 flex-col items-start">
-                <span className="truncate text-sm font-medium text-foreground">
-                  {mockUser.name}
+                <span className="truncate text-sm font-medium text-foreground max-w-[130px]">
+                  {userName}
                 </span>
-                <span className="truncate text-xs text-muted-foreground">
-                  {mockUser.email}
+                <span className="truncate text-xs text-muted-foreground max-w-[130px]">
+                  {userEmail}
                 </span>
               </span>
               <ChevronsUpDown
@@ -111,19 +124,25 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent side="top" align="start" className="w-56">
             <DropdownMenuLabel>
-              <p className="text-sm font-medium">{mockUser.name}</p>
-              <p className="text-xs font-normal text-muted-foreground">
-                {mockUser.email}
+              <p className="text-sm font-medium truncate">{userName}</p>
+              <p className="text-xs font-normal text-muted-foreground truncate">
+                {userEmail}
               </p>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <UserRound aria-hidden="true" />
-              Account
+            <DropdownMenuItem asChild>
+              <Link href="/dashboard">
+                <LayoutDashboard className="size-4 mr-2" />
+                Dashboard
+              </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem disabled>
-              <LogOut aria-hidden="true" />
-              Sign out
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={handleSignOut}
+              className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+            >
+              <LogOut className="size-4 mr-2" aria-hidden="true" />
+              Sign Out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
