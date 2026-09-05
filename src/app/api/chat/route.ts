@@ -56,10 +56,12 @@ Rules:
 - Make the UI look polished and production-ready`;
 
 const SUPPORTED_MODELS = [
+  "gemini-3.6-flash",
+  "gemini-3.7-flash",
   "gemini-3.5-flash",
-  "gemini-2.5-flash",
-  "gemini-1.5-flash",
+  "gemini-3.1-flash-lite",
   "gemini-flash-latest",
+  "gemini-pro-latest",
 ];
 
 export async function POST(req: NextRequest) {
@@ -85,13 +87,22 @@ export async function POST(req: NextRequest) {
 
     const genAI = new GoogleGenerativeAI(apiKey);
 
-    // Build conversation history (all but last message)
-    const history = messages.slice(0, -1).map((m) => ({
-      role: m.role === "assistant" ? "model" : ("user" as const),
-      parts: [{ text: m.content }],
-    }));
+    // Sanitize and filter non-empty messages
+    const validMessages = messages.filter((m) => m && typeof m.content === "string" && m.content.trim().length > 0);
+    if (validMessages.length === 0) {
+      return NextResponse.json(
+        { error: "No valid message content provided" },
+        { status: 400 }
+      );
+    }
 
-    const lastMessage = messages[messages.length - 1];
+    const lastMessage = validMessages[validMessages.length - 1];
+
+    // Build conversation history (all but last message)
+    const history = validMessages.slice(0, -1).map((m) => ({
+      role: m.role === "assistant" ? ("model" as const) : ("user" as const),
+      parts: [{ text: m.content.trim() }],
+    }));
 
     // Try primary and fallback models in case of temporary rate limits or deprecations
     let streamResult = null;
@@ -104,12 +115,17 @@ export async function POST(req: NextRequest) {
           systemInstruction: SYSTEM_PROMPT,
         });
 
-        const chat = model.startChat({ history });
-        streamResult = await chat.sendMessageStream(lastMessage.content);
+        if (history.length > 0) {
+          const chat = model.startChat({ history });
+          streamResult = await chat.sendMessageStream(lastMessage.content);
+        } else {
+          streamResult = await model.generateContentStream(lastMessage.content);
+        }
+
         if (streamResult) break;
       } catch (err) {
         lastError = err;
-        console.warn(`Model ${modelName} failed, trying next fallback...`);
+        console.warn(`Model ${modelName} failed, trying next fallback:`, err);
       }
     }
 

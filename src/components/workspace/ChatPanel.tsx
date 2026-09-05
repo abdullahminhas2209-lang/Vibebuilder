@@ -108,11 +108,18 @@ export function ChatPanel({
       });
 
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        let errMsg = `API error: ${response.status}`;
+        try {
+          const errData = await response.json();
+          if (errData?.error) errMsg = errData.error;
+        } catch {
+          // fallback to status code
+        }
+        throw new Error(errMsg);
       }
 
       const reader = response.body?.getReader();
-      if (!reader) throw new Error("No response body");
+      if (!reader) throw new Error("No response body received from AI server.");
 
       const decoder = new TextDecoder();
       let fullText = "";
@@ -160,13 +167,13 @@ export function ChatPanel({
       if ((error as Error).name === "AbortError") return;
 
       console.error("Chat error:", error);
+      const errMessage = (error as Error)?.message || "Sorry, I encountered an issue generating the code. Please try again.";
       setMessages((prev) =>
         prev.map((m) =>
           m.id === assistantId
             ? {
                 ...m,
-                content:
-                  "Sorry, I encountered an issue generating the code. Please try again.",
+                content: `Sorry, I encountered an issue generating the code: ${errMessage}`,
                 pending: false,
               }
             : m
