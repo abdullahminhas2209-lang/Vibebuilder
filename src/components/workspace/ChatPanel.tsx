@@ -183,20 +183,20 @@ export function ChatPanel({
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <div className="flex h-11 shrink-0 items-center justify-between border-b border-border px-4">
-        <p className="text-sm font-medium">Chat</p>
-        <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+    <div className="flex h-full min-h-0 flex-col bg-[#0B0F19] text-slate-200">
+      <div className="flex h-12 shrink-0 items-center justify-between border-b border-slate-800 px-4 bg-[#0B0F19]">
+        <p className="text-xs font-bold uppercase tracking-wider text-slate-300">Prompt & Chat</p>
+        <p className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
           <span
             aria-hidden="true"
             className={cn(
-              "size-1.5 rounded-full",
+              "size-2 rounded-full",
               responding
-                ? "animate-pulse bg-primary"
-                : "bg-emerald-500",
+                ? "animate-pulse bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.8)]"
+                : "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]",
             )}
           />
-          {responding ? "Generating..." : "Gemini ready"}
+          {responding ? "Generating..." : "Gemini 3.5 Flash"}
         </p>
       </div>
 
@@ -206,23 +206,23 @@ export function ChatPanel({
       >
         {messages.length === 0 && !responding ? (
           <div className="flex h-full flex-col items-center justify-center px-2 py-4 text-center">
-            <div className="flex size-10 items-center justify-center rounded-full bg-accent text-primary mb-3">
+            <div className="flex size-11 items-center justify-center rounded-2xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 shadow-inner mb-3">
               <Sparkles className="size-5" aria-hidden="true" />
             </div>
-            <h2 className="text-sm font-semibold">
+            <h2 className="text-sm font-bold text-white">
               What would you like to build?
             </h2>
-            <p className="mt-1 max-w-xs text-xs text-muted-foreground mb-4">
+            <p className="mt-1.5 max-w-xs text-xs text-slate-400 mb-5 leading-relaxed">
               Describe any website, landing page, or web app and Klyro will generate all components and render a live preview.
             </p>
             <div className="w-full space-y-2 text-left">
-              <p className="text-[11px] font-medium text-muted-foreground px-1">Suggested Prompts:</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 px-1">Suggested Prompts:</p>
               {SUGGESTED_PROMPTS.map((prompt) => (
                 <button
                   key={prompt}
                   type="button"
                   onClick={() => executePrompt(prompt)}
-                  className="w-full rounded-lg border border-border bg-card p-2.5 text-left text-xs text-muted-foreground transition-all hover:border-primary/40 hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+                  className="w-full rounded-xl border border-slate-800/90 bg-slate-900/80 p-2.5 text-left text-xs text-slate-300 transition-all hover:border-indigo-500/50 hover:bg-slate-800/80 hover:text-white focus-visible:ring-2 focus-visible:ring-indigo-500/50 focus-visible:outline-none"
                 >
                   {prompt}
                 </button>
@@ -235,13 +235,13 @@ export function ChatPanel({
               <ChatMessage key={message.id} message={message} />
             ))}
             {responding && (
-              <div className="flex items-center gap-2 rounded-lg bg-muted px-3 py-2 text-xs text-muted-foreground">
+              <div className="flex items-center gap-2.5 rounded-xl border border-slate-800 bg-slate-900/90 px-3.5 py-2.5 text-xs text-slate-300">
                 <span className="flex gap-1" aria-hidden="true">
-                  <span className="size-1.5 animate-bounce rounded-full bg-primary/70 [animation-delay:0ms]" />
-                  <span className="size-1.5 animate-bounce rounded-full bg-primary/70 [animation-delay:150ms]" />
-                  <span className="size-1.5 animate-bounce rounded-full bg-primary/70 [animation-delay:300ms]" />
+                  <span className="size-1.5 animate-bounce rounded-full bg-indigo-400 [animation-delay:0ms]" />
+                  <span className="size-1.5 animate-bounce rounded-full bg-indigo-400 [animation-delay:150ms]" />
+                  <span className="size-1.5 animate-bounce rounded-full bg-indigo-400 [animation-delay:300ms]" />
                 </span>
-                <span>{statusText ?? "Thinking..."}</span>
+                <span className="font-medium">{statusText ?? "Thinking..."}</span>
               </div>
             )}
           </>
@@ -250,13 +250,13 @@ export function ChatPanel({
       </div>
 
       <form
-        className="shrink-0 border-t border-border p-3"
+        className="shrink-0 border-t border-slate-800 bg-[#0B0F19] p-3"
         onSubmit={(event) => {
           event.preventDefault();
           handleSubmit();
         }}
       >
-        <div className="rounded-lg border border-border bg-card transition-colors focus-within:border-ring/50">
+        <div className="rounded-2xl border border-slate-700/80 bg-slate-950 p-2 shadow-inner transition-all duration-200 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20">
           <label htmlFor="chat-input" className="sr-only">
             Describe what you want to build
           </label>
@@ -270,11 +270,11 @@ export function ChatPanel({
                 handleSubmit();
               }
             }}
-            placeholder="Ask a question or request changes..."
+            placeholder="Ask a question or describe what to build..."
             rows={2}
-            className="max-h-32 resize-none border-0 shadow-none focus-visible:ring-0"
+            className="min-h-[44px] max-h-32 resize-none border-0 bg-transparent text-xs sm:text-sm font-medium text-white placeholder:text-slate-500 shadow-none focus-visible:ring-0 caret-white"
           />
-          <div className="flex items-center justify-between px-2 pb-2">
+          <div className="flex items-center justify-between px-1.5 pt-1">
             <Button
               type="button"
               variant="ghost"
@@ -282,6 +282,7 @@ export function ChatPanel({
               disabled
               aria-label="Attachments"
               title="Attachments"
+              className="text-slate-500 hover:text-slate-300 hover:bg-slate-900 rounded-lg"
             >
               <Paperclip className="size-4" aria-hidden="true" />
             </Button>
@@ -290,13 +291,14 @@ export function ChatPanel({
               size="icon-sm"
               disabled={!input.trim() || responding}
               aria-label="Send message"
+              className="rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white shadow-md shadow-indigo-600/30 hover:from-indigo-500 hover:to-blue-500 hover:shadow-indigo-600/50 disabled:opacity-40 transition-all cursor-pointer"
             >
               <SendHorizontal className="size-4" aria-hidden="true" />
             </Button>
           </div>
         </div>
-        <p className="mt-2 text-[11px] text-muted-foreground">
-          Powered by Gemini Flash · Edits update the live preview in real time.
+        <p className="mt-2 text-center text-[11px] text-slate-500 font-medium">
+          Powered by Gemini 3.5 Flash · Realtime Live Preview
         </p>
       </form>
     </div>

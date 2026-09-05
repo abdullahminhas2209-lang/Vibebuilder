@@ -11,7 +11,7 @@ export function ChatMessage({ message }: { message: ChatMessageType }) {
       {isUser ? (
         <span
           aria-hidden="true"
-          className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary text-[10px] font-semibold text-secondary-foreground"
+          className="flex size-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-[10px] font-bold text-white shadow-xs"
         >
           {mockUser.initials}
         </span>
@@ -27,17 +27,17 @@ export function ChatMessage({ message }: { message: ChatMessageType }) {
       >
         <div
           className={cn(
-            "rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed",
+            "rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm leading-relaxed",
             isUser
-              ? "rounded-br-md bg-primary text-primary-foreground"
-              : "rounded-bl-md bg-muted text-foreground",
+              ? "rounded-br-sm bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-md font-normal"
+              : "rounded-bl-sm bg-slate-900/90 border border-slate-800 text-slate-200 shadow-xs",
           )}
         >
           {message.content}
         </div>
         <p
           className={cn(
-            "px-1 text-[11px] text-muted-foreground",
+            "px-1 text-[11px] text-slate-500 font-medium",
             isUser && "text-right",
           )}
         >

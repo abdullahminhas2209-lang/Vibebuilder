@@ -27,8 +27,7 @@ import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 
 const navigation = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, soon: false },
-  { label: "Projects", href: "/dashboard#projects", icon: FolderKanban, soon: false },
+  { label: "Projects", href: "/dashboard", icon: FolderKanban, soon: false },
   { label: "Templates", href: "/#templates", icon: Sparkles, soon: false },
   { label: "Settings", href: "#", icon: Settings, soon: true },
 ] as const;
@@ -76,8 +75,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
             );
           }
 
-          const isProjectsAnchor = item.href.includes("#");
-          const isActive = !isProjectsAnchor && pathname === "/dashboard";
+          const isActive = pathname === item.href || (item.href === "/dashboard" && pathname.startsWith("/dashboard"));
 
           return (
             <Link
@@ -135,8 +133,8 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
             <DropdownMenuSeparator className="bg-slate-800" />
             <DropdownMenuItem asChild className="rounded-lg text-xs cursor-pointer focus:bg-slate-800 focus:text-white">
               <Link href="/dashboard">
-                <LayoutDashboard className="size-3.5 mr-2 text-indigo-400" />
-                Dashboard
+                <FolderKanban className="size-3.5 mr-2 text-indigo-400" />
+                My Projects
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-slate-800" />

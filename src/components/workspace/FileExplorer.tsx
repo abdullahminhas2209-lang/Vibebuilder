@@ -49,30 +49,30 @@ export function FileExplorer({ nodes, selectedPath, onSelect }: FileExplorerProp
               onClick={() => toggleFolder(node.path)}
               aria-expanded={isExpanded}
               className={cn(
-                "flex w-full items-center gap-1.5 rounded-md py-1.5 text-sm text-foreground transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none",
+                "flex w-full items-center gap-1.5 rounded-lg py-1.5 text-xs text-slate-300 transition-colors hover:bg-slate-800/60 hover:text-white focus-visible:ring-2 focus-visible:ring-indigo-500/50 focus-visible:outline-none",
                 depth === 0 ? "px-2" : "",
               )}
               style={depth > 0 ? { paddingLeft: `${depth * 14 + 8}px` } : undefined}
             >
               <ChevronRight
                 className={cn(
-                  "size-3.5 shrink-0 text-muted-foreground transition-transform duration-200 ease-out",
+                  "size-3.5 shrink-0 text-slate-500 transition-transform duration-200 ease-out",
                   isExpanded && "rotate-90",
                 )}
                 aria-hidden="true"
               />
               {isExpanded ? (
-                <FolderOpen className="size-4 shrink-0 text-primary" aria-hidden="true" />
+                <FolderOpen className="size-4 shrink-0 text-indigo-400" aria-hidden="true" />
               ) : (
-                <Folder className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                <Folder className="size-4 shrink-0 text-slate-400" aria-hidden="true" />
               )}
-              <span className="truncate">{node.name}</span>
+              <span className="truncate font-medium">{node.name}</span>
             </button>
             {isExpanded && (
               <ul>
                 {isEmpty ? (
                   <li
-                    className="py-1 text-xs text-muted-foreground/70 italic"
+                    className="py-1 text-[11px] text-slate-600 italic"
                     style={{ paddingLeft: `${(depth + 1) * 14 + 30}px` }}
                   >
                     Empty
@@ -95,15 +95,15 @@ export function FileExplorer({ nodes, selectedPath, onSelect }: FileExplorerProp
             onClick={() => onSelect(node.path)}
             aria-current={isSelected ? "true" : undefined}
             className={cn(
-              "flex w-full items-center gap-1.5 rounded-md py-1.5 text-sm transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none",
+              "flex w-full items-center gap-1.5 rounded-lg py-1.5 text-xs transition-all focus-visible:ring-2 focus-visible:ring-indigo-500/50 focus-visible:outline-none",
               isSelected
-                ? "bg-accent font-medium text-primary"
-                : "text-muted-foreground hover:bg-accent hover:text-accent-foreground hover:text-foreground",
+                ? "bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 font-semibold shadow-xs"
+                : "text-slate-400 hover:bg-slate-800/60 hover:text-white border border-transparent",
             )}
             style={{ paddingLeft: `${depth * 14 + 30}px`, paddingRight: "8px" }}
           >
             <FileCode2
-              className={cn("size-4 shrink-0", isSelected ? "text-primary" : "text-muted-foreground")}
+              className={cn("size-3.5 shrink-0", isSelected ? "text-indigo-400" : "text-slate-500")}
               aria-hidden="true"
             />
             <span className="truncate">{node.name}</span>

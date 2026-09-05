@@ -47,14 +47,14 @@ function FilesPanel({
   onSelect: (path: string) => void;
 }) {
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <div className="flex h-11 shrink-0 items-center border-b border-border px-4">
-        <p className="text-sm font-medium">Files</p>
+    <div className="flex h-full min-h-0 flex-col bg-[#0B0F19] text-slate-200">
+      <div className="flex h-12 shrink-0 items-center border-b border-slate-800 px-4 bg-[#0B0F19]">
+        <p className="text-xs font-bold uppercase tracking-wider text-slate-300">Files</p>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-3 scrollbar-panel">
         {fileTree.length === 0 ? (
-          <p className="px-2 py-6 text-center text-xs text-muted-foreground">
-            No files yet. Describe what you want to build and generated files
+          <p className="px-2 py-6 text-center text-xs text-slate-500 leading-relaxed">
+            No files generated yet. Describe what you want to build in chat and generated components
             will appear here.
           </p>
         ) : (
@@ -80,7 +80,7 @@ function MobileSwitcher({
     <div
       role="group"
       aria-label="Workspace panels"
-      className="flex items-center gap-0.5 rounded-lg bg-muted p-0.5 md:hidden"
+      className="flex items-center gap-0.5 rounded-xl border border-slate-800 bg-slate-900/90 p-0.5 md:hidden"
     >
       {MOBILE_VIEWS.map((view) => (
         <button
@@ -89,10 +89,10 @@ function MobileSwitcher({
           onClick={() => onChange(view)}
           aria-pressed={value === view}
           className={cn(
-            "rounded-md px-2 py-1 text-xs font-medium capitalize transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none",
+            "rounded-lg px-2 py-1 text-xs font-semibold capitalize transition-all focus-visible:ring-2 focus-visible:ring-indigo-500/50 focus-visible:outline-none",
             value === view
-              ? "bg-card text-foreground shadow-sm"
-              : "text-muted-foreground hover:text-foreground",
+              ? "bg-slate-800 text-white shadow-xs"
+              : "text-slate-400 hover:text-white",
           )}
         >
           {view}
@@ -141,6 +141,42 @@ export function WorkspaceShell({
   const selectedFile = selectedFilePath ? fileMap[selectedFilePath] : undefined;
   const filesList = Object.values(fileMap);
 
+  // Hydrate saved files and preview from DB / localStorage if available
+  useEffect(() => {
+    async function hydrateProjectData() {
+      try {
+        const { getProject: fetchProject, getProjectFiles: fetchFiles } = await import("@/lib/supabase/db");
+        const { buildFileTree: makeTree } = await import("@/lib/parse-ai-response");
+        
+        const [savedProj, savedFiles] = await Promise.all([
+          fetchProject(initialProject.id),
+          fetchFiles(initialProject.id),
+        ]);
+
+        if (savedProj) {
+          setProject((prev) => ({ ...prev, ...savedProj }));
+        }
+
+        if (savedFiles && savedFiles.length > 0) {
+          const newMap: Record<string, ProjectFile> = {};
+          for (const f of savedFiles) {
+            newMap[f.path] = f;
+          }
+          setFileMap(newMap);
+          const tree = makeTree(savedFiles);
+          setFileTree(tree);
+          const first = firstFilePath(tree);
+          if (first) setSelectedFilePath(first);
+          setGeneratedHtml(generateLivePreviewHtml(savedFiles));
+        }
+      } catch (err) {
+        console.warn("Project hydration error:", err);
+      }
+    }
+
+    hydrateProjectData();
+  }, [initialProject.id]);
+
   // Clean URL prompt after mounting
   useEffect(() => {
     if (urlPrompt && typeof window !== "undefined") {
@@ -161,7 +197,7 @@ export function WorkspaceShell({
   }
 
   /** Called by ChatPanel when Gemini returns generated files. */
-  function handleFilesGenerated(files: ProjectFile[], tree: FileNode[]) {
+  async function handleFilesGenerated(files: ProjectFile[], tree: FileNode[]) {
     // Merge new files into existing map
     const newFileMap: Record<string, ProjectFile> = { ...fileMap };
     for (const file of files) {
@@ -177,8 +213,32 @@ export function WorkspaceShell({
 
     const allFilesList = Object.values(newFileMap);
 
-    // Save to DB / local store
-    saveProjectFiles(project.id, allFilesList);
+    // Derive a clean name from prompt if project had generic name
+    let currentName = project.name;
+    if (currentName === "Custom Project" || currentName === "Demo Project" || currentName === "My Project") {
+      if (urlPrompt) {
+        const words = urlPrompt
+          .replace(/^(build|create|design|make)\s+(a|an|the)?\s*/i, "")
+          .split(/\s+/)
+          .slice(0, 4)
+          .join(" ");
+        currentName = words.charAt(0).toUpperCase() + words.slice(1);
+      }
+    }
+
+    const updatedProject: Project = {
+      ...project,
+      name: currentName,
+      description: urlPrompt || project.description || "Generated with Klyro AI",
+      generated: true,
+      lastUpdated: "Just now",
+    };
+    setProject(updatedProject);
+
+    // Save project metadata and files to DB / local store
+    const { createProject: saveProj } = await import("@/lib/supabase/db");
+    await saveProj(updatedProject);
+    await saveProjectFiles(project.id, allFilesList);
 
     // Build real live interactive React preview HTML
     if (files.length > 0) {
@@ -191,7 +251,7 @@ export function WorkspaceShell({
   }
 
   return (
-    <div className="flex h-dvh min-h-0 flex-col bg-background">
+    <div className="flex h-dvh min-h-0 flex-col bg-[#0B0F19] text-slate-100 selection:bg-indigo-500 selection:text-white">
       <WorkspaceHeader
         project={project}
         filesList={filesList}
@@ -207,7 +267,7 @@ export function WorkspaceShell({
         {/* Chat panel — full width on mobile, left column from md up. */}
         <aside
           className={cn(
-            "w-full shrink-0 border-r border-border bg-card md:block md:w-[320px] lg:w-[350px]",
+            "w-full shrink-0 border-r border-slate-800 bg-[#0B0F19] md:block md:w-[320px] lg:w-[350px]",
             mobileView === "chat" ? "block" : "hidden",
           )}
         >
@@ -222,7 +282,7 @@ export function WorkspaceShell({
         {/* Center canvas — Preview/Code tabs. */}
         <main
           className={cn(
-            "min-w-0 flex-1 md:block",
+            "min-w-0 flex-1 md:block bg-[#070A11]",
             mobileView === "preview" || mobileView === "code"
               ? "block"
               : "hidden",
@@ -244,7 +304,7 @@ export function WorkspaceShell({
         {/* File explorer — right column on lg. */}
         <aside
           className={cn(
-            "w-full shrink-0 border-l border-border bg-card lg:w-[260px]",
+            "w-full shrink-0 border-l border-slate-800 bg-[#0B0F19] lg:w-[260px]",
             mobileView === "files" ? "block" : "hidden lg:block",
           )}
         >
@@ -258,7 +318,7 @@ export function WorkspaceShell({
 
       {/* Tablet file explorer overlay (md–lg). */}
       <Sheet open={filesOpen} onOpenChange={setFilesOpen}>
-        <SheetContent side="right" className="w-80 gap-0 p-0">
+        <SheetContent side="right" className="w-80 gap-0 p-0 bg-[#0B0F19] border-slate-800 text-slate-100">
           <SheetHeader className="sr-only">
             <SheetTitle>Project files</SheetTitle>
           </SheetHeader>
