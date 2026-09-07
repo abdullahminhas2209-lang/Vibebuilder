@@ -124,12 +124,16 @@ export async function createProject(project: Partial<Project> & { name: string }
 
   if (isSupabaseConfigured && supabase) {
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const userId = session?.user?.id || null;
+
       await supabase.from("projects").insert({
         id: newProject.id,
         name: newProject.name,
         description: newProject.description,
         type: newProject.type,
         status: newProject.status,
+        user_id: userId,
         created_at: now,
         updated_at: now,
       });
