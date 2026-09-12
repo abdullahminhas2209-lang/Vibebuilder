@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, LayoutDashboard, LogOut, Sparkles } from "lucide-react";
+import { ArrowRight, LayoutDashboard, LogOut, Zap } from "lucide-react";
 
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
@@ -169,8 +169,8 @@ export function Navbar() {
                   onClick={() => openAuth("signup")}
                   className="rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-blue-600 text-xs font-semibold text-white shadow-md shadow-indigo-500/20 hover:from-indigo-500 hover:to-blue-500 hover:shadow-indigo-500/30 gap-1.5 transition-all hover:scale-[1.02]"
                 >
-                  <Sparkles className="size-3.5" />
                   <span>Get Started Free</span>
+                  <ArrowRight className="size-3.5" />
                 </Button>
               </>
             )}

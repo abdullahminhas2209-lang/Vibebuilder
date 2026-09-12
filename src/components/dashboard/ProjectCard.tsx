@@ -7,9 +7,9 @@ import {
   Copy,
   Dumbbell,
   ExternalLink,
+  Layers,
   MoreVertical,
   ShoppingCart,
-  Sparkles,
   Trash2,
   UtensilsCrossed,
   UserRound,
@@ -44,7 +44,7 @@ const statusConfig: Record<ProjectStatus, { label: string; className: string }> 
     updated: { label: "Updated", className: "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30" },
   };
 
-const thumbnailConfig: Record<string, { gradient: string; icon: typeof Sparkles }> =
+const thumbnailConfig: Record<string, { gradient: string; icon: typeof Layers }> =
   {
     "restaurant-booking": { gradient: "from-amber-500 to-orange-600", icon: UtensilsCrossed },
     "saas-analytics": { gradient: "from-sky-500 to-indigo-600", icon: BarChart3 },
@@ -53,7 +53,7 @@ const thumbnailConfig: Record<string, { gradient: string; icon: typeof Sparkles 
     "fitness-landing": { gradient: "from-rose-500 to-red-600", icon: Dumbbell },
   };
 
-const fallbackThumbnail = { gradient: "from-indigo-500 to-violet-700", icon: Sparkles };
+const fallbackThumbnail = { gradient: "from-indigo-500 to-violet-700", icon: Layers };
 
 export function ProjectCard({
   project,

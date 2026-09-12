@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle, CheckCircle2, Eye, EyeOff, Loader2, Lock, Mail, Sparkles, User } from "lucide-react";
+import { AlertCircle, CheckCircle2, Eye, EyeOff, Loader2, Lock, Mail, ShieldCheck, User } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -121,7 +121,7 @@ export function AuthModal({
       <DialogContent className="sm:max-w-md p-6 sm:p-7 overflow-hidden bg-[#0B0F19] border-slate-800 text-slate-100 shadow-2xl rounded-3xl ring-1 ring-white/10">
         <DialogHeader className="text-center sm:text-center mb-2">
           <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 mb-2 shadow-inner">
-            <Sparkles className="size-6" />
+            <ShieldCheck className="size-6" />
           </div>
           <DialogTitle className="text-xl font-bold tracking-tight text-white">
             {tab === "signin" ? "Welcome back to Klyro" : "Create your Klyro account"}

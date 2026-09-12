@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Plus, Sparkles } from "lucide-react";
+import { FolderPlus, Loader2, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -79,7 +79,7 @@ export function DashboardHeader({ title, description, onProjectCreated }: Dashbo
           <form onSubmit={handleCreateSubmit}>
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 text-white font-bold text-lg">
-                <Sparkles className="size-5 text-indigo-400" />
+                <FolderPlus className="size-5 text-indigo-400" />
                 <span>Create New Project</span>
               </DialogTitle>
               <DialogDescription className="text-slate-400 text-xs">

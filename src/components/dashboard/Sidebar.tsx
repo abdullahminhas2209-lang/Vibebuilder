@@ -6,9 +6,9 @@ import {
   ChevronsUpDown,
   FolderKanban,
   LayoutDashboard,
+  LayoutTemplate,
   LogOut,
   Settings,
-  Sparkles,
   UserRound,
 } from "lucide-react";
 
@@ -28,7 +28,7 @@ import { cn } from "@/lib/utils";
 
 const navigation = [
   { label: "Projects", href: "/dashboard", icon: FolderKanban, soon: false },
-  { label: "Templates", href: "/#templates", icon: Sparkles, soon: false },
+  { label: "Templates", href: "/#templates", icon: LayoutTemplate, soon: false },
   { label: "Settings", href: "#", icon: Settings, soon: true },
 ] as const;
 

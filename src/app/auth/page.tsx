@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { AlertCircle, CheckCircle2, Eye, EyeOff, Loader2, Lock, Mail, Sparkles, User } from "lucide-react";
+import { AlertCircle, CheckCircle2, Eye, EyeOff, Loader2, Lock, Mail, ShieldCheck, User } from "lucide-react";
 
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
@@ -105,7 +105,7 @@ export default function AuthPage() {
         <Card className="p-6 sm:p-7 shadow-2xl border-slate-800 bg-[#0F172A] rounded-3xl text-slate-100 ring-1 ring-white/10">
           <div className="text-center mb-5">
             <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 mb-3 shadow-inner">
-              <Sparkles className="size-6" />
+              <ShieldCheck className="size-6" />
             </div>
             <h1 className="text-xl font-bold tracking-tight text-white">
               {tab === "signin" ? "Sign in to Klyro" : "Register a New Account"}

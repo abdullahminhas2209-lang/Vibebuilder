@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Rocket } from "lucide-react";
 
 import { Reveal } from "@/components/Reveal";
 import { Button } from "@/components/ui/button";
@@ -32,7 +32,7 @@ export function FinalCTA() {
       <div className="mx-auto w-full max-w-4xl px-4 text-center sm:px-6">
         <Reveal>
           <div className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200/80 bg-white/80 dark:border-indigo-900/50 dark:bg-slate-900/60 px-3.5 py-1 text-xs font-semibold text-indigo-700 dark:text-indigo-300 shadow-xs mb-4 backdrop-blur-md transition-transform duration-300 hover:scale-105">
-            <Sparkles className="size-3.5 text-indigo-600" />
+            <Rocket className="size-3.5 text-indigo-600" />
             <span>Ready to create?</span>
           </div>
 

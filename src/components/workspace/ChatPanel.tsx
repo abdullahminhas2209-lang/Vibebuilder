@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Paperclip, SendHorizontal, Sparkles } from "lucide-react";
+import { Bot, Paperclip, SendHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -214,7 +214,7 @@ export function ChatPanel({
         {messages.length === 0 && !responding ? (
           <div className="flex h-full flex-col items-center justify-center px-2 py-4 text-center">
             <div className="flex size-11 items-center justify-center rounded-2xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 shadow-inner mb-3">
-              <Sparkles className="size-5" aria-hidden="true" />
+              <Bot className="size-5" aria-hidden="true" />
             </div>
             <h2 className="text-sm font-bold text-white">
               What would you like to build?

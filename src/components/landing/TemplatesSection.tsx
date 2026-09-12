@@ -7,7 +7,6 @@ import {
   Dumbbell,
   ExternalLink,
   ShoppingCart,
-  Sparkles,
   UserRound,
   UtensilsCrossed,
 } from "lucide-react";

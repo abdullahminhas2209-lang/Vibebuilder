@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Code2, Eye, MessageSquare, Rocket, Sparkles } from "lucide-react";
+import { ArrowRight, Code2, Cpu, Eye, MessageSquare, Rocket } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import { cn } from "@/lib/utils";
 
@@ -16,7 +16,7 @@ const STEPS = [
   {
     step: "02",
     title: "Understand",
-    icon: Sparkles,
+    icon: Cpu,
     badge: "AI Reasoning",
     description: "Klyro analyzes your requirements, architecture, layouts, state, and component hierarchy.",
     color: "from-indigo-500/20 to-purple-500/20 text-purple-600 dark:text-purple-400",
