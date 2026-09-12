@@ -27,7 +27,7 @@ export const TypewriterText = memo(function TypewriterText({
   deletingSpeed = 35,
   pauseDuration = 2000,
   emptyPauseDuration = 280,
-  className = "bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-transparent",
+  className = "bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-transparent font-display",
   cursorClassName = "bg-indigo-500 shadow-[0_0_12px_rgba(99,102,241,0.85)]",
 }: TypewriterTextProps) {
   const [wordIndex, setWordIndex] = useState(0);
@@ -67,7 +67,7 @@ export const TypewriterText = memo(function TypewriterText({
   }, [displayText, isDeleting, wordIndex, words, typingSpeed, deletingSpeed, pauseDuration, emptyPauseDuration]);
 
   return (
-    <span className="inline-flex items-baseline whitespace-nowrap will-change-contents">
+    <span className="inline-flex items-baseline whitespace-nowrap will-change-contents font-display">
       <span className={className}>{displayText}</span>
       <span
         aria-hidden="true"
