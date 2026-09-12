@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
@@ -18,17 +18,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MockSite } from "@/components/workspace/MockSite";
+import { TypewriterText } from "@/components/landing/TypewriterText";
 import { previewConfigs } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
-
-const TYPEWRITER_WORDS = [
-  "product.",
-  "website.",
-  "web app.",
-  "landing page.",
-  "SaaS platform.",
-  "storefront.",
-];
 
 const QUICK_ACTIONS = [
   { label: "SaaS Analytics Dashboard", prompt: "Create a modern SaaS analytics dashboard with revenue charts, active user metrics, and team management settings." },
@@ -45,39 +37,6 @@ export function Hero() {
   const [viewport, setViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [activeTab, setActiveTab] = useState<"preview" | "code">("preview");
   const [activeTemplateKey, setActiveTemplateKey] = useState<string>("restaurant-booking");
-
-  // Typewriter text transition state
-  const [wordIndex, setWordIndex] = useState(0);
-  const [displayText, setDisplayText] = useState("product.");
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  useEffect(() => {
-    const currentWord = TYPEWRITER_WORDS[wordIndex];
-    let timer: NodeJS.Timeout;
-
-    if (isDeleting) {
-      if (displayText.length > 0) {
-        timer = setTimeout(() => {
-          setDisplayText(currentWord.substring(0, displayText.length - 1));
-        }, 50);
-      } else {
-        setIsDeleting(false);
-        setWordIndex((prev) => (prev + 1) % TYPEWRITER_WORDS.length);
-      }
-    } else {
-      if (displayText.length < currentWord.length) {
-        timer = setTimeout(() => {
-          setDisplayText(currentWord.substring(0, displayText.length + 1));
-        }, 90);
-      } else {
-        timer = setTimeout(() => {
-          setIsDeleting(true);
-        }, 2200);
-      }
-    }
-
-    return () => clearTimeout(timer);
-  }, [displayText, isDeleting, wordIndex]);
 
   function handleSubmit(event?: React.FormEvent) {
     if (event) event.preventDefault();
@@ -120,12 +79,7 @@ export function Hero() {
 
           <h1 className="mt-5 max-w-4xl text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-6xl lg:text-7xl">
             From prompt to{" "}
-            <span className="inline-flex items-baseline">
-              <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
-                {displayText}
-              </span>
-              <span className="inline-block w-[3px] sm:w-[4px] h-[0.8em] bg-indigo-500 ml-1.5 rounded-xs align-baseline animate-pulse shadow-[0_0_10px_rgba(99,102,241,0.8)]" />
-            </span>
+            <TypewriterText />
           </h1>
 
           <p className="mt-4 max-w-2xl text-base text-slate-600 dark:text-slate-300 sm:text-lg">
