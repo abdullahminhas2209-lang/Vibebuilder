@@ -78,7 +78,6 @@ export function Hero() {
         <div className="flex flex-col items-center text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200/80 bg-indigo-50/80 dark:border-indigo-900/50 dark:bg-indigo-950/40 px-3.5 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 shadow-sm backdrop-blur-md">
             <span className="flex size-2 rounded-full bg-indigo-500 animate-pulse" />
-            <Sparkles className="size-3.5 text-indigo-600 dark:text-indigo-400" aria-hidden="true" />
             <span>Klyro AI · Next-Gen App Builder</span>
           </div>
 
