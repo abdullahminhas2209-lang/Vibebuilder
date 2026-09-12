@@ -7,7 +7,6 @@ import {
   Check,
   Copy,
   Download,
-  Eye,
   FolderDown,
   Loader2,
   MoreVertical,
@@ -44,7 +43,7 @@ interface WorkspaceHeaderProps {
   project: Project;
   filesList: ProjectFile[];
   /** Switches the center canvas to the preview tab. */
-  onShowPreview: () => void;
+  onShowPreview?: () => void;
   /** Opens the file explorer as an overlay (tablet widths). */
   onToggleFiles: () => void;
   /** Mobile panel switcher rendered on small screens. */
@@ -55,7 +54,6 @@ interface WorkspaceHeaderProps {
 export function WorkspaceHeader({
   project,
   filesList,
-  onShowPreview,
   onToggleFiles,
   mobileSwitcher,
   onProjectRenamed,
@@ -137,16 +135,6 @@ export function WorkspaceHeader({
 
       <div className="ml-auto flex items-center gap-1.5">
         {mobileSwitcher}
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onShowPreview}
-          className="hidden md:inline-flex rounded-xl border-slate-800 bg-slate-900/90 text-xs font-semibold text-slate-200 hover:bg-slate-800 hover:text-white"
-        >
-          <Eye className="size-3.5 mr-1" aria-hidden="true" />
-          Preview
-        </Button>
 
         <Button
           variant="outline"
