@@ -4,23 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
-  Code2,
   Cpu,
-  ExternalLink,
-  Eye,
-  Lock,
-  Monitor,
   Paperclip,
-  Smartphone,
-  Tablet,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { MockSite } from "@/components/workspace/MockSite";
 import { TypewriterText } from "@/components/landing/TypewriterText";
-import { previewConfigs } from "@/lib/mock-data";
-import { cn } from "@/lib/utils";
 
 const QUICK_ACTIONS = [
   { label: "SaaS Analytics Dashboard", prompt: "Create a modern SaaS analytics dashboard with revenue charts, active user metrics, and team management settings." },
@@ -34,9 +23,6 @@ export function Hero() {
   const router = useRouter();
   const [prompt, setPrompt] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [viewport, setViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
-  const [activeTab, setActiveTab] = useState<"preview" | "code">("preview");
-  const [activeTemplateKey, setActiveTemplateKey] = useState<string>("restaurant-booking");
 
   function handleSubmit(event?: React.FormEvent) {
     if (event) event.preventDefault();
@@ -50,14 +36,7 @@ export function Hero() {
 
   function handleSelectQuickAction(item: typeof QUICK_ACTIONS[0]) {
     setPrompt(item.prompt);
-    if (item.label.includes("Restaurant")) setActiveTemplateKey("restaurant-booking");
-    else if (item.label.includes("SaaS")) setActiveTemplateKey("saas-analytics");
-    else if (item.label.includes("Portfolio")) setActiveTemplateKey("personal-portfolio");
-    else if (item.label.includes("E-Commerce")) setActiveTemplateKey("ecommerce-store");
-    else if (item.label.includes("Fitness")) setActiveTemplateKey("fitness-landing");
   }
-
-  const activeConfig = (previewConfigs as any)[activeTemplateKey] || (previewConfigs as any)["restaurant-booking"];
 
   return (
     <section id="hero-builder" className="relative overflow-hidden pt-8 pb-16 lg:pt-14 lg:pb-24">
@@ -163,150 +142,6 @@ export function Hero() {
                 <span>{item.label}</span>
               </button>
             ))}
-          </div>
-        </div>
-
-        {/* ============================================================================== */}
-        {/* DASHBOARD PREVIEW CANVAS                                                       */}
-        {/* ============================================================================== */}
-        <div className="mt-12 rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-900/70 p-2 sm:p-3 shadow-2xl backdrop-blur-xl">
-          {/* Browser Window Header */}
-          <div className="flex h-12 items-center justify-between gap-3 rounded-2xl bg-white/90 dark:bg-slate-900/90 px-4 border border-slate-200/80 dark:border-slate-800 shadow-xs mb-2">
-            {/* Traffic Light Dots */}
-            <div className="flex items-center gap-1.5">
-              <span className="size-3 rounded-full bg-rose-400/90" />
-              <span className="size-3 rounded-full bg-amber-400/90" />
-              <span className="size-3 rounded-full bg-emerald-400/90" />
-            </div>
-
-            {/* Address bar */}
-            <div className="hidden sm:flex h-7 min-w-0 max-w-sm flex-1 items-center gap-2 rounded-xl bg-slate-100/90 dark:bg-slate-800/80 px-3 text-xs text-slate-500">
-              <Lock className="size-3 text-emerald-500 shrink-0" />
-              <span className="truncate font-mono text-[11px]">https://klyro.app/preview/{activeTemplateKey}</span>
-            </div>
-
-            {/* Viewport & Tabs Switcher */}
-            <div className="flex items-center gap-2">
-              {/* Tab Switcher: Preview | Code */}
-              <div className="flex rounded-lg bg-slate-100 dark:bg-slate-800 p-0.5 border border-slate-200/60 dark:border-slate-700/60">
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("preview")}
-                  className={cn(
-                    "flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-semibold transition-all",
-                    activeTab === "preview"
-                      ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs"
-                      : "text-slate-500 hover:text-slate-800 dark:hover:text-white"
-                  )}
-                >
-                  <Eye className="size-3.5" />
-                  <span>Preview</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("code")}
-                  className={cn(
-                    "flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-semibold transition-all",
-                    activeTab === "code"
-                      ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs"
-                      : "text-slate-500 hover:text-slate-800 dark:hover:text-white"
-                  )}
-                >
-                  <Code2 className="size-3.5" />
-                  <span>Code</span>
-                </button>
-              </div>
-
-              {/* Viewport switcher */}
-              <div className="hidden md:flex items-center gap-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 p-0.5">
-                <button
-                  type="button"
-                  onClick={() => setViewport("desktop")}
-                  className={cn(
-                    "rounded-md p-1 transition-colors",
-                    viewport === "desktop" ? "bg-white dark:bg-slate-700 text-indigo-600 shadow-xs" : "text-slate-400 hover:text-slate-700"
-                  )}
-                  title="Desktop (100%)"
-                >
-                  <Monitor className="size-3.5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewport("tablet")}
-                  className={cn(
-                    "rounded-md p-1 transition-colors",
-                    viewport === "tablet" ? "bg-white dark:bg-slate-700 text-indigo-600 shadow-xs" : "text-slate-400 hover:text-slate-700"
-                  )}
-                  title="Tablet (768px)"
-                >
-                  <Tablet className="size-3.5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewport("mobile")}
-                  className={cn(
-                    "rounded-md p-1 transition-colors",
-                    viewport === "mobile" ? "bg-white dark:bg-slate-700 text-indigo-600 shadow-xs" : "text-slate-400 hover:text-slate-700"
-                  )}
-                  title="Mobile (375px)"
-                >
-                  <Smartphone className="size-3.5" />
-                </button>
-              </div>
-
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                onClick={() => handleSubmit()}
-                className="rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800"
-                title="Open in full builder workspace"
-              >
-                <ExternalLink className="size-4" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Canvas Viewport Frame */}
-          <div className="relative min-h-[480px] max-h-[580px] overflow-y-auto rounded-2xl bg-white dark:bg-slate-950 p-1 flex justify-center border border-slate-200/70 dark:border-slate-800/80 shadow-inner scrollbar-panel">
-            <div
-              className={cn(
-                "w-full transition-all duration-300 rounded-xl overflow-hidden",
-                viewport === "desktop" && "w-full",
-                viewport === "tablet" && "max-w-[768px] border border-slate-300 dark:border-slate-700 my-2 shadow-lg",
-                viewport === "mobile" && "max-w-[375px] border border-slate-300 dark:border-slate-700 my-2 shadow-xl rounded-2xl"
-              )}
-            >
-              {activeTab === "preview" ? (
-                <MockSite config={activeConfig} />
-              ) : (
-                <div className="bg-slate-950 text-slate-200 p-6 font-mono text-xs leading-relaxed overflow-x-auto h-full">
-                  <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4 text-slate-400">
-                    <span>app/page.tsx</span>
-                    <span className="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-indigo-400">TypeScript React</span>
-                  </div>
-                  <pre>{`import { Navbar } from "@/components/Navbar";
-import { Hero } from "@/components/Hero";
-import { MenuSection } from "@/components/MenuSection";
-import { ReservationSection } from "@/components/ReservationSection";
-import { Footer } from "@/components/Footer";
-
-export default function Page() {
-  return (
-    <main className="min-h-screen bg-stone-950 text-stone-100">
-      <Navbar brand="${activeConfig.brand}" />
-      <Hero 
-        headline="${activeConfig.headline || "Next Generation AI Experiences"}"
-        subtext="${activeConfig.subtext || "Generated in realtime by Klyro AI."}"
-      />
-      <MenuSection />
-      <ReservationSection />
-      <Footer />
-    </main>
-  );
-}`}</pre>
-                </div>
-              )}
-            </div>
           </div>
         </div>
       </div>
