@@ -77,7 +77,7 @@ export function Hero() {
             <span>Klyro AI · Next-Gen App Builder</span>
           </div>
 
-          <h1 className="mt-5 max-w-4xl text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-6xl lg:text-7xl">
+          <h1 className="mt-5 max-w-5xl text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl md:text-5xl lg:text-6xl">
             From prompt to{" "}
             <TypewriterText />
           </h1>
