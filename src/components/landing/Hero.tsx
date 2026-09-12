@@ -134,7 +134,7 @@ export function Hero() {
                 }}
                 rows={2}
                 placeholder={placeholderText}
-                className="w-full resize-none border-0 bg-transparent text-sm sm:text-base font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-0 leading-relaxed transition-colors font-sans"
+                className="w-full resize-none border-0 bg-transparent text-sm sm:text-base font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-0 leading-relaxed transition-colors font-mono"
               />
             </div>
 

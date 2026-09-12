@@ -59,7 +59,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  --font-sans: var(--font-fira-code), monospace;
+  --font-sans: var(--font-playfair), Georgia, Cambria, "Times New Roman", Times, serif;
   --font-mono: var(--font-fira-code), monospace;
   --font-display: var(--font-playfair), Georgia, Cambria, "Times New Roman", Times, serif;
 }
