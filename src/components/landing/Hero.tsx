@@ -98,12 +98,12 @@ export function Hero() {
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         {/* Top Header / Badge */}
         <div className="flex flex-col items-center text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200/80 bg-indigo-50/80 dark:border-indigo-900/50 dark:bg-indigo-950/40 px-3.5 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 shadow-sm backdrop-blur-md transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(99,102,241,0.3)] font-display">
+          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200/80 bg-indigo-50/80 dark:border-indigo-900/50 dark:bg-indigo-950/40 px-3.5 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 shadow-sm backdrop-blur-md transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(99,102,241,0.3)]">
             <span className="flex size-2 rounded-full bg-indigo-500 animate-pulse" />
             <span>Klyro AI · Next-Gen App Builder</span>
           </div>
 
-          <h1 className="mt-5 max-w-5xl text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl md:text-5xl lg:text-6xl font-display">
+          <h1 className="mt-5 max-w-5xl text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-5xl md:text-6xl lg:text-7xl font-display">
             From prompt to{" "}
             <TypewriterText />
           </h1>

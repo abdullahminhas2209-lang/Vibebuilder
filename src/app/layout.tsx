@@ -1,6 +1,6 @@
 import React from "react";
 import type { Metadata } from "next";
-import { Fira_Code, Geist } from "next/font/google";
+import { Fira_Code, Playfair_Display } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 
@@ -10,8 +10,8 @@ const firaCode = Fira_Code({
   display: "swap",
 });
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
   display: "swap",
 });
@@ -40,7 +40,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${firaCode.variable} ${geistSans.variable} font-sans h-full antialiased`}
+      className={`${firaCode.variable} ${playfair.variable} font-sans h-full antialiased`}
       suppressHydrationWarning
     >
       <body
