@@ -1,8 +1,14 @@
 import React from "react";
 import type { Metadata } from "next";
-import { Fira_Code, Playfair_Display } from "next/font/google";
+import { Fira_Code, Montserrat, Playfair_Display } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
+
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  display: "swap",
+});
 
 const firaCode = Fira_Code({
   variable: "--font-fira-code",
@@ -40,7 +46,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${firaCode.variable} ${playfair.variable} font-sans h-full antialiased`}
+      className={`${montserrat.variable} ${firaCode.variable} ${playfair.variable} font-sans h-full antialiased`}
       suppressHydrationWarning
     >
       <body
