@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
@@ -10,6 +10,15 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { TypewriterText } from "@/components/landing/TypewriterText";
+
+const TYPEWRITER_PLACEHOLDERS = [
+  "Build a modern SaaS analytics dashboard with metrics...",
+  "Build a luxury restaurant website with seasonal menu & booking...",
+  "Build a developer portfolio with dark mode and projects...",
+  "Build a high-converting e-commerce storefront for homeware...",
+  "Build a fitness studio landing page with class schedules...",
+  "Build an AI chatbot platform with live sandbox previews...",
+];
 
 const QUICK_ACTIONS = [
   { label: "SaaS Analytics Dashboard", prompt: "Create a modern SaaS analytics dashboard with revenue charts, active user metrics, and team management settings." },
@@ -24,13 +33,51 @@ export function Hero() {
   const [prompt, setPrompt] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Typewriter effect for prompt placeholder
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [placeholderText, setPlaceholderText] = useState(TYPEWRITER_PLACEHOLDERS[0]);
+  const [isDeletingPlaceholder, setIsDeletingPlaceholder] = useState(false);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    const currentPrompt = TYPEWRITER_PLACEHOLDERS[placeholderIndex];
+
+    if (isDeletingPlaceholder) {
+      if (placeholderText.length > 6) {
+        // Keep "Build " anchored while deleting
+        timer = setTimeout(() => {
+          setPlaceholderText(currentPrompt.slice(0, placeholderText.length - 1));
+        }, 18);
+      } else {
+        // Pause briefly on "Build " before typing next example
+        timer = setTimeout(() => {
+          setIsDeletingPlaceholder(false);
+          setPlaceholderIndex((prev) => (prev + 1) % TYPEWRITER_PLACEHOLDERS.length);
+        }, 250);
+      }
+    } else {
+      if (placeholderText.length < currentPrompt.length) {
+        timer = setTimeout(() => {
+          setPlaceholderText(currentPrompt.slice(0, placeholderText.length + 1));
+        }, 40);
+      } else {
+        // Pause when full sentence is typed
+        timer = setTimeout(() => {
+          setIsDeletingPlaceholder(true);
+        }, 2600);
+      }
+    }
+
+    return () => clearTimeout(timer);
+  }, [placeholderText, isDeletingPlaceholder, placeholderIndex]);
+
   function handleSubmit(event?: React.FormEvent) {
     if (event) event.preventDefault();
     const trimmed = prompt.trim();
     setIsSubmitting(true);
     const targetUrl = trimmed
       ? `/project/demo?prompt=${encodeURIComponent(trimmed)}`
-      : `/project/demo?prompt=${encodeURIComponent("Build a modern SaaS product with landing page and dashboard")}`;
+      : `/project/demo?prompt=${encodeURIComponent(placeholderText || "Build a modern SaaS product with landing page and dashboard")}`;
     router.push(targetUrl);
   }
 
@@ -86,8 +133,8 @@ export function Hero() {
                   }
                 }}
                 rows={2}
-                placeholder="What do you want to build? (e.g. Build a modern restaurant website with online reservation...)"
-                className="w-full resize-none border-0 bg-transparent text-sm sm:text-base font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-0 leading-relaxed transition-colors"
+                placeholder={placeholderText}
+                className="w-full resize-none border-0 bg-transparent text-sm sm:text-base font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-0 leading-relaxed transition-colors font-sans"
               />
             </div>
 
