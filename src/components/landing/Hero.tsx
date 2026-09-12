@@ -164,9 +164,8 @@ export function Hero() {
                 key={item.label}
                 type="button"
                 onClick={() => handleSelectQuickAction(item)}
-                className="inline-flex items-center gap-1.5 rounded-full border border-slate-200/90 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 shadow-xs backdrop-blur-md transition-all hover:border-indigo-400 hover:bg-white hover:text-indigo-600 hover:scale-[1.02]"
+                className="inline-flex items-center rounded-full border border-slate-200/90 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 px-3.5 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 shadow-xs backdrop-blur-md transition-all hover:border-indigo-400 hover:bg-white hover:text-indigo-600 hover:scale-[1.02]"
               >
-                <Sparkles className="size-3 text-indigo-500" />
                 <span>{item.label}</span>
               </button>
             ))}
