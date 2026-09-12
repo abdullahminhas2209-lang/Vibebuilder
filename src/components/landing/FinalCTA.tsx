@@ -26,12 +26,12 @@ export function FinalCTA() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-1/2 -z-10 -translate-y-1/2 flex justify-center"
       >
-        <div className="h-[320px] w-[600px] rounded-full bg-indigo-500/10 blur-[100px]" />
+        <div className="h-[320px] w-[600px] rounded-full bg-indigo-500/15 blur-[100px] animate-pulse-glow" />
       </div>
 
       <div className="mx-auto w-full max-w-4xl px-4 text-center sm:px-6">
         <Reveal>
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200/80 bg-white/80 dark:border-indigo-900/50 dark:bg-slate-900/60 px-3.5 py-1 text-xs font-semibold text-indigo-700 dark:text-indigo-300 shadow-xs mb-4 backdrop-blur-md">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200/80 bg-white/80 dark:border-indigo-900/50 dark:bg-slate-900/60 px-3.5 py-1 text-xs font-semibold text-indigo-700 dark:text-indigo-300 shadow-xs mb-4 backdrop-blur-md transition-transform duration-300 hover:scale-105">
             <Sparkles className="size-3.5 text-indigo-600" />
             <span>Ready to create?</span>
           </div>
@@ -44,20 +44,23 @@ export function FinalCTA() {
             From prompt to product in seconds. Experience frictionless AI web creation with live sandbox previews and exportable code.
           </p>
 
-          <form onSubmit={handleStart} className="mx-auto mt-8 flex max-w-md items-center gap-2 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 p-1.5 shadow-lg backdrop-blur-md">
+          <form
+            onSubmit={handleStart}
+            className="group mx-auto mt-8 flex max-w-md items-center gap-2 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 p-1.5 shadow-lg backdrop-blur-md transition-all duration-300 hover:border-indigo-400/80 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/15 focus-within:shadow-[0_15px_40px_-5px_rgba(99,102,241,0.25)]"
+          >
             <input
               type="text"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="Describe your website idea..."
-              className="flex-1 bg-transparent px-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none"
+              className="flex-1 bg-transparent px-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none transition-colors"
             />
             <Button
               type="submit"
-              className="rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-xs font-semibold text-white px-4 py-2 shadow-md hover:from-indigo-500 hover:to-blue-500 gap-1"
+              className="rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-xs font-semibold text-white px-4 py-2 shadow-md hover:from-indigo-500 hover:to-blue-500 gap-1 hover:scale-[1.04] active:scale-[0.97] hover:shadow-indigo-500/40 transition-all duration-200"
             >
               <span>Build</span>
-              <ArrowRight className="size-3.5" />
+              <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
             </Button>
           </form>
         </Reveal>

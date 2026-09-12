@@ -54,16 +54,20 @@ export function Features() {
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {features.map((feature, index) => (
-            <Reveal key={feature.title} delay={index * 70}>
-              <Card className="gap-3 rounded-xl py-5 transition-shadow duration-300 hover:shadow-md">
-                <CardHeader className="pb-0">
-                  <div className="flex size-9 items-center justify-center rounded-lg bg-accent text-primary">
-                    <feature.icon className="size-4.5" aria-hidden="true" />
+            <Reveal key={feature.title} delay={index * 80}>
+              <Card className="group gap-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-5 shadow-xs backdrop-blur-md transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-indigo-500/50 hover:shadow-[0_15px_30px_-10px_rgba(99,102,241,0.2)] hover:bg-white dark:hover:bg-slate-900">
+                <CardHeader className="p-0 pb-1">
+                  <div className="flex size-10 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 shadow-inner transition-all duration-300 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-indigo-600 group-hover:to-blue-600 group-hover:text-white group-hover:shadow-md group-hover:rotate-3">
+                    <feature.icon className="size-5 transition-transform duration-300" aria-hidden="true" />
                   </div>
-                  <CardTitle className="text-base">{feature.title}</CardTitle>
+                  <CardTitle className="text-base font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200 mt-2">
+                    {feature.title}
+                  </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <CardDescription>{feature.description}</CardDescription>
+                <CardContent className="p-0">
+                  <CardDescription className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+                    {feature.description}
+                  </CardDescription>
                 </CardContent>
               </Card>
             </Reveal>

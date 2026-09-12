@@ -27,10 +27,10 @@ export function ChatMessage({ message }: { message: ChatMessageType }) {
       >
         <div
           className={cn(
-            "rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm leading-relaxed",
+            "rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm leading-relaxed transition-all duration-200",
             isUser
-              ? "rounded-br-sm bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-md font-normal"
-              : "rounded-bl-sm bg-slate-900/90 border border-slate-800 text-slate-200 shadow-xs",
+              ? "rounded-br-sm bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-md font-normal hover:shadow-indigo-500/20"
+              : "rounded-bl-sm bg-slate-900/90 border border-slate-800 text-slate-200 shadow-xs hover:border-slate-700 hover:bg-slate-900",
           )}
         >
           {message.content}

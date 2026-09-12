@@ -86,11 +86,11 @@ export function TemplatesSection() {
             {/* Gradient 'View All Templates' Button matching 'Build with Klyro' */}
             <Button
               asChild
-              className="rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-xs sm:text-sm font-semibold text-white px-5 py-2.5 shadow-lg shadow-indigo-600/30 hover:from-indigo-500 hover:to-blue-500 hover:scale-[1.02] transition-all"
+              className="rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-xs sm:text-sm font-semibold text-white px-5 py-2.5 shadow-lg shadow-indigo-600/30 hover:from-indigo-500 hover:to-blue-500 hover:scale-[1.03] active:scale-[0.98] hover:shadow-indigo-500/50 transition-all duration-200"
             >
-              <Link href="/dashboard" className="gap-2 flex items-center">
+              <Link href="/dashboard" className="gap-2 flex items-center group">
                 <span>View All Templates</span>
-                <ArrowRight className="size-4" />
+                <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
               </Link>
             </Button>
           </div>
@@ -100,7 +100,7 @@ export function TemplatesSection() {
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {TEMPLATE_CARDS.map((template, index) => (
             <Reveal key={template.id} delay={index * 50}>
-              <Card className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-[#0F172A]/90 text-slate-100 p-0 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:border-indigo-500/50">
+              <Card className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-[#0F172A]/90 text-slate-100 p-0 shadow-sm transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-[0_20px_45px_-10px_rgba(99,102,241,0.3)] hover:border-indigo-500/60">
                 <Link
                   href={`/project/${template.id}`}
                   className="absolute inset-0 z-0 focus-visible:ring-[3px] focus-visible:ring-indigo-500/50 focus-visible:outline-none"
@@ -108,9 +108,9 @@ export function TemplatesSection() {
                 />
 
                 {/* Banner Gradient */}
-                <div className={`relative flex h-32 items-center justify-center bg-gradient-to-br ${template.gradient}`}>
-                  <template.icon className="size-10 text-white/90 transition-transform duration-300 group-hover:scale-110 drop-shadow-md" />
-                  <Badge className="absolute top-3 left-3 bg-black/40 text-white border-0 backdrop-blur-md text-[10px] font-semibold">
+                <div className={`relative flex h-32 items-center justify-center bg-gradient-to-br ${template.gradient} overflow-hidden`}>
+                  <template.icon className="size-10 text-white/90 transition-transform duration-500 ease-out group-hover:scale-115 group-hover:rotate-3 drop-shadow-md" />
+                  <Badge className="absolute top-3 left-3 bg-black/40 text-white border-0 backdrop-blur-md text-[10px] font-semibold transition-transform duration-300 group-hover:scale-105">
                     {template.category}
                   </Badge>
                 </div>
@@ -118,10 +118,10 @@ export function TemplatesSection() {
                 {/* Card Content */}
                 <div className="p-5">
                   <div className="flex items-center justify-between gap-2">
-                    <h3 className="font-bold text-base text-white group-hover:text-indigo-400 transition-colors">
+                    <h3 className="font-bold text-base text-white group-hover:text-indigo-400 transition-colors duration-200">
                       {template.title}
                     </h3>
-                    <ExternalLink className="size-4 text-slate-400 group-hover:text-indigo-400 transition-colors" />
+                    <ExternalLink className="size-4 text-slate-400 group-hover:text-indigo-400 transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </div>
 
                   <p className="mt-2 text-xs text-slate-400 line-clamp-2 leading-relaxed">
@@ -132,7 +132,7 @@ export function TemplatesSection() {
                     {template.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-lg bg-slate-950 border border-slate-800/80 px-2 py-0.5 text-[10px] font-medium text-slate-400"
+                        className="rounded-lg bg-slate-950 border border-slate-800/80 px-2 py-0.5 text-[10px] font-medium text-slate-400 transition-colors duration-200 group-hover:border-slate-700"
                       >
                         {tag}
                       </span>

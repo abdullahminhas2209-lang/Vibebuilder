@@ -98,7 +98,7 @@ export function ProjectCard({
 
   return (
     <>
-      <Card className="group relative gap-0 overflow-hidden rounded-2xl border border-slate-800 bg-[#0F172A]/90 text-slate-100 py-0 shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:border-indigo-500/50 hover:shadow-xl">
+      <Card className="group relative gap-0 overflow-hidden rounded-2xl border border-slate-800 bg-[#0F172A]/90 text-slate-100 py-0 shadow-sm transition-all duration-300 ease-out hover:-translate-y-2 hover:border-indigo-500/60 hover:shadow-[0_20px_40px_-10px_rgba(99,102,241,0.25)]">
         {/* Card-level link overlay */}
         <Link
           href={`/project/${project.id}`}
@@ -108,17 +108,17 @@ export function ProjectCard({
 
         <div
           className={cn(
-            "relative flex h-28 items-center justify-center bg-gradient-to-br",
+            "relative flex h-28 items-center justify-center bg-gradient-to-br overflow-hidden",
             thumbnail.gradient,
           )}
         >
           <ThumbnailIcon
-            className="size-9 text-white/90 transition-transform duration-300 ease-out group-hover:scale-110 drop-shadow"
+            className="size-9 text-white/90 transition-transform duration-500 ease-out group-hover:scale-115 group-hover:rotate-3 drop-shadow"
             aria-hidden="true"
           />
           <Badge
             className={cn(
-              "absolute top-3 left-3 border-0 shadow-sm text-[10px] font-semibold",
+              "absolute top-3 left-3 border-0 shadow-sm text-[10px] font-semibold transition-transform duration-300 group-hover:scale-105",
               status.className,
             )}
           >
@@ -128,7 +128,7 @@ export function ProjectCard({
 
         <div className="p-4">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="truncate text-sm font-bold text-white group-hover:text-indigo-400 transition-colors">
+            <h3 className="truncate text-sm font-bold text-white group-hover:text-indigo-400 transition-colors duration-200">
               {project.name}
             </h3>
             <DropdownMenu>
@@ -136,7 +136,7 @@ export function ProjectCard({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="relative z-10 -mt-1.5 -mr-1.5 size-7 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg"
+                  className="relative z-10 -mt-1.5 -mr-1.5 size-7 text-slate-400 hover:text-white hover:bg-slate-800 hover:scale-110 active:scale-95 transition-all duration-150 rounded-lg"
                   aria-label={`Project options for ${project.name}`}
                 >
                   <MoreVertical className="size-4" aria-hidden="true" />
