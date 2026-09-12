@@ -39,8 +39,20 @@ function getInitials(first: string, last: string): string {
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<SupabaseUser | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<UserProfile | null>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem("vibebuilder_user");
+        return stored ? JSON.parse(stored) : null;
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  });
+  const [loading, setLoading] = useState<boolean>(() => {
+    return isSupabaseConfigured && Boolean(supabase);
+  });
 
   function mapUserToProfile(u: SupabaseUser): UserProfile {
     const meta = u.user_metadata || {};
@@ -61,44 +73,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) {
-      // Check local storage mock session
-      const stored = typeof window !== "undefined" ? localStorage.getItem("vibebuilder_user") : null;
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          setProfile(parsed);
-        } catch {
-          // ignore
-        }
-      }
-      setLoading(false);
       return;
     }
 
+    let isMounted = true;
+
     // Get current session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser(session.user);
-        setProfile(mapUserToProfile(session.user));
+      if (isMounted) {
+        if (session?.user) {
+          setUser(session.user);
+          setProfile(mapUserToProfile(session.user));
+        }
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        if (session?.user) {
-          setUser(session.user);
-          setProfile(mapUserToProfile(session.user));
-        } else {
-          setUser(null);
-          setProfile(null);
+        if (isMounted) {
+          if (session?.user) {
+            setUser(session.user);
+            setProfile(mapUserToProfile(session.user));
+          } else {
+            setUser(null);
+            setProfile(null);
+          }
+          setLoading(false);
         }
-        setLoading(false);
       }
     );
 
     return () => {
+      isMounted = false;
       subscription.unsubscribe();
     };
   }, []);

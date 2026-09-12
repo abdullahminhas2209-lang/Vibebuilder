@@ -88,8 +88,9 @@ export default function AuthPage() {
           }, 800);
         }
       }
-    } catch (err: any) {
-      setError(err?.message || "An unexpected error occurred. Please try again.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "An unexpected error occurred. Please try again.";
+      setError(message);
     } finally {
       setLoading(false);
     }

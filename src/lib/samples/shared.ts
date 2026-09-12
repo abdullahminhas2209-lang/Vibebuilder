@@ -63,7 +63,7 @@ body {
 export function makeFooter(
   brand: string,
   links: string[],
-  _note: string,
+  note?: string,
 ): ProjectFile {
   return {
     path: "components/Footer.tsx",
@@ -73,7 +73,10 @@ export function makeFooter(
   return (
     <footer className="border-t border-stone-200 py-12">
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 sm:flex-row sm:items-center sm:justify-between">
-        <p className="font-semibold">${brand}</p>
+        <div>
+          <p className="font-semibold">${brand}</p>
+          ${note ? `<p className="text-xs text-stone-400 mt-0.5">${note}</p>` : ""}
+        </div>
         <nav className="flex gap-6 text-sm text-stone-500">
 ${links.map((link) => `          <a href="#">${link}</a>`).join("\n")}
         </nav>
@@ -83,7 +86,6 @@ ${links.map((link) => `          <a href="#">${link}</a>`).join("\n")}
       </div>
     </footer>
   );
-}
-`,
+}`,
   };
 }

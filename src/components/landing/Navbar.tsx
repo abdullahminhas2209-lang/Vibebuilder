@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { ArrowRight, LayoutDashboard, LogOut, Zap } from "lucide-react";
+import { ArrowRight, LayoutDashboard, LogOut } from "lucide-react";
 
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
@@ -25,17 +25,18 @@ import { AuthModal } from "@/components/auth/AuthModal";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 
+const emptySubscribe = () => () => {};
+
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState<"signin" | "signup">("signin");
   const [scrolled, setScrolled] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
   const { profile, signOut } = useAuth();
 
   useEffect(() => {
-    setMounted(true);
     function handleScroll() {
       if (window.scrollY > 20) {
         setScrolled(true);

@@ -54,8 +54,9 @@ export function ChatPanel({
   useEffect(() => {
     if (initialPrompt && initialPrompt.trim() && !initialPromptExecutedRef.current) {
       initialPromptExecutedRef.current = true;
-      executePrompt(initialPrompt.trim());
+      void executePrompt(initialPrompt.trim());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialPrompt]);
 
   async function executePrompt(promptText: string) {
@@ -120,9 +121,8 @@ export function ChatPanel({
 
       const reader = response.body?.getReader();
       if (!reader) throw new Error("No response body received from AI server.");
-
       const decoder = new TextDecoder();
-      let fullText = "";
+      const chunks: string[] = [];
       setStatusText("Generating components...");
 
       while (true) {
@@ -130,17 +130,20 @@ export function ChatPanel({
         if (done) break;
 
         const chunk = decoder.decode(value, { stream: true });
-        fullText += chunk;
+        chunks.push(chunk);
+        const streamedText = chunks.join("");
 
         // Stream text into the assistant message
         setMessages((prev) =>
           prev.map((m) =>
             m.id === assistantId
-              ? { ...m, content: extractProse(fullText) || fullText, pending: true }
+              ? { ...m, content: extractProse(streamedText) || streamedText, pending: true }
               : m
           )
         );
       }
+
+      const fullText = chunks.join("");
 
       // Parse generated files from the complete response
       const generatedFiles = parseGeneratedFiles(fullText);

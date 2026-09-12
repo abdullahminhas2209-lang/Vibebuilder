@@ -5,11 +5,9 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   ChevronsUpDown,
   FolderKanban,
-  LayoutDashboard,
   LayoutTemplate,
   LogOut,
   Settings,
-  UserRound,
 } from "lucide-react";
 
 import { Logo } from "@/components/brand/Logo";

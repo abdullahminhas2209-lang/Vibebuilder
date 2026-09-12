@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { Plus, Search } from "lucide-react";
 
@@ -15,7 +15,7 @@ export function ProjectGrid() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
-  async function loadProjects() {
+  const loadProjects = useCallback(async () => {
     try {
       const data = await getProjects();
       setProjectList(data);
@@ -24,11 +24,11 @@ export function ProjectGrid() {
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
-    loadProjects();
-  }, []);
+    void loadProjects();
+  }, [loadProjects]);
 
   const filtered = projectList.filter((p) => {
     if (!search.trim()) return true;
