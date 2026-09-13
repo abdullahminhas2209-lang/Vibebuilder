@@ -281,6 +281,7 @@ export function WorkspaceShell({
             projectId={project.id}
             initialPrompt={urlPrompt}
             initialMessages={initialMessages}
+            currentFiles={filesList}
             onFilesGenerated={handleFilesGenerated}
           />
         </aside>

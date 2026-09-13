@@ -30,6 +30,7 @@ interface ChatPanelProps {
   projectId?: string;
   initialPrompt?: string | null;
   initialMessages: ChatMessageType[];
+  currentFiles?: ProjectFile[];
   onFilesGenerated?: (files: ProjectFile[], tree: FileNode[]) => void;
 }
 
@@ -37,6 +38,7 @@ export function ChatPanel({
   projectId = "demo",
   initialPrompt,
   initialMessages,
+  currentFiles = [],
   onFilesGenerated,
 }: ChatPanelProps) {
   const [messages, setMessages] = useState<ChatMessageType[]>(initialMessages);
@@ -136,8 +138,15 @@ export function ChatPanel({
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history }),
-        signal: abortRef.current.signal,
+        body: JSON.stringify({
+          messages: history,
+          currentFiles: currentFiles.map((f) => ({
+            path: f.path,
+            name: f.name,
+            code: f.code,
+          })),
+        }),
+        signal: abortRef.current?.signal,
       });
 
       if (!response.ok) {
