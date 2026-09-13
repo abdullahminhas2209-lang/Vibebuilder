@@ -11,12 +11,34 @@ export function FinalCTA() {
   const router = useRouter();
   const [prompt, setPrompt] = useState("");
 
-  function handleStart(e?: React.FormEvent) {
+  async function handleStart(e?: React.FormEvent) {
     if (e) e.preventDefault();
-    const target = prompt.trim()
-      ? `/project/demo?prompt=${encodeURIComponent(prompt.trim())}`
-      : "/project/demo";
-    router.push(target);
+    const trimmed = prompt.trim() || "Build a modern full-stack web application";
+
+    try {
+      const uniqueId = `proj_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+      const words = trimmed
+        .replace(/^(build|create|design|make)\s+(a|an|the)?\s*/i, "")
+        .split(/\s+/)
+        .slice(0, 4)
+        .join(" ");
+      const derivedName = words ? words.charAt(0).toUpperCase() + words.slice(1) : "New Klyro Project";
+
+      const { createProject } = await import("@/lib/supabase/db");
+      const newProject = await createProject({
+        id: uniqueId,
+        name: derivedName,
+        description: trimmed,
+        type: "Web Application",
+        status: "active",
+      });
+
+      router.push(`/project/${newProject.id}?prompt=${encodeURIComponent(trimmed)}`);
+    } catch (err) {
+      console.error("Failed to create project:", err);
+      const fallbackId = `proj_${Date.now()}`;
+      router.push(`/project/${fallbackId}?prompt=${encodeURIComponent(trimmed)}`);
+    }
   }
 
   return (

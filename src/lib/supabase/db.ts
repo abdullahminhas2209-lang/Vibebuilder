@@ -3,9 +3,36 @@ import { projects as mockProjects, getProjectById as getMockProjectById, demoPro
 import { getSampleFiles } from "@/lib/code-samples";
 import type { Project, ProjectFile, ChatMessage } from "@/lib/types";
 
-const LOCAL_STORAGE_PROJECTS_KEY = "vibebuilder_projects";
-const LOCAL_STORAGE_FILES_KEY = "vibebuilder_files_";
-const LOCAL_STORAGE_CHATS_KEY = "vibebuilder_chats_";
+const LOCAL_STORAGE_PROJECTS_KEY = "klyro_projects";
+const LEGACY_STORAGE_PROJECTS_KEY = "vibebuilder_projects";
+const LOCAL_STORAGE_FILES_KEY = "klyro_files_";
+const LEGACY_STORAGE_FILES_KEY = "vibebuilder_files_";
+const LOCAL_STORAGE_CHATS_KEY = "klyro_chats_";
+const LEGACY_STORAGE_CHATS_KEY = "vibebuilder_chats_";
+
+function getStoredProjects(): string | null {
+  if (typeof window === "undefined") return null;
+  return (
+    localStorage.getItem(LOCAL_STORAGE_PROJECTS_KEY) ||
+    localStorage.getItem(LEGACY_STORAGE_PROJECTS_KEY)
+  );
+}
+
+function getStoredFiles(projectId: string): string | null {
+  if (typeof window === "undefined") return null;
+  return (
+    localStorage.getItem(LOCAL_STORAGE_FILES_KEY + projectId) ||
+    localStorage.getItem(LEGACY_STORAGE_FILES_KEY + projectId)
+  );
+}
+
+function getStoredChats(projectId: string): string | null {
+  if (typeof window === "undefined") return null;
+  return (
+    localStorage.getItem(LOCAL_STORAGE_CHATS_KEY + projectId) ||
+    localStorage.getItem(LEGACY_STORAGE_CHATS_KEY + projectId)
+  );
+}
 
 // In-memory fallback if localStorage is unavailable (e.g. during SSR)
 let memoryProjects: Project[] = [...mockProjects];
@@ -43,7 +70,7 @@ export async function getProjects(): Promise<Project[]> {
   // Local Storage fallback
   if (typeof window !== "undefined") {
     try {
-      const stored = localStorage.getItem(LOCAL_STORAGE_PROJECTS_KEY);
+      const stored = getStoredProjects();
       if (stored) {
         return JSON.parse(stored);
       }
@@ -91,7 +118,7 @@ export async function getProject(id: string): Promise<Project | undefined> {
   // Fallback to local
   if (typeof window !== "undefined") {
     try {
-      const stored = localStorage.getItem(LOCAL_STORAGE_PROJECTS_KEY);
+      const stored = getStoredProjects();
       if (stored) {
         const list: Project[] = JSON.parse(stored);
         const match = list.find((p) => p.id === id);
@@ -106,10 +133,10 @@ export async function getProject(id: string): Promise<Project | undefined> {
 }
 
 /**
- * Create a new project
+ * Create or upsert a project
  */
 export async function createProject(project: Partial<Project> & { name: string }): Promise<Project> {
-  const id = project.id || `proj_${Date.now()}`;
+  const id = project.id || `proj_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
   const now = new Date().toISOString();
   const newProject: Project = {
     id,
@@ -118,8 +145,8 @@ export async function createProject(project: Partial<Project> & { name: string }
     type: project.type || "Web Application",
     status: project.status || "active",
     lastUpdated: "Just now",
-    createdAt: new Date().toLocaleDateString(),
-    generated: true,
+    createdAt: project.createdAt || new Date().toLocaleDateString(),
+    generated: project.generated ?? true,
   };
 
   if (isSupabaseConfigured && supabase) {
@@ -127,7 +154,7 @@ export async function createProject(project: Partial<Project> & { name: string }
       const { data: { session } } = await supabase.auth.getSession();
       const userId = session?.user?.id || null;
 
-      await supabase.from("projects").insert({
+      await supabase.from("projects").upsert({
         id: newProject.id,
         name: newProject.name,
         description: newProject.description,
@@ -136,7 +163,7 @@ export async function createProject(project: Partial<Project> & { name: string }
         user_id: userId,
         created_at: now,
         updated_at: now,
-      });
+      }, { onConflict: "id" });
     } catch (err) {
       console.warn("Supabase createProject error:", err);
     }
@@ -145,16 +172,26 @@ export async function createProject(project: Partial<Project> & { name: string }
   // Save locally
   if (typeof window !== "undefined") {
     try {
-      const stored = localStorage.getItem(LOCAL_STORAGE_PROJECTS_KEY);
+      const stored = getStoredProjects();
       const list: Project[] = stored ? JSON.parse(stored) : [...mockProjects];
-      list.unshift(newProject);
+      const existingIdx = list.findIndex((p) => p.id === newProject.id);
+      if (existingIdx !== -1) {
+        list[existingIdx] = { ...list[existingIdx], ...newProject };
+      } else {
+        list.unshift(newProject);
+      }
       localStorage.setItem(LOCAL_STORAGE_PROJECTS_KEY, JSON.stringify(list));
     } catch {
       // ignore
     }
   }
 
-  memoryProjects = [newProject, ...memoryProjects];
+  const memIdx = memoryProjects.findIndex((p) => p.id === newProject.id);
+  if (memIdx !== -1) {
+    memoryProjects[memIdx] = newProject;
+  } else {
+    memoryProjects = [newProject, ...memoryProjects];
+  }
   return newProject;
 }
 
@@ -180,7 +217,7 @@ export async function updateProject(id: string, updates: Partial<Project>): Prom
 
   if (typeof window !== "undefined") {
     try {
-      const stored = localStorage.getItem(LOCAL_STORAGE_PROJECTS_KEY);
+      const stored = getStoredProjects();
       const list: Project[] = stored ? JSON.parse(stored) : [...mockProjects];
       const idx = list.findIndex((p) => p.id === id);
       if (idx !== -1) {
@@ -202,6 +239,8 @@ export async function updateProject(id: string, updates: Partial<Project>): Prom
 export async function deleteProject(id: string): Promise<boolean> {
   if (isSupabaseConfigured && supabase) {
     try {
+      await supabase.from("project_files").delete().eq("project_id", id);
+      await supabase.from("chat_messages").delete().eq("project_id", id);
       await supabase.from("projects").delete().eq("id", id);
     } catch (err) {
       console.warn("Supabase deleteProject error:", err);
@@ -210,20 +249,24 @@ export async function deleteProject(id: string): Promise<boolean> {
 
   if (typeof window !== "undefined") {
     try {
-      const stored = localStorage.getItem(LOCAL_STORAGE_PROJECTS_KEY);
+      const stored = getStoredProjects();
       if (stored) {
         const list: Project[] = JSON.parse(stored);
         const filtered = list.filter((p) => p.id !== id);
         localStorage.setItem(LOCAL_STORAGE_PROJECTS_KEY, JSON.stringify(filtered));
       }
       localStorage.removeItem(LOCAL_STORAGE_FILES_KEY + id);
+      localStorage.removeItem(LEGACY_STORAGE_FILES_KEY + id);
       localStorage.removeItem(LOCAL_STORAGE_CHATS_KEY + id);
+      localStorage.removeItem(LEGACY_STORAGE_CHATS_KEY + id);
     } catch {
       // ignore
     }
   }
 
   memoryProjects = memoryProjects.filter((p) => p.id !== id);
+  delete memoryFiles[id];
+  delete memoryChats[id];
   return true;
 }
 
@@ -254,7 +297,7 @@ export async function getProjectFiles(projectId: string): Promise<ProjectFile[]>
   // Local Storage
   if (typeof window !== "undefined") {
     try {
-      const stored = localStorage.getItem(LOCAL_STORAGE_FILES_KEY + projectId);
+      const stored = getStoredFiles(projectId);
       if (stored) {
         return JSON.parse(stored);
       }
@@ -330,7 +373,7 @@ export async function getChatMessages(projectId: string): Promise<ChatMessage[]>
 
   if (typeof window !== "undefined") {
     try {
-      const stored = localStorage.getItem(LOCAL_STORAGE_CHATS_KEY + projectId);
+      const stored = getStoredChats(projectId);
       if (stored) {
         return JSON.parse(stored);
       }
@@ -367,7 +410,7 @@ export async function saveChatMessage(projectId: string, message: { role: "user"
 
   if (typeof window !== "undefined") {
     try {
-      const stored = localStorage.getItem(LOCAL_STORAGE_CHATS_KEY + projectId);
+      const stored = getStoredChats(projectId);
       const list: ChatMessage[] = stored ? JSON.parse(stored) : [];
       list.push(newMsg);
       localStorage.setItem(LOCAL_STORAGE_CHATS_KEY + projectId, JSON.stringify(list));

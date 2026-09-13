@@ -50,6 +50,23 @@ export function ChatPanel({
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages.length, statusText]);
 
+  // Hydrate saved chat messages from DB / local store for this project
+  useEffect(() => {
+    async function loadSavedChats() {
+      if (!projectId) return;
+      try {
+        const { getChatMessages } = await import("@/lib/supabase/db");
+        const saved = await getChatMessages(projectId);
+        if (saved && saved.length > 0) {
+          setMessages(saved);
+        }
+      } catch (err) {
+        console.warn("Could not load saved chats:", err);
+      }
+    }
+    loadSavedChats();
+  }, [projectId]);
+
   // If an initial prompt is passed from the Hero or URL query, auto-trigger generation!
   useEffect(() => {
     if (initialPrompt && initialPrompt.trim() && !initialPromptExecutedRef.current) {

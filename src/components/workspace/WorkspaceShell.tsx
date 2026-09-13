@@ -215,7 +215,13 @@ export function WorkspaceShell({
 
     // Derive a clean name from prompt if project had generic name
     let currentName = project.name;
-    if (currentName === "Custom Project" || currentName === "Demo Project" || currentName === "My Project") {
+    if (
+      currentName === "Custom Project" ||
+      currentName === "New Application" ||
+      currentName === "New Klyro Project" ||
+      currentName === "Demo Project" ||
+      currentName === "My Project"
+    ) {
       if (urlPrompt) {
         const words = urlPrompt
           .replace(/^(build|create|design|make)\s+(a|an|the)?\s*/i, "")

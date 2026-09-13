@@ -9,6 +9,7 @@ import {
   getProjectFileTree,
   projects,
 } from "@/lib/mock-data";
+import { getProject } from "@/lib/supabase/db";
 import type { Project } from "@/lib/types";
 
 interface ProjectPageProps {
@@ -30,7 +31,10 @@ export async function generateMetadata({
   params,
 }: ProjectPageProps): Promise<Metadata> {
   const { id } = await params;
-  const project = getProjectById(id);
+  let project: Project | undefined = getProjectById(id);
+  if (!project) {
+    project = await getProject(id);
+  }
   return { title: project ? `${project.name} · Klyro` : "Klyro Workspace" };
 }
 
@@ -38,11 +42,16 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const { id } = await params;
   let project: Project | undefined = getProjectById(id);
 
-  // If newly created project ID not in static presets, initialize empty workspace
+  // If newly created project ID not in static presets, check database
+  if (!project) {
+    project = await getProject(id);
+  }
+
+  // If still not found in DB, initialize fresh workspace descriptor
   if (!project) {
     project = {
       id,
-      name: "Custom Project",
+      name: "New Application",
       description: "A new workspace ready for your prompts.",
       type: "Web Application",
       status: "active",

@@ -37,6 +37,9 @@ function getInitials(first: string, last: string): string {
   return f + l || "U";
 }
 
+const USER_STORAGE_KEY = "klyro_user";
+const LEGACY_USER_STORAGE_KEY = "vibebuilder_user";
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(() => {
@@ -73,6 +76,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) {
+      // Check local storage mock session (support modern and legacy keys)
+      const stored =
+        typeof window !== "undefined"
+          ? localStorage.getItem(USER_STORAGE_KEY) ||
+            localStorage.getItem(LEGACY_USER_STORAGE_KEY)
+          : null;
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          setProfile(parsed);
+        } catch {
+          // ignore
+        }
+      }
+      setLoading(false);
       return;
     }
 
@@ -124,7 +142,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       };
       setProfile(mockProfile);
       if (typeof window !== "undefined") {
-        localStorage.setItem("vibebuilder_user", JSON.stringify(mockProfile));
+        localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(mockProfile));
       }
       return {};
     }
@@ -161,7 +179,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       };
       setProfile(mockProfile);
       if (typeof window !== "undefined") {
-        localStorage.setItem("vibebuilder_user", JSON.stringify(mockProfile));
+        localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(mockProfile));
       }
       return { message: "Account created successfully!" };
     }
@@ -197,7 +215,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     setProfile(null);
     if (typeof window !== "undefined") {
-      localStorage.removeItem("vibebuilder_user");
+      localStorage.removeItem(USER_STORAGE_KEY);
+      localStorage.removeItem(LEGACY_USER_STORAGE_KEY);
     }
   }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Plus, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import { getProjects } from "@/lib/supabase/db";
 import type { Project } from "@/lib/types";
 
 export function ProjectGrid() {
+  const router = useRouter();
   const [projectList, setProjectList] = useState<Project[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
@@ -29,6 +30,21 @@ export function ProjectGrid() {
   useEffect(() => {
     void loadProjects();
   }, [loadProjects]);
+
+  async function handleCreateFirstProject() {
+    try {
+      const { createProject } = await import("@/lib/supabase/db");
+      const newProj = await createProject({
+        name: "New Web Application",
+        type: "Web Application",
+        description: "A new workspace ready for your prompts.",
+        status: "active",
+      });
+      router.push(`/project/${newProj.id}`);
+    } catch {
+      router.push(`/project/proj_${Date.now()}`);
+    }
+  }
 
   const filtered = projectList.filter((p) => {
     if (!search.trim()) return true;
@@ -60,11 +76,12 @@ export function ProjectGrid() {
         <p className="mt-1 max-w-sm text-xs text-slate-400">
           Create your first project and describe what you want to build.
         </p>
-        <Button className="mt-6 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-xs font-semibold text-white" asChild>
-          <Link href="/project/demo">
-            <Plus className="size-4 mr-1.5" aria-hidden="true" />
-            New Project
-          </Link>
+        <Button
+          onClick={handleCreateFirstProject}
+          className="mt-6 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-xs font-semibold text-white cursor-pointer"
+        >
+          <Plus className="size-4 mr-1.5" aria-hidden="true" />
+          New Project
         </Button>
       </div>
     );
