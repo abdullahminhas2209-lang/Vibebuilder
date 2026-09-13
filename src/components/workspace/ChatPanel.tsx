@@ -7,7 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ChatMessage } from "@/components/workspace/ChatMessage";
 import { createMockMessageId, createTimestamp } from "@/lib/mock-chat";
-import { parseGeneratedFiles, buildFileTree, extractProse } from "@/lib/parse-ai-response";
+import {
+  parseGeneratedFiles,
+  buildFileTree,
+  extractProse,
+  generateSummaryFromResponse,
+  formatSummaryForStorage,
+} from "@/lib/parse-ai-response";
 import { saveChatMessage } from "@/lib/supabase/db";
 import type { ChatMessage as ChatMessageType, ProjectFile, FileNode } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -36,7 +42,6 @@ export function ChatPanel({
   const [messages, setMessages] = useState<ChatMessageType[]>(initialMessages);
   const [input, setInput] = useState("");
   const [responding, setResponding] = useState(false);
-  const [statusText, setStatusText] = useState<string | null>(null);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -48,7 +53,7 @@ export function ChatPanel({
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [messages.length, statusText]);
+  }, [messages.length, responding]);
 
   // Hydrate saved chat messages from DB / local store for this project
   useEffect(() => {
@@ -91,14 +96,13 @@ export function ChatPanel({
     setMessages(updatedMessages);
     setInput("");
     setResponding(true);
-    setStatusText("Thinking...");
 
     // Persist user message to DB
     if (projectId) {
       saveChatMessage(projectId, { role: "user", content });
     }
 
-    // Placeholder assistant message that streams in
+    // Placeholder assistant message starting in "thinking" stage with typewriter effect
     const assistantId = createMockMessageId("msg-assistant");
     const assistantPlaceholder: ChatMessageType = {
       id: assistantId,
@@ -106,8 +110,11 @@ export function ChatPanel({
       content: "",
       createdAt: createTimestamp(),
       pending: true,
+      statusStage: "thinking",
     };
     setMessages((prev) => [...prev, assistantPlaceholder]);
+
+    const thinkingStartTime = Date.now();
 
     try {
       abortRef.current = new AbortController();
@@ -140,7 +147,19 @@ export function ChatPanel({
       if (!reader) throw new Error("No response body received from AI server.");
       const decoder = new TextDecoder();
       const chunks: string[] = [];
-      setStatusText("Generating components...");
+
+      // Guarantee perceptible transition: keep "thinking" stage active for at least 1.2s
+      const elapsed = Date.now() - thinkingStartTime;
+      if (elapsed < 1200) {
+        await new Promise((res) => setTimeout(res, 1200 - elapsed));
+      }
+
+      // Smoothly transition from "thinking" to "generating" state with Shimmer effect!
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === assistantId ? { ...m, statusStage: "generating" } : m
+        )
+      );
 
       while (true) {
         const { done, value } = await reader.read();
@@ -148,16 +167,9 @@ export function ChatPanel({
 
         const chunk = decoder.decode(value, { stream: true });
         chunks.push(chunk);
-        const streamedText = chunks.join("");
 
-        // Stream text into the assistant message
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === assistantId
-              ? { ...m, content: extractProse(streamedText) || streamedText, pending: true }
-              : m
-          )
-        );
+        // NOTE: Raw code is buffered in memory (chunks) but NEVER streamed into chat messages.
+        // The chat remains clean with the animated shimmer generating card!
       }
 
       const fullText = chunks.join("");
@@ -166,28 +178,61 @@ export function ChatPanel({
       const generatedFiles = parseGeneratedFiles(fullText);
       const fileTree = buildFileTree(generatedFiles);
 
-      // Finalize assistant message with prose only
-      const finalContent = extractProse(fullText) || fullText;
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === assistantId ? { ...m, content: finalContent, pending: false } : m
-        )
-      );
+      if (generatedFiles.length > 0) {
+        // Build structured summary card and clean formatted storage text
+        const summary = generateSummaryFromResponse(content, fullText, generatedFiles);
+        const storageContent = formatSummaryForStorage(summary);
 
-      // Persist assistant message to DB
-      if (projectId) {
-        saveChatMessage(projectId, { role: "assistant", content: finalContent });
-      }
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantId
+              ? {
+                  ...m,
+                  content: storageContent,
+                  pending: false,
+                  statusStage: undefined,
+                  summary,
+                }
+              : m
+          )
+        );
 
-      // Notify parent of new files
-      if (generatedFiles.length > 0 && onFilesGenerated) {
-        onFilesGenerated(generatedFiles, fileTree);
+        // Persist clean summary to DB (never raw code!)
+        if (projectId) {
+          saveChatMessage(projectId, { role: "assistant", content: storageContent });
+        }
+
+        // Notify workspace shell to update live preview and file tree
+        if (onFilesGenerated) {
+          onFilesGenerated(generatedFiles, fileTree);
+        }
+      } else {
+        // General conversational response (without code generation)
+        const cleanProse = extractProse(fullText) || fullText;
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantId
+              ? {
+                  ...m,
+                  content: cleanProse,
+                  pending: false,
+                  statusStage: undefined,
+                }
+              : m
+          )
+        );
+
+        if (projectId) {
+          saveChatMessage(projectId, { role: "assistant", content: cleanProse });
+        }
       }
     } catch (error) {
       if ((error as Error).name === "AbortError") return;
 
       console.error("Chat error:", error);
-      const errMessage = (error as Error)?.message || "Sorry, I encountered an issue generating the code. Please try again.";
+      const errMessage =
+        (error as Error)?.message ||
+        "Sorry, I encountered an issue generating the code. Please try again.";
       setMessages((prev) =>
         prev.map((m) =>
           m.id === assistantId
@@ -195,13 +240,13 @@ export function ChatPanel({
                 ...m,
                 content: `Sorry, I encountered an issue generating the code: ${errMessage}`,
                 pending: false,
+                statusStage: undefined,
               }
             : m
         )
       );
     } finally {
       setResponding(false);
-      setStatusText(null);
     }
   }
 
@@ -261,16 +306,6 @@ export function ChatPanel({
             {messages.map((message) => (
               <ChatMessage key={message.id} message={message} />
             ))}
-            {responding && (
-              <div className="flex items-center gap-2.5 rounded-xl border border-slate-800 bg-slate-900/90 px-3.5 py-2.5 text-xs text-slate-300">
-                <span className="flex gap-1" aria-hidden="true">
-                  <span className="size-1.5 animate-bounce rounded-full bg-indigo-400 [animation-delay:0ms]" />
-                  <span className="size-1.5 animate-bounce rounded-full bg-indigo-400 [animation-delay:150ms]" />
-                  <span className="size-1.5 animate-bounce rounded-full bg-indigo-400 [animation-delay:300ms]" />
-                </span>
-                <span className="font-medium">{statusText ?? "Thinking..."}</span>
-              </div>
-            )}
           </>
         )}
         <div ref={bottomRef} />

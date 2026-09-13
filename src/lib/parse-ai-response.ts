@@ -9,7 +9,7 @@
  *   ```
  */
 
-import type { ProjectFile, ProjectFileLanguage } from "@/lib/types";
+import type { ChatMessageSummary, FileNode, ProjectFile, ProjectFileLanguage } from "@/lib/types";
 
 const CODE_BLOCK_REGEX = /```([a-zA-Z0-9_+-]+)?\n([\s\S]*?)```/g;
 const FILENAME_COMMENT_REGEX = /(?:\/\/|\/\*|#|<!--)\s*(?:file(?:path)?:?\s*|filename:?\s*)?([a-zA-Z0-9_\-./\\]+\.[a-zA-Z0-9]+)/i;
@@ -142,8 +142,6 @@ export function parseGeneratedFiles(aiResponse: string): ProjectFile[] {
  * Converts a flat list of ProjectFiles into a FileNode tree
  * suitable for the FileExplorer component.
  */
-import type { FileNode } from "@/lib/types";
-
 export function buildFileTree(files: ProjectFile[]): FileNode[] {
   const root: FileNode[] = [];
 
@@ -178,4 +176,156 @@ export function buildFileTree(files: ProjectFile[]): FileNode[] {
 /** Strip the AI explanation text, return only prose (non-code) content. */
 export function extractProse(aiResponse: string): string {
   return aiResponse.replace(/```[\s\S]*?```/g, "").trim();
+}
+
+/**
+ * Generate a clean structured summary card object from the AI response and prompt
+ */
+export function generateSummaryFromResponse(
+  prompt: string,
+  aiResponse: string,
+  files: ProjectFile[]
+): ChatMessageSummary {
+  const prose = extractProse(aiResponse);
+
+  // 1. Determine Title
+  let title = "";
+  const headerMatch = prose.match(/^#{1,3}\s+(.+)$/m);
+  if (headerMatch && headerMatch[1].trim()) {
+    title = headerMatch[1].trim().replace(/[*_`]/g, "");
+  } else {
+    // Derive from prompt or default
+    const cleanPrompt = prompt.trim().replace(/^build (?:a|an)?\s+/i, "").replace(/^create (?:a|an)?\s+/i, "").replace(/^design (?:a|an)?\s+/i, "");
+    const words = cleanPrompt.split(/\s+/).slice(0, 6).join(" ");
+    title = words.charAt(0).toUpperCase() + words.slice(1);
+    if (!title.toLowerCase().includes("page") && !title.toLowerCase().includes("app") && !title.toLowerCase().includes("site")) {
+      title += " Application";
+    }
+  }
+
+  // 2. Determine Description
+  const proseLines = prose
+    .split("\n")
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0 && !l.startsWith("#") && !l.startsWith("-") && !l.startsWith("*") && !/^\d+\./.test(l));
+  
+  let description = proseLines.slice(0, 2).join(" ");
+  if (!description || description.length < 15) {
+    description = `Successfully created modern responsive components and interactive live preview based on: "${prompt}".`;
+  }
+
+  // 3. Determine Features
+  const features: string[] = [];
+  const bulletMatches = prose.match(/^[-*•]\s+(.+)$/gm);
+  if (bulletMatches && bulletMatches.length >= 2) {
+    for (const b of bulletMatches.slice(0, 5)) {
+      const cleanBullet = b.replace(/^[-*•]\s+/, "").replace(/[*_`]/g, "").trim();
+      if (cleanBullet.length > 5) features.push(cleanBullet);
+    }
+  }
+
+  // If no bullets parsed from prose, construct dynamic features from generated files
+  if (features.length < 2) {
+    const fileNamesLower = files.map((f) => f.name.toLowerCase());
+    if (fileNamesLower.some((n) => n.includes("navbar") || n.includes("header") || n.includes("nav"))) {
+      features.push("Responsive navigation bar with mobile toggle and brand assets");
+    }
+    if (fileNamesLower.some((n) => n.includes("hero") || n.includes("banner"))) {
+      features.push("High-impact hero section with primary call-to-action buttons");
+    }
+    if (fileNamesLower.some((n) => n.includes("pricing") || n.includes("plan"))) {
+      features.push("Interactive pricing table with tier options and feature breakdown");
+    }
+    if (fileNamesLower.some((n) => n.includes("feature") || n.includes("card") || n.includes("grid"))) {
+      features.push("Feature showcase cards with modern hover effects");
+    }
+    if (fileNamesLower.some((n) => n.includes("menu") || n.includes("product") || n.includes("item"))) {
+      features.push("Interactive item catalog with filter state and categorization");
+    }
+    if (fileNamesLower.some((n) => n.includes("footer"))) {
+      features.push("Comprehensive footer with links, copyright, and social proof");
+    }
+    features.push("Styled with modern Tailwind CSS responsive utility classes");
+    features.push("Interactive React TypeScript components with Lucide icons");
+  }
+
+  return {
+    title,
+    description,
+    features: features.slice(0, 5),
+    files: files.map((f) => f.path),
+  };
+}
+
+/**
+ * Format summary for storage so raw code is NEVER saved in chat history
+ */
+export function formatSummaryForStorage(summary: ChatMessageSummary): string {
+  const parts: string[] = [];
+  parts.push(`### ${summary.title}`);
+  parts.push(summary.description);
+  parts.push("");
+  if (summary.features && summary.features.length > 0) {
+    parts.push("**Features Built:**");
+    for (const feat of summary.features) {
+      parts.push(`- ${feat}`);
+    }
+    parts.push("");
+  }
+  if (summary.files && summary.files.length > 0) {
+    parts.push("**Generated Files:**");
+    for (const file of summary.files) {
+      parts.push(`- \`${file}\``);
+    }
+  }
+  return parts.join("\n");
+}
+
+/**
+ * Parse an existing formatted summary from message content
+ */
+export function parseSummaryFromContent(content: string): ChatMessageSummary | null {
+  if (!content) return null;
+  // If content contains raw code fence, strip it immediately!
+  const clean = extractProse(content);
+  if (!clean.includes("**Features Built:**") && !clean.startsWith("### ")) {
+    return null;
+  }
+
+  const lines = clean.split("\n").map((l) => l.trim());
+  let title = "Generated Application";
+  let description = "";
+  const features: string[] = [];
+  const files: string[] = [];
+
+  let section: "desc" | "features" | "files" = "desc";
+
+  for (const line of lines) {
+    if (line.startsWith("### ")) {
+      title = line.replace("### ", "").trim();
+      continue;
+    }
+    if (line.includes("**Features Built:**")) {
+      section = "features";
+      continue;
+    }
+    if (line.includes("**Generated Files:**")) {
+      section = "files";
+      continue;
+    }
+    if (section === "desc" && line.length > 0) {
+      description = description ? `${description} ${line}` : line;
+    } else if (section === "features" && line.startsWith("- ")) {
+      features.push(line.replace("- ", "").trim());
+    } else if (section === "files" && line.startsWith("- ")) {
+      files.push(line.replace("- ", "").replace(/`/g, "").trim());
+    }
+  }
+
+  return {
+    title,
+    description: description || "Components and preview generated successfully.",
+    features: features.length > 0 ? features : ["Component generation complete"],
+    files,
+  };
 }

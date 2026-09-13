@@ -182,6 +182,19 @@
   animation: vb-shimmer 2.5s infinite;
 }
 
+@keyframes vb-shimmer-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@utility animate-shimmer-slide {
+  animation: vb-shimmer-slide 1.8s infinite linear;
+}
+
 /* Scroll-triggered reveal driven by components/Reveal.tsx. Elements are
    only hidden after hydration confirms they sit below the fold, so no
    content is lost when JavaScript is unavailable. */

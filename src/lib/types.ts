@@ -86,14 +86,25 @@ export interface Project {
 
 export type ChatRole = "user" | "assistant" | "system";
 
+export interface ChatMessageSummary {
+  title: string;
+  description: string;
+  features: string[];
+  files: string[];
+}
+
 export interface ChatMessage {
   id: string;
   role: ChatRole;
   content: string;
   /** Pre-formatted display time, e.g. "9:41 AM". */
   createdAt: string;
-  /** Working indicator shown while the mock assistant is responding. */
+  /** Working indicator shown while the assistant is responding. */
   pending?: boolean;
+  /** Active stage during processing: thinking vs generating */
+  statusStage?: "thinking" | "generating";
+  /** Structured build summary shown on completion */
+  summary?: ChatMessageSummary;
 }
 
 export type ProjectFileLanguage = "tsx" | "ts" | "css" | "json";
