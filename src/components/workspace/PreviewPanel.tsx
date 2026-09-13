@@ -11,6 +11,7 @@ import {
   Monitor,
   RotateCw,
   Smartphone,
+  Sparkles,
   Tablet,
 } from "lucide-react";
 
@@ -229,7 +230,22 @@ export function PreviewPanel({
             />
           ) : project.preview ? (
             <MockSite config={project.preview} />
-          ) : null}
+          ) : (
+            <div className="flex min-h-[600px] w-full flex-col items-center justify-center p-8 text-center bg-[#070A11] text-slate-200">
+              <div className="relative mb-4 flex size-14 items-center justify-center rounded-2xl border border-indigo-500/30 bg-indigo-950/40 text-indigo-400 shadow-lg shadow-indigo-500/10">
+                <Sparkles className="size-6 animate-pulse text-indigo-400" aria-hidden="true" />
+                <span className="absolute -top-1 -right-1 size-3 rounded-full bg-indigo-500 animate-ping" />
+              </div>
+              <h3 className="text-base font-bold text-white">Live Sandbox Initializing</h3>
+              <p className="mt-2 max-w-sm text-xs text-slate-400 leading-relaxed">
+                Describe what to build in chat and your live interactive preview will compile here in real-time.
+              </p>
+              <div className="mt-6 flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/80 px-3 py-1 text-[11px] text-slate-400">
+                <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Compiler Sandbox Active</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

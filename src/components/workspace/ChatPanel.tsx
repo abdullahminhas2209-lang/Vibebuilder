@@ -63,7 +63,16 @@ export function ChatPanel({
         const { getChatMessages } = await import("@/lib/supabase/db");
         const saved = await getChatMessages(projectId);
         if (saved && saved.length > 0) {
-          setMessages(saved);
+          setMessages((prev) => {
+            // NEVER overwrite if user is actively generating code!
+            if (prev.some((m) => m.pending)) {
+              return prev;
+            }
+            if (prev.length === 0) {
+              return saved;
+            }
+            return prev;
+          });
         }
       } catch (err) {
         console.warn("Could not load saved chats:", err);
@@ -92,16 +101,6 @@ export function ChatPanel({
       createdAt: createTimestamp(),
     };
 
-    const updatedMessages = [...messages, userMessage];
-    setMessages(updatedMessages);
-    setInput("");
-    setResponding(true);
-
-    // Persist user message to DB
-    if (projectId) {
-      saveChatMessage(projectId, { role: "user", content });
-    }
-
     // Placeholder assistant message starting in "thinking" stage with typewriter effect
     const assistantId = createMockMessageId("msg-assistant");
     const assistantPlaceholder: ChatMessageType = {
@@ -112,7 +111,16 @@ export function ChatPanel({
       pending: true,
       statusStage: "thinking",
     };
-    setMessages((prev) => [...prev, assistantPlaceholder]);
+
+    // Atomic update adding both user message and assistant placeholder together
+    setMessages((prev) => [...prev, userMessage, assistantPlaceholder]);
+    setInput("");
+    setResponding(true);
+
+    // Persist user message to DB
+    if (projectId) {
+      saveChatMessage(projectId, { role: "user", content });
+    }
 
     const thinkingStartTime = Date.now();
 
@@ -120,7 +128,7 @@ export function ChatPanel({
       abortRef.current = new AbortController();
 
       // Build conversation history for Gemini
-      const history = updatedMessages.map((m) => ({
+      const history = [...messages, userMessage].map((m) => ({
         role: m.role,
         content: m.content,
       }));

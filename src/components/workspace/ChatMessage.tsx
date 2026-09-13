@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BrainCircuit, Check, CheckCircle2, FileCode2, Sparkles, Zap } from "lucide-react";
+import { Check, CheckCircle2, Cpu, FileCode2, Sparkles, Zap } from "lucide-react";
 
 import { LogoMark } from "@/components/brand/Logo";
 import { mockUser } from "@/lib/mock-data";
@@ -86,7 +86,7 @@ export function ChatMessage({ message }: { message: ChatMessageType }) {
             <div className="relative overflow-hidden rounded-2xl rounded-bl-sm border border-slate-800 bg-slate-900/90 p-3.5 text-xs text-slate-200 shadow-sm transition-all duration-300">
               <div className="flex items-center gap-2 mb-2">
                 <span className="flex items-center gap-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 text-[11px] font-semibold text-amber-400">
-                  <BrainCircuit className="size-3 animate-pulse text-amber-400" />
+                  <Cpu className="size-3 animate-pulse text-amber-400" />
                   Thinking...
                 </span>
                 <span className="flex gap-1" aria-hidden="true">
