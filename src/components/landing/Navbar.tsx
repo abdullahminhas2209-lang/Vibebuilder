@@ -70,6 +70,16 @@ export function Navbar() {
     }
   }
 
+  function handlePricingClick(e: React.MouseEvent) {
+    if (window.location.pathname === "/") {
+      e.preventDefault();
+      const pricingElement = document.getElementById("pricing");
+      if (pricingElement) {
+        pricingElement.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }
+
   function openAuth(mode: "signin" | "signup") {
     setAuthTab(mode);
     setAuthOpen(true);
@@ -90,7 +100,7 @@ export function Navbar() {
           {/* LEFT: Logo */}
           <Logo />
 
-          {/* CENTER: Navigation (Dashboard, How It Works, Templates) */}
+          {/* CENTER: Navigation (Dashboard, How It Works, Explore, Pricing) */}
           <nav
             aria-label="Primary"
             className="hidden items-center gap-1 rounded-full bg-slate-100/70 dark:bg-slate-800/60 p-1 border border-slate-200/50 dark:border-slate-700/50 md:flex"
@@ -114,6 +124,13 @@ export function Navbar() {
               className="rounded-full px-4 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 transition-colors hover:bg-white/80 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
             >
               Explore
+            </Link>
+            <Link
+              href="#pricing"
+              onClick={handlePricingClick}
+              className="rounded-full px-4 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 transition-colors hover:bg-white/80 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
+            >
+              Pricing
             </Link>
           </nav>
 
@@ -248,6 +265,16 @@ export function Navbar() {
                   className="rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
                   Explore
+                </Link>
+                <Link
+                  href="#pricing"
+                  onClick={(e) => {
+                    setIsOpen(false);
+                    handlePricingClick(e);
+                  }}
+                  className="rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                >
+                  Pricing
                 </Link>
               </nav>
 

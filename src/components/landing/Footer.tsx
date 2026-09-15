@@ -8,6 +8,7 @@ const footerLinks = [
       { label: "AI Builder", href: "/#hero-builder" },
       { label: "How It Works", href: "#how-it-works" },
       { label: "Explore", href: "#what-you-can-build" },
+      { label: "Pricing", href: "#pricing" },
       { label: "Dashboard", href: "/dashboard" },
     ],
   },
