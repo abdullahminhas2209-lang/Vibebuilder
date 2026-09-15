@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
 
 const navigation = [
   { label: "Projects", href: "/dashboard", icon: FolderKanban, soon: false },
-  { label: "Templates", href: "/#templates", icon: LayoutTemplate, soon: false },
+  { label: "Explore", href: "/#what-you-can-build", icon: LayoutTemplate, soon: false },
   { label: "Settings", href: "#", icon: Settings, soon: true },
 ] as const;
 

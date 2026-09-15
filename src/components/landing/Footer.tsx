@@ -7,7 +7,7 @@ const footerLinks = [
     links: [
       { label: "AI Builder", href: "/#hero-builder" },
       { label: "How It Works", href: "#how-it-works" },
-      { label: "Templates", href: "#templates" },
+      { label: "Explore", href: "#what-you-can-build" },
       { label: "Dashboard", href: "/dashboard" },
     ],
   },

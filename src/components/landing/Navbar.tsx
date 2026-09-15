@@ -60,6 +60,16 @@ export function Navbar() {
     }
   }
 
+  function handleExploreClick(e: React.MouseEvent) {
+    if (window.location.pathname === "/") {
+      e.preventDefault();
+      const showcaseElement = document.getElementById("what-you-can-build");
+      if (showcaseElement) {
+        showcaseElement.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }
+
   function openAuth(mode: "signin" | "signup") {
     setAuthTab(mode);
     setAuthOpen(true);
@@ -99,10 +109,11 @@ export function Navbar() {
               How It Works
             </Link>
             <Link
-              href="#templates"
+              href="#what-you-can-build"
+              onClick={handleExploreClick}
               className="rounded-full px-4 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 transition-colors hover:bg-white/80 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
             >
-              Templates
+              Explore
             </Link>
           </nav>
 
@@ -229,11 +240,14 @@ export function Navbar() {
                   How It Works
                 </Link>
                 <Link
-                  href="#templates"
-                  onClick={() => setIsOpen(false)}
+                  href="#what-you-can-build"
+                  onClick={(e) => {
+                    setIsOpen(false);
+                    handleExploreClick(e);
+                  }}
                   className="rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
-                  Templates
+                  Explore
                 </Link>
               </nav>
 
