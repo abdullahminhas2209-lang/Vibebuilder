@@ -32,9 +32,9 @@ function TypewriterText({
   }, [text, speed]);
 
   return (
-    <span className="font-medium text-slate-200">
+    <span className="font-medium text-cream">
       {displayed}
-      <span className="inline-block w-1 h-3.5 ml-1 align-middle bg-indigo-400 animate-cursor-blink" />
+      <span className="inline-block w-1 h-3.5 ml-1 align-middle bg-amber animate-cursor-blink" />
     </span>
   );
 }
@@ -47,16 +47,16 @@ export function ChatMessage({ message }: { message: ChatMessageType }) {
       <div className="flex gap-2.5 animate-fade-up flex-row-reverse">
         <span
           aria-hidden="true"
-          className="flex size-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-[10px] font-bold text-white shadow-xs"
+          className="flex size-7 shrink-0 items-center justify-center rounded-sm bg-ink-raised border border-slate-line text-[11px] font-mono font-semibold text-amber shadow-xs"
         >
           {mockUser.initials}
         </span>
 
         <div className="flex max-w-[85%] min-w-0 flex-col gap-1 items-end">
-          <div className="rounded-2xl rounded-br-sm bg-gradient-to-r from-indigo-600 to-blue-600 px-3.5 py-2.5 text-xs sm:text-sm leading-relaxed text-white shadow-md font-normal hover:shadow-indigo-500/20 transition-all duration-200">
+          <div className="rounded-md rounded-tr-none bg-amber/15 border border-amber/30 px-3.5 py-2.5 text-xs sm:text-sm leading-relaxed text-cream shadow-sm font-sans">
             {message.content}
           </div>
-          <p className="px-1 text-[11px] text-slate-500 font-medium text-right">
+          <p className="px-1 text-[11px] text-fog font-mono text-right">
             You · {message.createdAt}
           </p>
         </div>
@@ -71,11 +71,11 @@ export function ChatMessage({ message }: { message: ChatMessageType }) {
     return (
       <div className="flex gap-2.5 animate-fade-up">
         <div className="relative">
-          <LogoMark className="size-7 shrink-0 rounded-full" />
+          <LogoMark className="size-6 shrink-0 rounded-sm" />
           <span
             className={cn(
-              "absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full border-2 border-[#0B0F19]",
-              isThinking ? "bg-amber-400 animate-ping" : "bg-indigo-400 animate-pulse"
+              "absolute -bottom-0.5 -right-0.5 size-2 rounded-full border border-ink",
+              isThinking ? "bg-amber animate-ping" : "bg-amber animate-pulse"
             )}
           />
         </div>
@@ -83,55 +83,55 @@ export function ChatMessage({ message }: { message: ChatMessageType }) {
         <div className="flex max-w-[90%] min-w-0 flex-col gap-1.5 flex-1">
           {isThinking ? (
             // Phase 1: Thinking... state with typewriter effect
-            <div className="relative overflow-hidden rounded-2xl rounded-bl-sm border border-slate-800 bg-slate-900/90 p-3.5 text-xs text-slate-200 shadow-sm transition-all duration-300">
+            <div className="relative overflow-hidden rounded-md border border-slate-line bg-ink-raised/60 p-3.5 text-xs text-cream shadow-sm transition-all duration-300">
               <div className="flex items-center gap-2 mb-2">
-                <span className="flex items-center gap-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 text-[11px] font-semibold text-amber-400">
-                  <Cpu className="size-3 animate-pulse text-amber-400" />
+                <span className="flex items-center gap-1.5 rounded-sm bg-amber/15 border border-amber/30 px-2 py-0.5 text-[11px] font-mono font-semibold text-amber">
+                  <Cpu className="size-3 animate-pulse text-amber" />
                   Thinking...
                 </span>
                 <span className="flex gap-1" aria-hidden="true">
-                  <span className="size-1 animate-bounce rounded-full bg-amber-400 [animation-delay:0ms]" />
-                  <span className="size-1 animate-bounce rounded-full bg-amber-400 [animation-delay:150ms]" />
-                  <span className="size-1 animate-bounce rounded-full bg-amber-400 [animation-delay:300ms]" />
+                  <span className="size-1 animate-bounce rounded-full bg-amber [animation-delay:0ms]" />
+                  <span className="size-1 animate-bounce rounded-full bg-amber [animation-delay:150ms]" />
+                  <span className="size-1 animate-bounce rounded-full bg-amber [animation-delay:300ms]" />
                 </span>
               </div>
-              <div className="text-xs text-slate-300 leading-relaxed font-mono">
+              <div className="text-xs text-fog leading-relaxed font-mono">
                 <TypewriterText text="Analyzing project requirements & planning component architecture..." />
               </div>
             </div>
           ) : (
             // Phase 2: Generating... state with typewriter effect & prominent SHIMMER effect
-            <div className="relative overflow-hidden rounded-2xl rounded-bl-sm border border-indigo-500/40 bg-slate-900/95 p-3.5 text-xs text-slate-200 shadow-lg shadow-indigo-500/10 transition-all duration-300">
+            <div className="relative overflow-hidden rounded-md border border-amber/40 bg-ink-raised p-3.5 text-xs text-cream shadow-md transition-all duration-300">
               {/* Shimmer Light Beam Effect */}
-              <div className="pointer-events-none absolute inset-0 -translate-x-full animate-shimmer-slide bg-gradient-to-r from-transparent via-indigo-500/15 to-transparent" />
+              <div className="pointer-events-none absolute inset-0 -translate-x-full animate-shimmer-slide bg-gradient-to-r from-transparent via-amber/10 to-transparent" />
               
               <div className="relative z-10 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 rounded-full bg-indigo-500/15 border border-indigo-500/30 px-2.5 py-0.5 text-[11px] font-semibold text-indigo-300">
-                    <Sparkles className="size-3 text-indigo-400 animate-spin" />
+                  <span className="flex items-center gap-1.5 rounded-sm bg-amber/15 border border-amber/30 px-2 py-0.5 text-[11px] font-mono font-semibold text-amber">
+                    <Sparkles className="size-3 text-amber animate-spin" />
                     Generating...
                   </span>
-                  <span className="flex items-center gap-1.5 text-[10px] text-emerald-400 font-medium">
-                    <span className="size-1.5 rounded-full bg-emerald-400 animate-ping" />
+                  <span className="flex items-center gap-1.5 text-[10px] text-amber font-mono">
+                    <span className="size-1.5 rounded-full bg-amber animate-ping" />
                     Compiling preview
                   </span>
                 </div>
 
-                <div className="text-xs text-slate-200 font-mono leading-relaxed">
+                <div className="text-xs text-fog font-mono leading-relaxed">
                   <TypewriterText text="Writing component structure, styling layout & building live sandbox..." />
                 </div>
 
                 {/* Shimmering Skeleton Component Bars */}
                 <div className="space-y-1.5 pt-1">
-                  <div className="h-2 w-3/4 rounded-full bg-slate-800 animate-shimmer overflow-hidden" />
-                  <div className="h-2 w-full rounded-full bg-slate-800 animate-shimmer overflow-hidden" />
-                  <div className="h-2 w-4/5 rounded-full bg-slate-800 animate-shimmer overflow-hidden" />
+                  <div className="h-2 w-3/4 rounded-full bg-slate-line animate-shimmer overflow-hidden" />
+                  <div className="h-2 w-full rounded-full bg-slate-line animate-shimmer overflow-hidden" />
+                  <div className="h-2 w-4/5 rounded-full bg-slate-line animate-shimmer overflow-hidden" />
                 </div>
               </div>
             </div>
           )}
 
-          <p className="px-1 text-[11px] text-slate-500 font-medium">
+          <p className="px-1 text-[11px] text-fog font-mono">
             Klyro AI · {message.createdAt}
           </p>
         </div>
@@ -147,42 +147,42 @@ export function ChatMessage({ message }: { message: ChatMessageType }) {
   if (summary) {
     return (
       <div className="flex gap-2.5 animate-fade-up">
-        <LogoMark className="size-7 shrink-0 rounded-full mt-1" />
+        <LogoMark className="size-6 shrink-0 rounded-sm mt-1" />
 
         <div className="flex max-w-[95%] sm:max-w-[88%] min-w-0 flex-col gap-1">
-          <div className="rounded-2xl rounded-bl-sm border border-slate-800/90 bg-[#0E1322] p-4 text-xs sm:text-sm text-slate-200 shadow-md hover:border-slate-700 transition-all duration-200">
+          <div className="rounded-md border border-slate-line bg-ink-raised p-4 text-xs sm:text-sm text-cream shadow-md transition-all duration-200">
             {/* Header Badge */}
-            <div className="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-2.5 mb-3">
+            <div className="flex items-center justify-between gap-2 border-b border-slate-line pb-2.5 mb-3">
               <div className="flex items-center gap-2">
-                <div className="flex size-6 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <div className="flex size-5 items-center justify-center rounded-sm bg-amber/15 text-amber border border-amber/30">
                   <CheckCircle2 className="size-3.5" />
                 </div>
-                <h3 className="text-sm font-bold text-white tracking-tight">
+                <h3 className="font-serif text-sm font-semibold text-cream tracking-tight">
                   {summary.title}
                 </h3>
               </div>
-              <span className="shrink-0 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
+              <span className="shrink-0 rounded-sm bg-amber/15 border border-amber/30 px-2 py-0.5 text-[10px] font-mono font-medium text-amber">
                 Ready
               </span>
             </div>
 
             {/* Clean Description */}
-            <p className="text-xs text-slate-300 leading-relaxed mb-3.5">
+            <p className="text-xs text-fog leading-relaxed mb-3.5 font-sans">
               {summary.description}
             </p>
 
             {/* Features List */}
             {summary.features && summary.features.length > 0 && (
-              <div className="mb-3.5 space-y-1.5 rounded-xl bg-slate-900/60 p-3 border border-slate-800/60">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                  <Zap className="size-3 text-amber-400" />
+              <div className="mb-3.5 space-y-1.5 rounded-sm bg-ink p-3 border border-slate-line">
+                <p className="text-[11px] font-mono font-semibold uppercase tracking-wider text-fog-dim flex items-center gap-1.5">
+                  <Zap className="size-3 text-amber" />
                   Key Features Built:
                 </p>
                 <div className="space-y-1 pt-1">
                   {summary.features.map((feat, idx) => (
-                    <div key={idx} className="flex items-start gap-2 text-xs text-slate-300">
-                      <span className="flex size-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 mt-0.5">
-                        <Check className="size-2.5" />
+                    <div key={idx} className="flex items-start gap-2 text-xs text-cream font-sans">
+                      <span className="flex size-3.5 shrink-0 items-center justify-center rounded-full bg-amber/20 text-amber mt-0.5 font-mono text-[10px]">
+                        ✓
                       </span>
                       <span>{feat}</span>
                     </div>
@@ -194,17 +194,17 @@ export function ChatMessage({ message }: { message: ChatMessageType }) {
             {/* Generated Files */}
             {summary.files && summary.files.length > 0 && (
               <div className="mb-3 space-y-1.5">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                  <FileCode2 className="size-3 text-indigo-400" />
+                <p className="text-[11px] font-mono font-semibold uppercase tracking-wider text-fog-dim flex items-center gap-1.5">
+                  <FileCode2 className="size-3 text-amber" />
                   Generated Files ({summary.files.length}):
                 </p>
                 <div className="flex flex-wrap gap-1.5 pt-0.5">
                   {summary.files.map((file, idx) => (
                     <span
                       key={idx}
-                      className="inline-flex items-center gap-1 rounded-md bg-slate-900 border border-slate-800 px-2 py-1 text-[11px] font-mono text-indigo-300 hover:border-slate-700 transition-colors"
+                      className="inline-flex items-center gap-1 rounded-sm bg-ink border border-slate-line px-2 py-1 text-[11px] font-mono text-fog hover:border-amber/40 hover:text-amber transition-colors"
                     >
-                      <FileCode2 className="size-3 text-slate-500" />
+                      <FileCode2 className="size-3 text-fog-dim" />
                       {file}
                     </span>
                   ))}
@@ -213,16 +213,16 @@ export function ChatMessage({ message }: { message: ChatMessageType }) {
             )}
 
             {/* Live Preview Active Notice */}
-            <div className="rounded-lg bg-indigo-950/30 border border-indigo-500/20 px-3 py-2 text-[11px] text-indigo-300 font-medium flex items-center justify-between">
+            <div className="rounded-sm bg-amber/[0.08] border border-amber/30 px-3 py-2 text-[11px] text-amber font-mono flex items-center justify-between">
               <span className="flex items-center gap-1.5">
-                <span className="size-1.5 rounded-full bg-emerald-400" />
+                <span className="size-1.5 rounded-full bg-amber shadow-[0_0_6px_rgba(242,169,59,0.8)]" />
                 Live Preview ready in Preview tab
               </span>
-              <span className="text-slate-400">Full source in &lt;/&gt; Code</span>
+              <span className="text-fog">Full source in &lt;/&gt; Code</span>
             </div>
           </div>
 
-          <p className="px-1 text-[11px] text-slate-500 font-medium">
+          <p className="px-1 text-[11px] text-fog font-mono">
             Klyro AI · {message.createdAt}
           </p>
         </div>
@@ -235,13 +235,13 @@ export function ChatMessage({ message }: { message: ChatMessageType }) {
 
   return (
     <div className="flex gap-2.5 animate-fade-up">
-      <LogoMark className="size-7 shrink-0 rounded-full" />
+      <LogoMark className="size-6 shrink-0 rounded-sm mt-1" />
 
       <div className="flex max-w-[85%] min-w-0 flex-col gap-1">
-        <div className="rounded-2xl rounded-bl-sm bg-slate-900/90 border border-slate-800 px-3.5 py-2.5 text-xs sm:text-sm leading-relaxed text-slate-200 shadow-xs hover:border-slate-700 hover:bg-slate-900 transition-all duration-200">
+        <div className="rounded-md bg-ink-raised border border-slate-line px-3.5 py-2.5 text-xs sm:text-sm leading-relaxed text-cream shadow-xs transition-all duration-200 font-sans">
           {cleanContent}
         </div>
-        <p className="px-1 text-[11px] text-slate-500 font-medium">
+        <p className="px-1 text-[11px] text-fog font-mono">
           Klyro AI · {message.createdAt}
         </p>
       </div>

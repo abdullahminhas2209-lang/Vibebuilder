@@ -23,12 +23,12 @@ const metrics = [
 
 export default function DashboardPage() {
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-ink text-cream font-sans">
       <Sidebar />
       <div className="flex-1">
         <Topbar />
         <main className="p-8">
-          <h1 className="text-2xl font-semibold text-slate-900">Overview</h1>
+          <h1 className="font-serif text-2xl font-semibold text-cream">Overview</h1>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {metrics.map((metric) => (
               <MetricCard key={metric.label} {...metric} />
@@ -47,10 +47,13 @@ export default function DashboardPage() {
     name: "layout.tsx",
     language: "tsx",
     code: `import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const ibmPlexSans = IBM_Plex_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+});
 
 export const metadata: Metadata = {
   title: "Pulseboard — Product analytics",
@@ -64,7 +67,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={ibmPlexSans.className}>{children}</body>
     </html>
   );
 }
@@ -77,14 +80,17 @@ export default function RootLayout({
     code: `@import "tailwindcss";
 
 :root {
-  --brand: oklch(0.51 0.19 277);
-  --surface: oklch(0.98 0.003 260);
-  --ink: oklch(0.21 0.02 262);
+  --ink: #14161f;
+  --ink-raised: #1c1f2b;
+  --amber: #f2a93b;
+  --cream: #f2f0e8;
+  --fog: #9aa0ae;
+  --slate-line: #2b2f3c;
 }
 
 body {
-  background: var(--surface);
-  color: var(--ink);
+  background: var(--ink);
+  color: var(--cream);
 }
 `,
   },
@@ -102,11 +108,11 @@ export function MetricCard({ label, value, delta }: MetricCardProps) {
   const positive = delta.startsWith("+");
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5">
-      <p className="text-sm text-slate-500">{label}</p>
+    <div className="rounded-md border border-slate-line bg-ink-raised p-5 transition-all hover:border-amber/40">
+      <p className="font-mono text-xs uppercase tracking-wider text-fog-dim">{label}</p>
       <div className="mt-2 flex items-baseline justify-between">
-        <p className="text-2xl font-semibold text-slate-900">{value}</p>
-        <span className={positive ? "text-emerald-600" : "text-rose-600"}>
+        <p className="font-mono text-2xl font-bold text-cream">{value}</p>
+        <span className={positive ? "font-mono text-xs font-medium text-amber" : "font-mono text-xs font-medium text-rose-400"}>
           {delta}
         </span>
       </div>
@@ -124,19 +130,19 @@ const values = [42, 58, 51, 74, 68, 35, 48];
 
 export function UsageChart() {
   return (
-    <div className="mt-8 rounded-xl border border-slate-200 bg-white p-6">
-      <div className="flex items-center justify-between">
-        <h2 className="font-semibold text-slate-900">API requests</h2>
-        <span className="text-sm text-slate-500">Last 7 days</span>
+    <div className="mt-8 rounded-md border border-slate-line bg-ink-raised p-6">
+      <div className="flex items-center justify-between border-b border-slate-line pb-3">
+        <h2 className="font-serif font-semibold text-cream">API requests</h2>
+        <span className="font-mono text-xs text-fog-dim">Last 7 days</span>
       </div>
       <div className="mt-6 flex h-40 items-end gap-3">
         {values.map((value, index) => (
           <div key={days[index]} className="flex flex-1 flex-col items-center gap-2">
             <div
-              className="w-full rounded-t-md bg-indigo-500/80"
+              className="w-full rounded-t-sm bg-amber/80 transition-all hover:bg-amber"
               style={{ height: value + "%" }}
             />
-            <span className="text-xs text-slate-400">{days[index]}</span>
+            <span className="font-mono text-xs text-fog">{days[index]}</span>
           </div>
         ))}
       </div>
@@ -153,16 +159,19 @@ export function UsageChart() {
 
 export function Sidebar() {
   return (
-    <aside className="hidden w-56 shrink-0 border-r border-slate-200 bg-white p-4 md:block">
-      <p className="px-2 text-sm font-semibold text-slate-900">Pulseboard</p>
-      <nav className="mt-4 space-y-1">
+    <aside className="hidden w-56 shrink-0 border-r border-slate-line bg-ink-raised p-4 md:block">
+      <div className="flex items-center gap-2 px-2 py-1">
+        <span className="flex size-6 items-center justify-center rounded-sm bg-amber text-[#14161f] font-mono font-bold text-xs">P</span>
+        <p className="font-serif text-sm font-semibold text-cream">Pulseboard</p>
+      </div>
+      <nav className="mt-6 space-y-1">
         {items.map((item, index) => (
           <p
             key={item}
             className={
               index === 0
-                ? "rounded-lg bg-indigo-50 px-2 py-1.5 text-sm font-medium text-indigo-700"
-                : "rounded-lg px-2 py-1.5 text-sm text-slate-600"
+                ? "rounded-sm bg-amber text-[#14161f] px-3 py-1.5 font-mono text-xs font-semibold cursor-pointer"
+                : "rounded-sm px-3 py-1.5 font-mono text-xs text-fog hover:text-cream hover:bg-ink cursor-pointer transition-colors"
             }
           >
             {item}
@@ -180,15 +189,15 @@ export function Sidebar() {
     language: "tsx",
     code: `export function Topbar() {
   return (
-    <header className="flex h-14 items-center justify-between border-b border-slate-200 bg-white px-6">
+    <header className="flex h-14 items-center justify-between border-b border-slate-line bg-ink px-6">
       <input
         readOnly
-        className="w-64 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm"
+        className="w-64 rounded-sm border border-slate-line bg-ink-raised px-3 py-1.5 font-mono text-xs text-cream placeholder:text-fog-dim focus:outline-none"
         placeholder="Search metrics..."
       />
       <div className="flex items-center gap-3">
-        <span className="text-sm text-slate-500">Acme Inc</span>
-        <span className="flex size-8 items-center justify-center rounded-full bg-indigo-600 text-xs font-semibold text-white">
+        <span className="font-sans text-xs text-fog">Acme Inc</span>
+        <span className="flex size-7 items-center justify-center rounded-sm bg-amber text-xs font-bold font-mono text-[#14161f]">
           AR
         </span>
       </div>

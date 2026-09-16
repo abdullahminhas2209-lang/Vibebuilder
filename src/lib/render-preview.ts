@@ -73,37 +73,50 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
       theme: {
         extend: {
           colors: {
-            border: "hsl(214.3 31.8% 91.4%)",
-            background: "hsl(0 0% 100%)",
-            foreground: "hsl(222.2 84% 4.9%)",
+            ink: "#14161f",
+            "ink-raised": "#1c1f2b",
+            amber: "#f2a93b",
+            "amber-deep": "#d98f22",
+            cream: "#f2f0e8",
+            fog: "#9aa0ae",
+            "fog-dim": "#6b7180",
+            "slate-line": "#2b2f3c",
+            border: "#2b2f3c",
+            background: "#14161f",
+            foreground: "#f2f0e8",
             primary: {
-              DEFAULT: "hsl(221.2 83.2% 53.3%)",
-              foreground: "hsl(210 40% 98%)",
+              DEFAULT: "#f2a93b",
+              foreground: "#14161f",
             },
             secondary: {
-              DEFAULT: "hsl(210 40% 96.1%)",
-              foreground: "hsl(222.2 47.4% 11.2%)",
+              DEFAULT: "#1c1f2b",
+              foreground: "#f2f0e8",
             },
             destructive: {
-              DEFAULT: "hsl(0 84.2% 60.2%)",
-              foreground: "hsl(210 40% 98%)",
+              DEFAULT: "#ef4444",
+              foreground: "#ffffff",
             },
             muted: {
-              DEFAULT: "hsl(210 40% 96.1%)",
-              foreground: "hsl(215.4 16.3% 46.9%)",
+              DEFAULT: "#1c1f2b",
+              foreground: "#9aa0ae",
             },
             accent: {
-              DEFAULT: "hsl(210 40% 96.1%)",
-              foreground: "hsl(222.2 47.4% 11.2%)",
+              DEFAULT: "#1c1f2b",
+              foreground: "#f2f0e8",
             },
             popover: {
-              DEFAULT: "hsl(0 0% 100%)",
-              foreground: "hsl(222.2 84% 4.9%)",
+              DEFAULT: "#1c1f2b",
+              foreground: "#f2f0e8",
             },
             card: {
-              DEFAULT: "hsl(0 0% 100%)",
-              foreground: "hsl(222.2 84% 4.9%)",
+              DEFAULT: "#1c1f2b",
+              foreground: "#f2f0e8",
             },
+          },
+          fontFamily: {
+            serif: ['Fraunces', 'serif'],
+            mono: ['"IBM Plex Mono"', 'monospace'],
+            sans: ['"IBM Plex Sans"', 'sans-serif'],
           }
         }
       }
@@ -120,13 +133,15 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     body {
-      font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       margin: 0;
       padding: 0;
+      background-color: #14161f;
+      color: #f2f0e8;
       -webkit-font-smoothing: antialiased;
     }
     html {
@@ -137,18 +152,18 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
       height: 6px;
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(100, 116, 139, 0.3);
+      background: #2b2f3c;
       border-radius: 4px;
     }
   </style>
 
   ${escapedCss ? `<style id="custom-app-css">\n${escapedCss}\n</style>` : ""}
 </head>
-<body class="bg-white text-slate-900 min-h-screen">
+<body class="bg-ink text-cream min-h-screen font-sans">
   <div id="root">
-    <div class="flex flex-col items-center justify-center min-h-screen p-8 text-center text-slate-500 font-sans">
-      <div class="inline-block animate-spin rounded-full h-8 w-8 border-2 border-indigo-600 border-t-transparent mb-3"></div>
-      <p class="text-xs font-medium tracking-wide">Compiling & rendering components...</p>
+    <div class="flex flex-col items-center justify-center min-h-screen p-8 text-center text-fog font-sans">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-2 border-amber border-t-transparent mb-3"></div>
+      <p class="text-xs font-mono tracking-wide text-fog">Compiling & rendering components...</p>
     </div>
   </div>
 
@@ -326,12 +341,12 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
         var UIComponents = {
           Button: function Button(props) {
             props = props || {};
-            var className = cnHelper("inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm", props.className);
+            var className = cnHelper("inline-flex items-center justify-center rounded-sm px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 bg-[#f2a93b] text-[#14161f] hover:bg-[#d98f22] shadow-xs cursor-pointer", props.className);
             return React.createElement('button', Object.assign({}, props, { className: className }), props.children);
           },
           Card: function Card(props) {
             props = props || {};
-            var className = cnHelper("rounded-xl border border-slate-200 bg-white text-slate-950 shadow-sm", props.className);
+            var className = cnHelper("rounded-md border border-[#2b2f3c] bg-[#1c1f2b] text-[#f2f0e8] shadow-sm", props.className);
             return React.createElement('div', Object.assign({}, props, { className: className }), props.children);
           },
           CardHeader: function CardHeader(props) {
@@ -341,12 +356,12 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
           },
           CardTitle: function CardTitle(props) {
             props = props || {};
-            var className = cnHelper("text-xl font-semibold leading-none tracking-tight", props.className);
+            var className = cnHelper("font-serif text-lg font-semibold leading-none tracking-tight text-[#f2f0e8]", props.className);
             return React.createElement('h3', Object.assign({}, props, { className: className }), props.children);
           },
           CardDescription: function CardDescription(props) {
             props = props || {};
-            var className = cnHelper("text-sm text-slate-500", props.className);
+            var className = cnHelper("text-sm text-[#9aa0ae]", props.className);
             return React.createElement('p', Object.assign({}, props, { className: className }), props.children);
           },
           CardContent: function CardContent(props) {
@@ -361,27 +376,27 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
           },
           Badge: function Badge(props) {
             props = props || {};
-            var className = cnHelper("inline-flex items-center rounded-full border border-slate-200 px-2.5 py-0.5 text-xs font-semibold bg-slate-100 text-slate-800 transition-colors", props.className);
+            var className = cnHelper("inline-flex items-center rounded-sm border border-amber/30 px-2.5 py-0.5 text-xs font-mono font-medium bg-amber/15 text-[#f2a93b] transition-colors", props.className);
             return React.createElement('div', Object.assign({}, props, { className: className }), props.children);
           },
           Input: function Input(props) {
             props = props || {};
-            var className = cnHelper("flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50", props.className);
+            var className = cnHelper("flex h-10 w-full rounded-sm border border-[#2b2f3c] bg-[#14161f] px-3 py-2 text-sm text-[#f2f0e8] placeholder:text-[#6b7180] focus:outline-none focus:border-[#f2a93b] focus:ring-1 focus:ring-[#f2a93b] disabled:cursor-not-allowed disabled:opacity-50", props.className);
             return React.createElement('input', Object.assign({}, props, { className: className }));
           },
           Textarea: function Textarea(props) {
             props = props || {};
-            var className = cnHelper("flex min-h-[80px] w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50", props.className);
+            var className = cnHelper("flex min-h-[80px] w-full rounded-sm border border-[#2b2f3c] bg-[#14161f] px-3 py-2 text-sm text-[#f2f0e8] placeholder:text-[#6b7180] focus:outline-none focus:border-[#f2a93b] focus:ring-1 focus:ring-[#f2a93b] disabled:cursor-not-allowed disabled:opacity-50", props.className);
             return React.createElement('textarea', Object.assign({}, props, { className: className }));
           },
           Separator: function Separator(props) {
             props = props || {};
-            var className = cnHelper("shrink-0 bg-slate-200 h-[1px] w-full my-4 border-0", props.className);
+            var className = cnHelper("shrink-0 bg-[#2b2f3c] h-[1px] w-full my-4 border-0", props.className);
             return React.createElement('hr', Object.assign({}, props, { className: className }));
           },
           Avatar: function Avatar(props) {
             props = props || {};
-            var className = cnHelper("relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full", props.className);
+            var className = cnHelper("relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full border border-[#2b2f3c]", props.className);
             return React.createElement('div', Object.assign({}, props, { className: className }), props.children);
           },
           AvatarImage: function AvatarImage(props) {
@@ -391,7 +406,7 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
           },
           AvatarFallback: function AvatarFallback(props) {
             props = props || {};
-            var className = cnHelper("flex h-full w-full items-center justify-center rounded-full bg-slate-100 text-slate-600 text-xs font-medium", props.className);
+            var className = cnHelper("flex h-full w-full items-center justify-center rounded-full bg-[#1c1f2b] text-[#f2a93b] text-xs font-mono font-medium", props.className);
             return React.createElement('div', Object.assign({}, props, { className: className }), props.children);
           },
           Dialog: function Dialog(props) {
@@ -403,9 +418,9 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
           },
           DialogContent: function DialogContent(props) {
             props = props || {};
-            var className = cnHelper("fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm", props.className);
+            var className = cnHelper("fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm", props.className);
             return React.createElement('div', { className: className },
-              React.createElement('div', { className: "relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl" }, props.children)
+              React.createElement('div', { className: "relative w-full max-w-lg rounded-md bg-[#1c1f2b] border border-[#2b2f3c] text-[#f2f0e8] p-6 shadow-2xl" }, props.children)
             );
           },
           DialogHeader: function DialogHeader(props) {
@@ -415,12 +430,12 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
           },
           DialogTitle: function DialogTitle(props) {
             props = props || {};
-            var className = cnHelper("text-lg font-semibold leading-none tracking-tight", props.className);
+            var className = cnHelper("font-serif text-lg font-semibold leading-none tracking-tight text-[#f2f0e8]", props.className);
             return React.createElement('h2', Object.assign({}, props, { className: className }), props.children);
           },
           DialogDescription: function DialogDescription(props) {
             props = props || {};
-            var className = cnHelper("text-sm text-slate-500", props.className);
+            var className = cnHelper("text-sm text-[#9aa0ae]", props.className);
             return React.createElement('p', Object.assign({}, props, { className: className }), props.children);
           },
           DialogClose: function DialogClose(props) {
@@ -432,11 +447,11 @@ export function generateLivePreviewHtml(files: ProjectFile[]): string {
           },
           TabsList: function TabsList(props) {
             props = props || {};
-            return React.createElement('div', { className: cnHelper("inline-flex h-10 items-center justify-center rounded-lg bg-slate-100 p-1 text-slate-500", props.className) }, props.children);
+            return React.createElement('div', { className: cnHelper("inline-flex h-9 items-center justify-center rounded-sm bg-[#1c1f2b] p-1 text-[#9aa0ae] border border-[#2b2f3c]", props.className) }, props.children);
           },
           TabsTrigger: function TabsTrigger(props) {
             props = props || {};
-            return React.createElement('button', { className: cnHelper("inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-all text-slate-700 hover:bg-white hover:text-slate-900 shadow-sm", props.className) }, props.children);
+            return React.createElement('button', { className: cnHelper("inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-xs font-mono font-medium transition-all text-[#9aa0ae] hover:text-[#f2f0e8] hover:bg-[#14161f]", props.className) }, props.children);
           },
           TabsContent: function TabsContent(props) {
             props = props || {};

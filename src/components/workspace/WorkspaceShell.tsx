@@ -47,13 +47,13 @@ function FilesPanel({
   onSelect: (path: string) => void;
 }) {
   return (
-    <div className="flex h-full min-h-0 flex-col bg-[#0B0F19] text-slate-200">
-      <div className="flex h-12 shrink-0 items-center border-b border-slate-800 px-4 bg-[#0B0F19]">
-        <p className="text-xs font-bold uppercase tracking-wider text-slate-300">Files</p>
+    <div className="flex h-full min-h-0 flex-col bg-ink text-cream">
+      <div className="flex h-11 shrink-0 items-center border-b border-slate-line px-4 bg-ink">
+        <p className="text-xs font-mono font-semibold uppercase tracking-wider text-fog-dim">Files</p>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-3 scrollbar-panel">
         {fileTree.length === 0 ? (
-          <p className="px-2 py-6 text-center text-xs text-slate-500 leading-relaxed">
+          <p className="px-2 py-6 text-center text-xs text-fog leading-relaxed font-sans">
             No files generated yet. Describe what you want to build in chat and generated components
             will appear here.
           </p>
@@ -80,7 +80,7 @@ function MobileSwitcher({
     <div
       role="group"
       aria-label="Workspace panels"
-      className="flex items-center gap-0.5 rounded-xl border border-slate-800 bg-slate-900/90 p-0.5 md:hidden"
+      className="flex items-center gap-0.5 rounded-sm border border-slate-line bg-ink-raised p-0.5 md:hidden"
     >
       {MOBILE_VIEWS.map((view) => (
         <button
@@ -89,10 +89,10 @@ function MobileSwitcher({
           onClick={() => onChange(view)}
           aria-pressed={value === view}
           className={cn(
-            "rounded-lg px-2 py-1 text-xs font-semibold capitalize transition-all focus-visible:ring-2 focus-visible:ring-indigo-500/50 focus-visible:outline-none",
+            "rounded-sm px-2.5 py-1 text-xs font-mono font-medium capitalize transition-all focus-visible:ring-1 focus-visible:ring-amber/50 focus-visible:outline-none",
             value === view
-              ? "bg-slate-800 text-white shadow-xs"
-              : "text-slate-400 hover:text-white",
+              ? "bg-amber text-[#14161f] shadow-xs font-semibold"
+              : "text-fog hover:text-cream",
           )}
         >
           {view}
@@ -257,7 +257,7 @@ export function WorkspaceShell({
   }
 
   return (
-    <div className="flex h-dvh min-h-0 flex-col bg-[#0B0F19] text-slate-100 selection:bg-indigo-500 selection:text-white">
+    <div className="flex h-dvh min-h-0 flex-col bg-ink text-cream selection:bg-amber selection:text-[#14161f] font-sans">
       <WorkspaceHeader
         project={project}
         filesList={filesList}
@@ -273,7 +273,7 @@ export function WorkspaceShell({
         {/* Chat panel — full width on mobile, left column from md up. */}
         <aside
           className={cn(
-            "w-full shrink-0 border-r border-slate-800 bg-[#0B0F19] md:block md:w-[320px] lg:w-[350px]",
+            "w-full shrink-0 border-r border-slate-line bg-ink md:block md:w-[330px] lg:w-[360px]",
             mobileView === "chat" ? "block" : "hidden",
           )}
         >
@@ -289,7 +289,7 @@ export function WorkspaceShell({
         {/* Center canvas — Preview/Code tabs. */}
         <main
           className={cn(
-            "min-w-0 flex-1 md:block bg-[#070A11]",
+            "min-w-0 flex-1 md:block bg-ink",
             mobileView === "preview" || mobileView === "code"
               ? "block"
               : "hidden",
@@ -311,7 +311,7 @@ export function WorkspaceShell({
         {/* File explorer — right column on lg. */}
         <aside
           className={cn(
-            "w-full shrink-0 border-l border-slate-800 bg-[#0B0F19] lg:w-[260px]",
+            "w-full shrink-0 border-l border-slate-line bg-ink lg:w-[260px]",
             mobileView === "files" ? "block" : "hidden lg:block",
           )}
         >
@@ -325,7 +325,7 @@ export function WorkspaceShell({
 
       {/* Tablet file explorer overlay (md–lg). */}
       <Sheet open={filesOpen} onOpenChange={setFilesOpen}>
-        <SheetContent side="right" className="w-80 gap-0 p-0 bg-[#0B0F19] border-slate-800 text-slate-100">
+        <SheetContent side="right" className="w-80 gap-0 p-0 bg-ink border-slate-line text-cream">
           <SheetHeader className="sr-only">
             <SheetTitle>Project files</SheetTitle>
           </SheetHeader>

@@ -137,7 +137,7 @@ import { Hero } from '@/components/Hero';
 
 export default function Page() {
   return (
-    <div className="min-h-screen bg-slate-950 text-white font-sans">
+    <div className="min-h-screen bg-[#14161f] text-[#f2f0e8] font-sans">
       <Navbar />
       <Hero />
     </div>
@@ -149,21 +149,21 @@ export default function Page() {
 // components/Navbar.tsx
 "use client";
 import React, { useState } from 'react';
-import { Sparkles, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
   return (
-    <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-      <div className="flex items-center gap-2 font-bold text-lg text-white">
-        <Sparkles className="w-5 h-5 text-indigo-400" />
+    <nav className="border-b border-[#2b2f3c] bg-[#14161f]/90 backdrop-blur px-6 py-4 flex items-center justify-between sticky top-0 z-50 text-[#f2f0e8]">
+      <div className="flex items-center gap-2.5 font-serif font-semibold text-xl tracking-tight text-[#f2f0e8]">
+        <span className="flex size-6 items-center justify-center rounded-[3px] bg-[#f2a93b] text-[#14161f] font-mono text-xs font-bold shadow-xs">›</span>
         <span>KlyroApp</span>
       </div>
-      <div className="hidden md:flex items-center gap-6 text-sm text-slate-300">
-        <a href="#features" className="hover:text-white transition-colors">Features</a>
-        <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
-        <a href="#contact" className="hover:text-white transition-colors">Contact</a>
-        <button className="rounded-xl bg-indigo-600 px-4 py-2 font-medium text-white shadow hover:bg-indigo-500 transition-all">
+      <div className="hidden md:flex items-center gap-7 text-sm text-[#9aa0ae] font-sans">
+        <a href="#features" className="hover:text-[#f2f0e8] transition-colors">Features</a>
+        <a href="#pricing" className="hover:text-[#f2f0e8] transition-colors">Pricing</a>
+        <a href="#contact" className="hover:text-[#f2f0e8] transition-colors">Contact</a>
+        <button className="rounded-sm bg-[#f2a93b] px-4 py-2 font-medium text-[#14161f] hover:bg-[#d98f22] transition-colors shadow-xs">
           Get Started
         </button>
       </div>
@@ -177,22 +177,23 @@ export default Navbar;
 // components/Hero.tsx
 "use client";
 import React from 'react';
-import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 
 export function Hero() {
   return (
-    <section className="px-6 py-20 max-w-5xl mx-auto text-center">
-      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-semibold mb-6">
-        <span>✨ Modern & Production Ready</span>
+    <section className="px-6 py-24 max-w-5xl mx-auto text-center text-[#f2f0e8]">
+      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm border border-[#f2a93b]/30 bg-[#f2a93b]/10 text-[#f2a93b] text-xs font-mono font-medium mb-6">
+        <Sparkles className="size-3.5 text-[#f2a93b]" />
+        <span>Modern & Production Ready</span>
       </div>
-      <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6">
+      <h1 className="text-4xl sm:text-6xl font-serif font-normal tracking-tight text-[#f2f0e8] mb-6 leading-[1.12]">
         Build Next-Gen Applications Fast
       </h1>
-      <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+      <p className="text-[#9aa0ae] text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed font-sans">
         Engineered with interactive state, responsive layout, and production-ready Tailwind design.
       </p>
       <div className="flex flex-wrap justify-center gap-4">
-        <button className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-3 font-semibold text-white shadow-lg shadow-indigo-600/30 hover:scale-105 transition-all">
+        <button className="inline-flex items-center gap-2 rounded-sm bg-[#f2a93b] px-6 py-3 font-medium text-[#14161f] shadow-sm hover:bg-[#d98f22] transition-colors cursor-pointer">
           Explore Now <ArrowRight className="w-4 h-4" />
         </button>
       </div>

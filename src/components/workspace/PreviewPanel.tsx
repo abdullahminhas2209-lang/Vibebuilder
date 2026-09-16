@@ -72,12 +72,12 @@ export function PreviewPanel({
 
   if (!project.generated && !generatedHtml) {
     return (
-      <div className="flex h-full flex-col items-center justify-center p-8 text-center bg-[#070A11] text-slate-200">
-        <div className="flex size-14 items-center justify-center rounded-2xl border border-dashed border-slate-800 bg-slate-900/60 text-slate-400 mb-4 shadow-inner">
-          <Monitor className="size-6 text-indigo-400" aria-hidden="true" />
+      <div className="flex h-full flex-col items-center justify-center p-8 text-center bg-ink text-cream font-sans">
+        <div className="flex size-14 items-center justify-center rounded-md border border-dashed border-slate-line bg-ink-raised/60 text-amber mb-4 shadow-inner">
+          <Monitor className="size-6 text-amber" aria-hidden="true" />
         </div>
-        <h2 className="text-base font-bold text-white">No preview generated yet</h2>
-        <p className="mt-2 max-w-sm text-xs text-slate-400 leading-relaxed">
+        <h2 className="text-base font-serif font-semibold text-cream">No preview generated yet</h2>
+        <p className="mt-2 max-w-sm text-xs text-fog leading-relaxed font-sans">
           Describe what you want to build in the chat panel and Klyro will write the code and render a live interactive preview right here.
         </p>
       </div>
@@ -85,15 +85,15 @@ export function PreviewPanel({
   }
 
   return (
-    <div ref={containerRef} className="flex h-full min-h-0 flex-col bg-[#070A11] text-slate-200">
+    <div ref={containerRef} className="flex h-full min-h-0 flex-col bg-ink text-cream font-sans">
       {/* Browser toolbar */}
-      <div className="flex h-11 shrink-0 items-center gap-1.5 border-b border-slate-800 bg-[#0B0F19] px-3">
+      <div className="flex h-11 shrink-0 items-center gap-1.5 border-b border-slate-line bg-ink px-3">
         <Button
           variant="ghost"
           size="icon-sm"
           disabled
           aria-label="Back"
-          className="text-slate-600 hover:bg-transparent"
+          className="text-fog-dim hover:bg-transparent"
         >
           <ArrowLeft className="size-4" aria-hidden="true" />
         </Button>
@@ -102,7 +102,7 @@ export function PreviewPanel({
           size="icon-sm"
           disabled
           aria-label="Forward"
-          className="text-slate-600 hover:bg-transparent"
+          className="text-fog-dim hover:bg-transparent"
         >
           <ArrowRight className="size-4" aria-hidden="true" />
         </Button>
@@ -112,19 +112,19 @@ export function PreviewPanel({
           onClick={handleReload}
           aria-label="Reload preview"
           title="Reload preview"
-          className="text-slate-400 hover:text-white hover:bg-slate-800/80 rounded-lg"
+          className="text-fog hover:text-cream hover:bg-ink-raised rounded-sm"
         >
           <RotateCw
-            className={cn("size-4", isReloading && "animate-spin text-indigo-400")}
+            className={cn("size-4", isReloading && "animate-spin text-amber")}
             aria-hidden="true"
           />
         </Button>
 
         <p
-          className="mx-2 flex h-7 min-w-0 flex-1 items-center gap-1.5 rounded-lg border border-slate-800/80 bg-slate-950 px-2.5 text-xs text-slate-400 font-mono"
+          className="mx-2 flex h-7 min-w-0 flex-1 items-center gap-1.5 rounded-sm border border-slate-line bg-ink-raised px-2.5 text-xs text-fog font-mono"
           aria-label={`Preview address: ${previewUrl}`}
         >
-          <Lock className="size-3 shrink-0 text-emerald-400" aria-hidden="true" />
+          <Lock className="size-3 shrink-0 text-amber" aria-hidden="true" />
           <span className="truncate text-[11px]">{previewUrl}</span>
         </p>
 
@@ -135,7 +135,7 @@ export function PreviewPanel({
             onClick={handleOpenNewTab}
             title="Open preview in new browser tab"
             aria-label="Open in new tab"
-            className="text-slate-400 hover:text-white hover:bg-slate-800/80 rounded-lg"
+            className="text-fog hover:text-cream hover:bg-ink-raised rounded-sm"
           >
             <ExternalLink className="size-4" aria-hidden="true" />
           </Button>
@@ -144,7 +144,7 @@ export function PreviewPanel({
         <div
           role="group"
           aria-label="Responsive preview size"
-          className="flex items-center gap-0.5 rounded-xl border border-slate-800 bg-slate-950/80 p-0.5"
+          className="flex items-center gap-0.5 rounded-sm border border-slate-line bg-ink-raised p-0.5"
         >
           <Button
             variant="ghost"
@@ -154,8 +154,8 @@ export function PreviewPanel({
             aria-label="Desktop preview"
             title="Desktop view"
             className={cn(
-              "rounded-lg size-7 text-slate-400 hover:text-white hover:bg-slate-800",
-              viewport === "desktop" && "bg-slate-800 text-indigo-400 shadow-xs"
+              "rounded-sm size-7 text-fog hover:text-cream hover:bg-ink",
+              viewport === "desktop" && "bg-amber text-[#14161f] font-semibold shadow-xs"
             )}
           >
             <Monitor className="size-3.5" aria-hidden="true" />
@@ -168,8 +168,8 @@ export function PreviewPanel({
             aria-label="Tablet preview"
             title="Tablet view (768px)"
             className={cn(
-              "rounded-lg size-7 text-slate-400 hover:text-white hover:bg-slate-800",
-              viewport === "tablet" && "bg-slate-800 text-indigo-400 shadow-xs"
+              "rounded-sm size-7 text-fog hover:text-cream hover:bg-ink",
+              viewport === "tablet" && "bg-amber text-[#14161f] font-semibold shadow-xs"
             )}
           >
             <Tablet className="size-3.5" aria-hidden="true" />
@@ -182,8 +182,8 @@ export function PreviewPanel({
             aria-label="Mobile preview"
             title="Mobile view (375px)"
             className={cn(
-              "rounded-lg size-7 text-slate-400 hover:text-white hover:bg-slate-800",
-              viewport === "mobile" && "bg-slate-800 text-indigo-400 shadow-xs"
+              "rounded-sm size-7 text-fog hover:text-cream hover:bg-ink",
+              viewport === "mobile" && "bg-amber text-[#14161f] font-semibold shadow-xs"
             )}
           >
             <Smartphone className="size-3.5" aria-hidden="true" />
@@ -196,7 +196,7 @@ export function PreviewPanel({
           onClick={handleFullscreen}
           aria-label={isFullscreen ? "Exit fullscreen" : "View fullscreen"}
           title={isFullscreen ? "Exit fullscreen" : "View fullscreen"}
-          className="text-slate-400 hover:text-white hover:bg-slate-800/80 rounded-lg"
+          className="text-fog hover:text-cream hover:bg-ink-raised rounded-sm"
         >
           {isFullscreen ? (
             <Minimize className="size-4" aria-hidden="true" />
@@ -207,17 +207,17 @@ export function PreviewPanel({
       </div>
 
       {/* Viewport Canvas */}
-      <div className="min-h-0 flex-1 overflow-y-auto scrollbar-panel p-2 flex justify-center items-start bg-[#070A11]">
+      <div className="min-h-0 flex-1 overflow-y-auto scrollbar-panel p-2 flex justify-center items-start bg-ink">
         <div
           className={cn(
-            "bg-white transition-all duration-300",
+            "bg-ink transition-all duration-300",
             viewportClasses[viewport],
           )}
         >
           {isReloading ? (
-            <div className="flex h-64 items-center justify-center bg-slate-950">
+            <div className="flex h-64 items-center justify-center bg-ink">
               <RotateCw
-                className="size-5 animate-spin text-indigo-400"
+                className="size-5 animate-spin text-amber"
                 aria-hidden="true"
               />
             </div>
@@ -231,17 +231,17 @@ export function PreviewPanel({
           ) : project.preview ? (
             <MockSite config={project.preview} />
           ) : (
-            <div className="flex min-h-[600px] w-full flex-col items-center justify-center p-8 text-center bg-[#070A11] text-slate-200">
-              <div className="relative mb-4 flex size-14 items-center justify-center rounded-2xl border border-indigo-500/30 bg-indigo-950/40 text-indigo-400 shadow-lg shadow-indigo-500/10">
-                <Sparkles className="size-6 animate-pulse text-indigo-400" aria-hidden="true" />
-                <span className="absolute -top-1 -right-1 size-3 rounded-full bg-indigo-500 animate-ping" />
+            <div className="flex min-h-[600px] w-full flex-col items-center justify-center p-8 text-center bg-ink text-cream">
+              <div className="relative mb-4 flex size-14 items-center justify-center rounded-md border border-amber/30 bg-amber/10 text-amber shadow-lg shadow-amber/5">
+                <Sparkles className="size-6 animate-pulse text-amber" aria-hidden="true" />
+                <span className="absolute -top-1 -right-1 size-2.5 rounded-full bg-amber animate-ping" />
               </div>
-              <h3 className="text-base font-bold text-white">Live Sandbox Initializing</h3>
-              <p className="mt-2 max-w-sm text-xs text-slate-400 leading-relaxed">
+              <h3 className="text-base font-serif font-semibold text-cream">Live Sandbox Initializing</h3>
+              <p className="mt-2 max-w-sm text-xs text-fog leading-relaxed font-sans">
                 Describe what to build in chat and your live interactive preview will compile here in real-time.
               </p>
-              <div className="mt-6 flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/80 px-3 py-1 text-[11px] text-slate-400">
-                <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
+              <div className="mt-6 flex items-center gap-2 rounded-sm border border-slate-line bg-ink-raised px-3 py-1 font-mono text-[11px] text-fog">
+                <span className="size-2 rounded-full bg-amber animate-pulse" />
                 <span>Compiler Sandbox Active</span>
               </div>
             </div>
