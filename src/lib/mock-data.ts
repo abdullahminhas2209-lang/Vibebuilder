@@ -24,60 +24,7 @@ export const mockUser: User = {
 /** Id used by the "New Project" action. Renders an empty workspace. */
 export const demoProjectId = "demo";
 
-export const projects: Project[] = [
-  {
-    id: "restaurant-booking",
-    name: "Restaurant Booking",
-    description:
-      "Modern restaurant site with menu, reservations, and contact.",
-    type: "Restaurant website",
-    status: "active",
-    lastUpdated: "2 hours ago",
-    createdAt: "Aug 12, 2026",
-    generated: true,
-  },
-  {
-    id: "saas-analytics",
-    name: "SaaS Analytics Dashboard",
-    description: "Usage analytics with charts, filters, and team settings.",
-    type: "Web app",
-    status: "updated",
-    lastUpdated: "Yesterday",
-    createdAt: "Jul 28, 2026",
-    generated: true,
-  },
-  {
-    id: "personal-portfolio",
-    name: "Personal Portfolio",
-    description: "Developer portfolio with projects, writing, and contact.",
-    type: "Portfolio site",
-    status: "updated",
-    lastUpdated: "3 days ago",
-    createdAt: "Jul 19, 2026",
-    generated: true,
-  },
-  {
-    id: "ecommerce-store",
-    name: "E-commerce Store",
-    description: "Storefront with product grid, cart, and checkout flow.",
-    type: "Online store",
-    status: "draft",
-    lastUpdated: "Last week",
-    createdAt: "Jul 8, 2026",
-    generated: true,
-  },
-  {
-    id: "fitness-landing",
-    name: "Fitness Landing Page",
-    description:
-      "High-conversion landing page for a fitness coaching studio.",
-    type: "Landing page",
-    status: "active",
-    lastUpdated: "2 weeks ago",
-    createdAt: "Jun 30, 2026",
-    generated: true,
-  },
-];
+export const projects: Project[] = [];
 
 /** Workspace target for "New Project". Starts empty (not generated yet). */
 export const demoProject: Project = {

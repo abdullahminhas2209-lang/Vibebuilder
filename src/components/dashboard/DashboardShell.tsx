@@ -23,23 +23,23 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   const [navOpen, setNavOpen] = useState(false);
 
   return (
-    <div className="min-h-dvh bg-[#0B0F19] text-slate-100">
+    <div className="min-h-dvh bg-ink text-cream selection:bg-amber selection:text-[#14161f] font-sans">
       <Sidebar />
 
       {/* Mobile top bar with navigation drawer */}
-      <header className="sticky top-0 z-40 flex h-14 items-center gap-3 border-b border-slate-800/80 bg-[#0B0F19]/85 backdrop-blur-xl px-4 lg:hidden">
+      <header className="sticky top-0 z-40 flex h-14 items-center gap-3 border-b border-slate-line bg-ink/95 backdrop-blur px-4 lg:hidden">
         <Sheet open={navOpen} onOpenChange={setNavOpen}>
           <SheetTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className="text-slate-300 hover:text-white hover:bg-slate-800"
+              className="text-fog hover:text-cream hover:bg-ink-raised rounded-sm"
               aria-label="Open navigation menu"
             >
               <Menu className="size-5" aria-hidden="true" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-72 gap-0 p-0 bg-[#0B0F19] border-r border-slate-800 text-slate-100">
+          <SheetContent side="left" className="w-64 gap-0 p-0 bg-ink border-r border-slate-line text-cream">
             <SheetHeader className="sr-only">
               <SheetTitle>Navigation</SheetTitle>
             </SheetHeader>

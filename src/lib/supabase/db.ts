@@ -34,8 +34,16 @@ function getStoredChats(projectId: string): string | null {
   );
 }
 
+export const MOCK_PROJECT_IDS = new Set([
+  "restaurant-booking",
+  "saas-analytics",
+  "personal-portfolio",
+  "ecommerce-store",
+  "fitness-landing",
+]);
+
 // In-memory fallback if localStorage is unavailable (e.g. during SSR)
-let memoryProjects: Project[] = [...mockProjects];
+let memoryProjects: Project[] = [];
 const memoryFiles: Record<string, ProjectFile[]> = {};
 const memoryChats: Record<string, ChatMessage[]> = {};
 
@@ -51,16 +59,18 @@ export async function getProjects(): Promise<Project[]> {
         .order("created_at", { ascending: false });
 
       if (!error && data && data.length > 0) {
-        return data.map((p) => ({
-          id: p.id,
-          name: p.name,
-          description: p.description || "",
-          type: p.type || "Web Application",
-          status: p.status || "active",
-          lastUpdated: new Date(p.updated_at).toLocaleDateString(),
-          createdAt: new Date(p.created_at).toLocaleDateString(),
-          generated: true,
-        }));
+        return data
+          .filter((p) => !MOCK_PROJECT_IDS.has(p.id))
+          .map((p) => ({
+            id: p.id,
+            name: p.name,
+            description: p.description || "",
+            type: p.type || "Web Application",
+            status: p.status || "active",
+            lastUpdated: new Date(p.updated_at).toLocaleDateString(),
+            createdAt: new Date(p.created_at).toLocaleDateString(),
+            generated: true,
+          }));
       }
     } catch (err) {
       console.warn("Supabase getProjects error, falling back to local:", err);
@@ -72,14 +82,19 @@ export async function getProjects(): Promise<Project[]> {
     try {
       const stored = getStoredProjects();
       if (stored) {
-        return JSON.parse(stored);
+        const parsed: Project[] = JSON.parse(stored);
+        const filtered = parsed.filter((p) => p && !MOCK_PROJECT_IDS.has(p.id));
+        if (filtered.length !== parsed.length) {
+          localStorage.setItem(LOCAL_STORAGE_PROJECTS_KEY, JSON.stringify(filtered));
+        }
+        return filtered;
       }
     } catch {
       // ignore
     }
   }
 
-  return memoryProjects;
+  return memoryProjects.filter((p) => !MOCK_PROJECT_IDS.has(p.id));
 }
 
 /**
@@ -173,7 +188,8 @@ export async function createProject(project: Partial<Project> & { name: string }
   if (typeof window !== "undefined") {
     try {
       const stored = getStoredProjects();
-      const list: Project[] = stored ? JSON.parse(stored) : [...mockProjects];
+      const rawList: Project[] = stored ? JSON.parse(stored) : [];
+      const list: Project[] = rawList.filter((p) => p && !MOCK_PROJECT_IDS.has(p.id));
       const existingIdx = list.findIndex((p) => p.id === newProject.id);
       if (existingIdx !== -1) {
         list[existingIdx] = { ...list[existingIdx], ...newProject };

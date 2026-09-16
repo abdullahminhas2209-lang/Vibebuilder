@@ -64,63 +64,65 @@ export function DashboardHeader({ title, description, onProjectCreated }: Dashbo
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-white">{title}</h1>
-        <p className="mt-1 text-xs sm:text-sm text-slate-400">{description}</p>
+        <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-cream">
+          {title}
+        </h1>
+        <p className="mt-1 text-xs sm:text-sm text-fog font-sans">{description}</p>
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-xs font-semibold text-white shadow-md shadow-indigo-600/25 hover:from-indigo-500 hover:to-blue-500 gap-1.5 transition-all hover:scale-[1.02]">
+          <Button className="rounded-sm bg-amber hover:bg-amber-deep text-[#14161f] font-mono text-xs font-semibold shadow-xs gap-1.5 transition-colors cursor-pointer px-3.5 py-2">
             <Plus className="size-4" aria-hidden="true" />
             <span>New Project</span>
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-lg bg-[#0B0F19] border-slate-800 text-slate-100 ring-1 ring-white/10 rounded-3xl p-6">
+        <DialogContent className="sm:max-w-lg bg-ink-raised border-slate-line text-cream shadow-2xl rounded-md p-6 font-sans">
           <form onSubmit={handleCreateSubmit}>
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 text-white font-bold text-lg">
-                <FolderPlus className="size-5 text-indigo-400" />
+              <DialogTitle className="flex items-center gap-2 text-cream font-serif font-bold text-lg">
+                <FolderPlus className="size-5 text-amber" />
                 <span>Create New Project</span>
               </DialogTitle>
-              <DialogDescription className="text-slate-400 text-xs">
+              <DialogDescription className="text-fog text-xs font-sans">
                 Set up a new workspace and describe what you want the AI to generate.
               </DialogDescription>
             </DialogHeader>
 
             <div className="space-y-4 py-4">
               <div>
-                <label className="text-xs font-medium text-slate-200 block mb-1.5">
+                <label className="text-[11px] font-mono font-medium text-fog block mb-1.5 uppercase tracking-wider">
                   Project Name
                 </label>
                 <Input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Modern Restaurant Portal"
-                  className="bg-slate-950 border-slate-700/80 text-white placeholder:text-slate-500 rounded-xl h-10 text-xs caret-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+                  className="bg-ink border-slate-line text-cream placeholder:text-fog-dim rounded-sm h-10 text-xs font-mono caret-amber focus:border-amber/60 focus:ring-1 focus:ring-amber/30"
                   autoFocus
                   required
                 />
               </div>
 
               <div>
-                <label className="text-xs font-medium text-slate-200 block mb-1.5">
+                <label className="text-[11px] font-mono font-medium text-fog block mb-1.5 uppercase tracking-wider">
                   Project Type
                 </label>
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700/80 bg-slate-950 px-3 py-2 text-xs text-white shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  className="w-full rounded-sm border border-slate-line bg-ink px-3 py-2 text-xs font-mono text-cream shadow-xs focus:border-amber/60 focus:outline-none focus:ring-1 focus:ring-amber/30"
                 >
-                  <option value="Web Application" className="bg-slate-900 text-white">Web Application</option>
-                  <option value="Landing Page" className="bg-slate-900 text-white">Landing Page</option>
-                  <option value="E-commerce Store" className="bg-slate-900 text-white">E-commerce Store</option>
-                  <option value="Portfolio Site" className="bg-slate-900 text-white">Portfolio Site</option>
-                  <option value="Dashboard & Analytics" className="bg-slate-900 text-white">Dashboard & Analytics</option>
+                  <option value="Web Application" className="bg-ink text-cream">Web Application</option>
+                  <option value="Landing Page" className="bg-ink text-cream">Landing Page</option>
+                  <option value="E-commerce Store" className="bg-ink text-cream">E-commerce Store</option>
+                  <option value="Portfolio Site" className="bg-ink text-cream">Portfolio Site</option>
+                  <option value="Dashboard & Analytics" className="bg-ink text-cream">Dashboard & Analytics</option>
                 </select>
               </div>
 
               <div>
-                <label className="text-xs font-medium text-slate-200 block mb-1.5">
+                <label className="text-[11px] font-mono font-medium text-fog block mb-1.5 uppercase tracking-wider">
                   Initial Prompt (Optional)
                 </label>
                 <Textarea
@@ -128,7 +130,7 @@ export function DashboardHeader({ title, description, onProjectCreated }: Dashbo
                   onChange={(e) => setPrompt(e.target.value)}
                   placeholder="Describe what features, style, or components you'd like..."
                   rows={3}
-                  className="resize-none bg-slate-950 border-slate-700/80 text-white placeholder:text-slate-500 rounded-xl text-xs caret-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+                  className="resize-none bg-ink border-slate-line text-cream placeholder:text-fog-dim rounded-sm text-xs font-sans caret-amber focus:border-amber/60 focus:ring-1 focus:ring-amber/30"
                 />
               </div>
             </div>
@@ -138,18 +140,18 @@ export function DashboardHeader({ title, description, onProjectCreated }: Dashbo
                 type="button"
                 variant="outline"
                 onClick={() => setOpen(false)}
-                className="rounded-xl border-slate-700 bg-slate-800 text-white text-xs hover:bg-slate-700"
+                className="rounded-sm border-slate-line bg-ink text-fog hover:text-cream hover:bg-ink-raised text-xs font-mono cursor-pointer"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={loading || !name.trim()}
-                className="rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white text-xs font-semibold hover:from-indigo-500 hover:to-blue-500 shadow-md shadow-indigo-600/25"
+                className="rounded-sm bg-amber hover:bg-amber-deep text-[#14161f] text-xs font-mono font-semibold shadow-xs cursor-pointer"
               >
                 {loading ? (
                   <>
-                    <Loader2 className="size-3.5 animate-spin mr-1.5" />
+                    <Loader2 className="size-3.5 animate-spin mr-1.5 text-[#14161f]" />
                     Creating...
                   </>
                 ) : (
