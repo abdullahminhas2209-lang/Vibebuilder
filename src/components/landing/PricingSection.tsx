@@ -1,74 +1,90 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { Check, Sparkles, ArrowRight } from "lucide-react";
-import { Reveal } from "@/components/Reveal";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-const TIERS = [
+interface Plan {
+  name: string;
+  desc: string;
+  price: string;
+  unit?: string;
+  cycle: string;
+  highlight?: boolean;
+  ctaText: string;
+  ctaHref: string;
+  ctaStyle: "ghost" | "amber";
+  features: string[];
+}
+
+const FEATURES = [
+  "Generations / month",
+  "Live multi-device sandbox",
+  "Full project export",
+  "Conversational editing",
+  "Team seats",
+  "Support",
+];
+
+const PLANS: Plan[] = [
   {
     name: "Starter",
-    id: "tier-starter",
-    priceMonthly: "$0",
-    priceAnnually: "$0",
-    description: "Ideal for exploring Klyro and creating your first prompt-to-product apps.",
+    desc: "For trying Klyro on a first idea.",
+    price: "$0",
+    cycle: "forever",
+    ctaText: "Start free",
+    ctaHref: "#hero-builder",
+    ctaStyle: "ghost",
     features: [
-      "5 AI web app generations / month",
-      "Interactive multi-device live sandbox",
-      "Next.js 15 & Tailwind CSS code viewer",
-      "Export single-page components",
-      "Community support",
+      "5 / month",
+      "Yes",
+      "Single component only",
+      "No",
+      "1",
+      "Community",
     ],
-    cta: "Start Free",
-    popular: false,
-    href: "/#hero-builder",
   },
   {
     name: "Pro",
-    id: "tier-pro",
-    priceMonthly: "$19",
-    priceAnnually: "$15",
-    description: "For creators and indie developers who want unlimited speed and custom exports.",
+    desc: "For creators shipping real projects.",
+    price: "$15",
+    unit: "/mo",
+    cycle: "billed annually",
+    highlight: true,
+    ctaText: "Start with Pro",
+    ctaHref: "#hero-builder",
+    ctaStyle: "amber",
     features: [
-      "Unlimited AI generations & revisions",
-      "Multi-turn conversational code editing",
-      "One-click full project ZIP export",
-      "Direct Vercel & Supabase integration",
-      "High-speed Gemini AI reasoning model",
-      "Priority response support",
+      "Unlimited",
+      "Yes",
+      "Full source, one click",
+      "Yes",
+      "1",
+      "Priority",
     ],
-    cta: "Get Started with Pro",
-    popular: true,
-    href: "/#hero-builder",
   },
   {
     name: "Team",
-    id: "tier-team",
-    priceMonthly: "$49",
-    priceAnnually: "$39",
-    description: "For agencies and startups building client websites with shared workspaces.",
+    desc: "For agencies building for clients.",
+    price: "$39",
+    unit: "/mo",
+    cycle: "billed annually",
+    ctaText: "Talk to us",
+    ctaHref: "#hero-builder",
+    ctaStyle: "ghost",
     features: [
-      "Everything in Pro, plus:",
-      "Up to 5 team collaborator seats",
-      "Shared prompt templates & brand presets",
-      "Custom domain linking & analytics",
-      "Dedicated Supabase production schema",
-      "Priority 24/7 developer assistance",
+      "Unlimited",
+      "Yes",
+      "Full source, one click",
+      "Yes",
+      "Up to 5",
+      "Dedicated",
     ],
-    cta: "Scale with Team",
-    popular: false,
-    href: "/#hero-builder",
   },
 ];
 
 export function PricingSection() {
-  const [annual, setAnnual] = useState(true);
-
-  function handleActionClick(href: string) {
-    if (href.startsWith("/#") || href.startsWith("#")) {
+  function handleCtaClick(href: string) {
+    if (href.startsWith("#") || href.startsWith("/#")) {
       const hero = document.getElementById("hero-builder");
       if (hero) {
         hero.scrollIntoView({ behavior: "smooth" });
@@ -82,142 +98,99 @@ export function PricingSection() {
     <section
       id="pricing"
       aria-label="Pricing"
-      className="relative scroll-mt-20 border-t border-slate-800/80 bg-[#0B0F19] py-20 text-slate-100 lg:py-28 overflow-hidden"
+      className="py-[72px] sm:py-[108px] bg-ink border-t border-slate-line scroll-mt-20"
     >
-      {/* Background ambient gradient glow */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[350px] rounded-full bg-gradient-to-r from-indigo-600/10 via-purple-600/10 to-blue-600/10 blur-[130px]"
-      />
+      <div className="max-w-[1180px] mx-auto px-5 sm:px-8">
+        {/* Section Heading */}
+        <div className="max-w-[640px] mb-14">
+          <h2 className="font-serif font-normal text-[28px] sm:text-[34px] lg:text-[38px] leading-[1.15] tracking-[-0.01em] text-cream">
+            Pricing that scales with how much you build
+          </h2>
+          <p className="mt-3.5 text-fog text-base max-w-[52ch]">
+            Start free. Move up when you need more generations or a team.
+          </p>
+        </div>
 
-      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 relative z-10">
-        <Reveal>
-          <div className="mx-auto max-w-2xl text-center">
-            {/* Header pill badge */}
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3.5 py-1 text-xs font-semibold text-indigo-400 mb-3.5 shadow-xs">
-              <Sparkles className="size-3.5 text-indigo-400" />
-              <span>Simple, Transparent Pricing</span>
+        {/* Comparison Table */}
+        <div className="border border-slate-line rounded-md grid grid-cols-1 lg:grid-cols-[1.1fr_1fr_1fr_1fr] overflow-hidden">
+          {/* Feature labels column (hidden on mobile) */}
+          <div className="hidden lg:flex flex-col justify-end py-7 px-6 border-slate-line">
+            <div className="flex-1" />
+            <div className="divide-y divide-slate-line">
+              {FEATURES.map((feat) => (
+                <div
+                  key={feat}
+                  className="h-[44px] flex items-center text-[13.5px] text-fog"
+                >
+                  {feat}
+                </div>
+              ))}
             </div>
-
-            {/* Main Section Heading */}
-            <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
-              Build More, Spend Less
-            </h2>
-
-            {/* Supporting Copy */}
-            <p className="mt-3 text-sm sm:text-base text-slate-400 leading-relaxed max-w-xl mx-auto">
-              Start building for free. Upgrade when you need unlimited generations, full code ZIP exports, and team collaboration.
-            </p>
-
-            {/* Billing cycle toggle */}
-            <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-slate-800 bg-[#0F172A]/80 p-1.5 shadow-inner">
-              <button
-                type="button"
-                onClick={() => setAnnual(false)}
-                className={cn(
-                  "rounded-full px-4 py-1.5 text-xs font-semibold transition-all duration-200",
-                  !annual
-                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
-                    : "text-slate-400 hover:text-white"
-                )}
-              >
-                Monthly
-              </button>
-              <button
-                type="button"
-                onClick={() => setAnnual(true)}
-                className={cn(
-                  "flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold transition-all duration-200",
-                  annual
-                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
-                    : "text-slate-400 hover:text-white"
-                )}
-              >
-                <span>Annual</span>
-                <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
-                  Save 20%
-                </span>
-              </button>
-            </div>
+            {/* Spacer matching CTA button height + margin */}
+            <div className="mt-[22px] h-[41px] invisible" aria-hidden="true" />
           </div>
-        </Reveal>
 
-        {/* Pricing Cards Grid */}
-        <div className="mt-14 grid gap-8 lg:grid-cols-3 items-stretch">
-          {TIERS.map((tier, index) => (
-            <Reveal key={tier.id} delay={index * 100}>
-              <div
-                className={cn(
-                  "relative flex h-full flex-col justify-between rounded-[22px] border p-7 transition-all duration-300 backdrop-blur-md",
-                  tier.popular
-                    ? "border-indigo-500/60 bg-[#10182E]/90 shadow-2xl shadow-indigo-500/15 hover:border-indigo-400/80 hover:shadow-indigo-500/25 -translate-y-1 lg:-translate-y-2"
-                    : "border-slate-800/80 bg-[#0F172A]/80 shadow-xl shadow-black/50 hover:border-slate-700 hover:bg-[#121B33]/80"
-                )}
-              >
-                {tier.popular && (
-                  <Badge className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full border-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-500 px-3.5 py-1 text-[11px] font-bold text-white shadow-md shadow-indigo-500/30">
-                    Most Popular
-                  </Badge>
-                )}
-
-                <div>
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-bold text-white">{tier.name}</h3>
-                  </div>
-
-                  <p className="mt-2 text-xs text-slate-400 leading-relaxed min-h-[36px]">
-                    {tier.description}
-                  </p>
-
-                  <div className="mt-6 flex items-baseline gap-1">
-                    <span className="text-4xl font-extrabold tracking-tight text-white">
-                      {annual ? tier.priceAnnually : tier.priceMonthly}
-                    </span>
-                    <span className="text-xs font-medium text-slate-400">/ month</span>
-                    {annual && tier.priceAnnually !== "$0" && (
-                      <span className="ml-2 text-[11px] text-slate-500 font-mono">
-                        billed annually
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="mt-7 border-t border-slate-800/80 pt-6">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4">
-                      What&apos;s included
-                    </p>
-                    <ul className="space-y-3 text-xs text-slate-300">
-                      {tier.features.map((feature) => (
-                        <li key={feature} className="flex items-start gap-2.5">
-                          <Check className="size-4 shrink-0 text-indigo-400 mt-0.5" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+          {/* Plan Columns */}
+          {PLANS.map((plan, pIdx) => (
+            <div
+              key={plan.name}
+              className={cn(
+                "py-7 px-6 flex flex-col justify-between border-t border-slate-line lg:border-t-0 lg:border-l lg:border-slate-line",
+                pIdx === 0 && "border-t-0",
+                plan.highlight && "bg-amber/[0.07]"
+              )}
+            >
+              <div>
+                <h3 className="font-serif text-[19px] text-cream mb-1.5 font-normal">
+                  {plan.name}
+                </h3>
+                <p className="text-[13px] text-fog-dim mb-[18px] min-h-[48px] leading-relaxed">
+                  {plan.desc}
+                </p>
+                <div className="font-serif text-[34px] text-cream leading-tight mb-0.5">
+                  {plan.price}
+                  {plan.unit && (
+                    <sup className="text-sm font-sans text-fog font-normal ml-0.5">
+                      {plan.unit}
+                    </sup>
+                  )}
+                </div>
+                <div className="text-xs text-fog-dim font-mono mb-[22px]">
+                  {plan.cycle}
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-slate-800/60">
-                  <Button
-                    asChild
-                    className={cn(
-                      "w-full rounded-xl py-2.5 text-xs sm:text-sm font-semibold transition-all duration-200 gap-1.5 shadow-md",
-                      tier.popular
-                        ? "bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white hover:from-indigo-500 hover:to-blue-500 shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-[1.02]"
-                        : "bg-slate-800/80 text-white hover:bg-slate-700 hover:text-white border border-slate-700/80 hover:border-slate-600"
-                    )}
-                  >
-                    <Link
-                      href={tier.href}
-                      onClick={() => handleActionClick(tier.href)}
-                      className="flex items-center justify-center"
+                <ul className="divide-y divide-slate-line">
+                  {plan.features.map((featVal, fIdx) => (
+                    <li
+                      key={fIdx}
+                      className="h-[44px] flex items-center justify-between lg:justify-start text-[13.5px] text-fog"
                     >
-                      <span>{tier.cta}</span>
-                      <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-1" />
-                    </Link>
-                  </Button>
-                </div>
+                      <span className="lg:hidden text-fog-dim text-xs font-mono pr-3">
+                        {FEATURES[fIdx]}
+                      </span>
+                      <span className="text-cream lg:text-fog font-medium lg:font-normal">
+                        {featVal}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </Reveal>
+
+              <div className="mt-[22px]">
+                <Link
+                  href={plan.ctaHref}
+                  onClick={() => handleCtaClick(plan.ctaHref)}
+                  className={cn(
+                    "w-full h-[41px] inline-flex items-center justify-center rounded-[3px] font-sans font-medium text-[14.5px] transition-colors",
+                    plan.ctaStyle === "amber"
+                      ? "bg-amber text-[#201404] hover:bg-amber-deep"
+                      : "border border-slate-line text-cream hover:border-fog-dim bg-transparent"
+                  )}
+                >
+                  {plan.ctaText}
+                </Link>
+              </div>
+            </div>
           ))}
         </div>
       </div>
