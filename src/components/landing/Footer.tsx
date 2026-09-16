@@ -1,87 +1,56 @@
+"use client";
+
 import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
 
-const footerLinks = [
-  {
-    title: "Product",
-    links: [
-      { label: "AI Builder", href: "/#hero-builder" },
-      { label: "How It Works", href: "#how-it-works" },
-      { label: "Explore", href: "#what-you-can-build" },
-      { label: "Pricing", href: "#pricing" },
-      { label: "Dashboard", href: "/dashboard" },
-    ],
-  },
-  {
-    title: "Developers",
-    links: [
-      { label: "Next.js 15", href: "#" },
-      { label: "Tailwind CSS", href: "#" },
-      { label: "Supabase", href: "#" },
-      { label: "Export ZIP", href: "/dashboard" },
-    ],
-  },
-  {
-    title: "Account",
-    links: [
-      { label: "Sign In", href: "/auth" },
-      { label: "Register Account", href: "/auth" },
-      { label: "My Projects", href: "/dashboard" },
-    ],
-  },
-];
-
 export function Footer() {
+  function handleNavScroll(e: React.MouseEvent, id: string) {
+    if (window.location.pathname === "/") {
+      e.preventDefault();
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }
+
   return (
-    <footer className="border-t border-slate-800/80 bg-[#0B0F19] text-slate-100 py-12 lg:py-16">
-      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
-          {/* Brand Col */}
-          <div className="lg:col-span-2">
-            <Logo />
-            <p className="mt-3 max-w-sm text-xs text-slate-400 leading-relaxed">
-              Klyro turns natural language descriptions into interactive, production-ready web applications. From prompt to product in seconds.
-            </p>
-            <p className="mt-4 text-[11px] text-slate-500 font-mono">
-              Powered by Google Gemini &amp; Supabase
-            </p>
+    <footer className="border-t border-slate-line bg-ink text-cream py-12">
+      <div className="max-w-[1180px] mx-auto px-5 sm:px-8">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 flex-wrap">
+          <Logo />
+          <div className="flex items-center gap-6 text-[13.5px] text-fog">
+            <Link
+              href="#how"
+              onClick={(e) => handleNavScroll(e, "how")}
+              className="hover:text-cream transition-colors"
+            >
+              Product
+            </Link>
+            <Link
+              href="#showcase"
+              onClick={(e) => handleNavScroll(e, "showcase")}
+              className="hover:text-cream transition-colors"
+            >
+              Examples
+            </Link>
+            <Link
+              href="#pricing"
+              onClick={(e) => handleNavScroll(e, "pricing")}
+              className="hover:text-cream transition-colors"
+            >
+              Pricing
+            </Link>
+            <Link
+              href="/auth"
+              className="hover:text-cream transition-colors"
+            >
+              Sign in
+            </Link>
           </div>
-
-          {/* Nav Links */}
-          {footerLinks.map((section) => (
-            <div key={section.title}>
-              <p className="text-xs font-semibold text-white uppercase tracking-wider">
-                {section.title}
-              </p>
-              <ul className="mt-3 space-y-2">
-                {section.links.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="text-xs text-slate-400 hover:text-indigo-400 transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
         </div>
-
-        <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-800/80 pt-6 text-xs text-slate-500">
-          <p>© {new Date().getFullYear()} Klyro. All rights reserved.</p>
-          <div className="flex items-center gap-6">
-            <Link href="#" className="hover:text-slate-400">
-              Privacy Policy
-            </Link>
-            <Link href="#" className="hover:text-slate-400">
-              Terms of Service
-            </Link>
-            <Link href="#" className="hover:text-slate-400">
-              Documentation
-            </Link>
-          </div>
+        <div className="font-mono text-[11.5px] text-fog-dim mt-6 text-center sm:text-left">
+          © 2026 Klyro. Prompt to app, in one sitting.
         </div>
       </div>
     </footer>
