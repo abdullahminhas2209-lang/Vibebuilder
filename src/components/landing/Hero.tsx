@@ -1,79 +1,10 @@
 "use client";
 
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Cpu, Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
-
-const DEFAULT_WORDS = [
-  "landing page.",
-  "web app.",
-  "SaaS platform.",
-  "product.",
-];
-
-const TypewriterText = memo(function TypewriterText({
-  words = DEFAULT_WORDS,
-  typingSpeed = 70,
-  deletingSpeed = 35,
-  pauseDuration = 2000,
-  emptyPauseDuration = 280,
-  started = false,
-}: {
-  words?: string[];
-  typingSpeed?: number;
-  deletingSpeed?: number;
-  pauseDuration?: number;
-  emptyPauseDuration?: number;
-  started?: boolean;
-}) {
-  const [wordIndex, setWordIndex] = useState(0);
-  const [displayText, setDisplayText] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  useEffect(() => {
-    if (!started) return;
-
-    let timer: NodeJS.Timeout;
-    const currentWord = words[wordIndex] || "";
-
-    if (isDeleting) {
-      if (displayText.length > 0) {
-        timer = setTimeout(() => {
-          setDisplayText(currentWord.slice(0, displayText.length - 1));
-        }, deletingSpeed);
-      } else {
-        timer = setTimeout(() => {
-          setIsDeleting(false);
-          setWordIndex((prev) => (prev + 1) % words.length);
-        }, emptyPauseDuration);
-      }
-    } else {
-      if (displayText.length < currentWord.length) {
-        timer = setTimeout(() => {
-          setDisplayText(currentWord.slice(0, displayText.length + 1));
-        }, typingSpeed);
-      } else {
-        timer = setTimeout(() => {
-          setIsDeleting(true);
-        }, pauseDuration);
-      }
-    }
-
-    return () => clearTimeout(timer);
-  }, [displayText, isDeleting, wordIndex, words, typingSpeed, deletingSpeed, pauseDuration, emptyPauseDuration, started]);
-
-  return (
-    <span className="inline-flex items-baseline whitespace-nowrap will-change-contents">
-      <span className="text-amber font-serif font-normal">{displayText}</span>
-      <span
-        aria-hidden="true"
-        className="inline-block w-[3px] sm:w-[4px] h-[0.82em] ml-1 sm:ml-1.5 rounded-full bg-amber align-baseline animate-pulse shadow-[0_0_8px_rgba(242,169,59,0.6)]"
-      />
-    </span>
-  );
-});
 
 const TYPEWRITER_PLACEHOLDERS = [
   "Build a modern SaaS analytics dashboard with metrics...",
@@ -111,27 +42,6 @@ export function Hero() {
   const router = useRouter();
   const [prompt, setPrompt] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const [firstEffectFinished, setFirstEffectFinished] = useState(false);
-  const [typewriterStarted, setTypewriterStarted] = useState(false);
-
-  useEffect(() => {
-    if (firstEffectFinished) {
-      // Pause for a second after the first effect finishes, then start typewriter
-      const timer = setTimeout(() => {
-        setTypewriterStarted(true);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [firstEffectFinished]);
-
-  // Fallback timer to ensure typewriter begins even if onAnimationComplete is skipped
-  useEffect(() => {
-    const fallback = setTimeout(() => {
-      setFirstEffectFinished(true);
-    }, 1400);
-    return () => clearTimeout(fallback);
-  }, []);
 
   // Typewriter effect for prompt placeholder
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
@@ -233,24 +143,20 @@ export function Hero() {
               as="span"
               preset="fade-in-blur"
               delay={0.15}
-              speedReveal={0.7}
               className="inline"
-              onAnimationComplete={() => setFirstEffectFinished(true)}
             >
-              From prompt to
+              From Prompt to
             </TextEffect>{" "}
-            <TypewriterText started={typewriterStarted} />
+            <TextEffect
+              per="word"
+              as="span"
+              preset="fade-in-blur"
+              delay={0.3}
+              className="inline text-amber"
+            >
+              Product
+            </TextEffect>
           </h1>
-
-          <TextEffect
-            per="word"
-            as="p"
-            preset="fade-in-blur"
-            delay={0.35}
-            className="mt-4 max-w-2xl font-sans text-base sm:text-lg text-fog leading-[1.6]"
-          >
-            Describe what you want to build. Klyro turns your idea into a working, interactive product in seconds.
-          </TextEffect>
         </div>
 
         {/* ============================================================================== */}
