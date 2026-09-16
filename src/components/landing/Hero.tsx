@@ -10,9 +10,7 @@ const DEFAULT_WORDS = [
   "landing page.",
   "web app.",
   "SaaS platform.",
-  "e-commerce store.",
-  "dashboard.",
-  "interactive product.",
+  "product.",
 ];
 
 const TypewriterText = memo(function TypewriterText({
@@ -101,11 +99,6 @@ const QUICK_ACTIONS = [
     label: "Developer Portfolio",
     prompt:
       "Build a minimal developer portfolio with interactive project showcase, tech stack badges, and contact modal.",
-  },
-  {
-    label: "E-Commerce Store",
-    prompt:
-      "Design a high-converting e-commerce storefront for homeware products with product grid, cart drawer, and checkout.",
   },
   {
     label: "Fitness Studio Landing",
