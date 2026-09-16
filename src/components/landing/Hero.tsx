@@ -1,85 +1,73 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  ArrowRight,
-  Cpu,
-  Paperclip,
-} from "lucide-react";
+import { cn } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
-import { TypewriterText } from "@/components/landing/TypewriterText";
+interface PromptExample {
+  label: string;
+  prompt: string;
+  intent: string;
+  files: { path: string; status: string }[];
+  previewTitle: string;
+  previewDesc: string;
+}
 
-const TYPEWRITER_PLACEHOLDERS = [
-  "Build a modern SaaS analytics dashboard with metrics...",
-  "Build a luxury restaurant website with seasonal menu & booking...",
-  "Build a developer portfolio with dark mode and projects...",
-  "Build a high-converting e-commerce storefront for homeware...",
-  "Build a fitness studio landing page with class schedules...",
-  "Build an AI chatbot platform with live sandbox previews...",
-];
-
-const QUICK_ACTIONS = [
-  { label: "SaaS Analytics Dashboard", prompt: "Create a modern SaaS analytics dashboard with revenue charts, active user metrics, and team management settings." },
-  { label: "Restaurant & Table Booking", prompt: "Build a luxury restaurant website with seasonal menu, wood-fired kitchen story, and online table reservation flow." },
-  { label: "Developer Portfolio", prompt: "Build a minimal developer portfolio with interactive project showcase, tech stack badges, and contact modal." },
-  { label: "E-Commerce Store", prompt: "Design a high-converting e-commerce storefront for homeware products with product grid, cart drawer, and checkout." },
-  { label: "Fitness Studio Landing", prompt: "Build a fitness studio landing page with class schedule, coach bios, membership tiers, and free trial booking." },
+const PROMPT_EXAMPLES: PromptExample[] = [
+  {
+    label: "table booking system",
+    prompt: "Build a table booking page for a small restaurant, warm and simple",
+    intent: "Reading intent… 3 pages, 1 form, 1 confirmation state",
+    files: [
+      { path: "/pages/book.tsx", status: "created" },
+      { path: "/components/DateGrid.tsx", status: "created" },
+      { path: "/lib/availability.ts", status: "created" },
+    ],
+    previewTitle: "Book a table",
+    previewDesc: "Choose a date, party size, and time",
+  },
+  {
+    label: "e-commerce storefront",
+    prompt: "Design an e-commerce storefront for minimalist homeware products",
+    intent: "Reading intent… 4 pages, catalog grid, cart drawer",
+    files: [
+      { path: "/pages/shop.tsx", status: "created" },
+      { path: "/components/ProductGrid.tsx", status: "created" },
+      { path: "/lib/cart.ts", status: "created" },
+    ],
+    previewTitle: "Northwind Goods",
+    previewDesc: "Curated homeware for intentional living",
+  },
+  {
+    label: "analytics dashboard",
+    prompt: "Create a SaaS analytics dashboard with revenue charts and metrics",
+    intent: "Reading intent… 5 metrics, 2 chart views, activity feed",
+    files: [
+      { path: "/pages/dashboard.tsx", status: "created" },
+      { path: "/components/MetricCards.tsx", status: "created" },
+      { path: "/lib/analytics.ts", status: "created" },
+    ],
+    previewTitle: "InstaCore Overview",
+    previewDesc: "Real-time metrics and monthly growth",
+  },
 ];
 
 export function Hero() {
   const router = useRouter();
-  const [prompt, setPrompt] = useState("");
+  const [selectedExampleIndex, setSelectedExampleIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Typewriter effect for prompt placeholder
-  const [placeholderIndex, setPlaceholderIndex] = useState(0);
-  const [placeholderText, setPlaceholderText] = useState(TYPEWRITER_PLACEHOLDERS[0]);
-  const [isDeletingPlaceholder, setIsDeletingPlaceholder] = useState(false);
+  const activeExample = PROMPT_EXAMPLES[selectedExampleIndex];
 
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    const currentPrompt = TYPEWRITER_PLACEHOLDERS[placeholderIndex];
-
-    if (isDeletingPlaceholder) {
-      if (placeholderText.length > 6) {
-        // Keep "Build " anchored while deleting
-        timer = setTimeout(() => {
-          setPlaceholderText(currentPrompt.slice(0, placeholderText.length - 1));
-        }, 18);
-      } else {
-        // Pause briefly on "Build " before typing next example
-        timer = setTimeout(() => {
-          setIsDeletingPlaceholder(false);
-          setPlaceholderIndex((prev) => (prev + 1) % TYPEWRITER_PLACEHOLDERS.length);
-        }, 250);
-      }
-    } else {
-      if (placeholderText.length < currentPrompt.length) {
-        timer = setTimeout(() => {
-          setPlaceholderText(currentPrompt.slice(0, placeholderText.length + 1));
-        }, 40);
-      } else {
-        // Pause when full sentence is typed
-        timer = setTimeout(() => {
-          setIsDeletingPlaceholder(true);
-        }, 2600);
-      }
-    }
-
-    return () => clearTimeout(timer);
-  }, [placeholderText, isDeletingPlaceholder, placeholderIndex]);
-
-  async function handleSubmit(event?: React.FormEvent) {
+  async function handleSubmit(event?: React.FormEvent, promptOverride?: string) {
     if (event) event.preventDefault();
-    const effectivePrompt = prompt.trim() || placeholderText || "Build a modern SaaS product with landing page and dashboard";
+    const effectivePrompt =
+      promptOverride || activeExample.prompt || "Build a table booking page for a small restaurant, warm and simple";
     setIsSubmitting(true);
 
     try {
       const uniqueId = `proj_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
 
-      // Derive a meaningful initial project title from prompt
       const words = effectivePrompt
         .replace(/^(build|create|design|make)\s+(a|an|the)?\s*/i, "")
         .split(/\s+/)
@@ -104,114 +92,114 @@ export function Hero() {
     }
   }
 
-  function handleSelectQuickAction(item: typeof QUICK_ACTIONS[0]) {
-    setPrompt(item.prompt);
-  }
-
   return (
-    <section id="hero-builder" className="relative overflow-hidden pt-8 pb-16 lg:pt-14 lg:pb-24">
-      {/* Background ambient lighting */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 flex justify-center overflow-hidden"
-      >
-        <div className="h-[520px] w-[1100px] -translate-y-1/3 rounded-full bg-gradient-to-tr from-indigo-500/20 via-purple-500/15 to-blue-500/20 blur-[120px] animate-pulse-glow" />
-      </div>
+    <section id="hero-builder" className="pt-[92px] pb-[100px] bg-ink">
+      <div className="max-w-[1180px] mx-auto px-5 sm:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-16 items-center">
+          {/* LEFT COLUMN: Headline & CTA */}
+          <div>
+            {/* Eyebrow line */}
+            <div className="fade-in d1 flex items-center gap-2.5 font-mono text-[13px] text-fog-dim mb-[22px]">
+              <span className="size-1.5 rounded-full bg-amber shrink-0" />
+              <span>Built on Gemini 3.5 Flash</span>
+            </div>
 
-      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-        {/* Top Header / Badge */}
-        <div className="flex flex-col items-center text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200/80 bg-indigo-50/80 dark:border-indigo-900/50 dark:bg-indigo-950/40 px-3.5 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 shadow-sm backdrop-blur-md transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(99,102,241,0.3)]">
-            <span className="flex size-2 rounded-full bg-indigo-500 animate-pulse" />
-            <span>Klyro AI · Next-Gen App Builder</span>
+            {/* Headline - single visual weight throughout */}
+            <h1 className="hero-title fade-in d2 font-serif font-normal text-[38px] sm:text-[48px] lg:text-[58px] leading-[1.07] tracking-[-0.01em] text-cream max-w-[13ch]">
+              Describe it.
+              <br />
+              Klyro builds it.
+            </h1>
+
+            {/* Supporting Copy */}
+            <p className="fade-in d3 mt-[26px] max-w-[46ch] text-[17.5px] text-fog leading-[1.6]">
+              Type what you need in plain language. Klyro writes the code, wires up the pages, and hands you a working
+              app you can click through in under a minute.
+            </p>
+
+            {/* CTA Group */}
+            <div className="fade-in d3 mt-[36px] flex items-center gap-[26px] flex-wrap">
+              <button
+                type="button"
+                onClick={() => handleSubmit(undefined, activeExample.prompt)}
+                disabled={isSubmitting}
+                className="inline-flex items-center gap-2 font-sans font-medium text-[14.5px] px-5 py-2.5 rounded-sm bg-amber text-[#201404] hover:bg-amber-deep transition-colors cursor-pointer disabled:opacity-60"
+              >
+                {isSubmitting ? "Starting Klyro..." : "Start building"}
+              </button>
+              <a
+                href="#how"
+                className="text-[14.5px] text-fog border-b border-slate-line pb-0.5 hover:text-cream hover:border-fog-dim transition-colors"
+              >
+                See how it works
+              </a>
+            </div>
+
+            {/* Example Prompts row */}
+            <div className="fade-in d3 mt-[44px] pt-[24px] border-t border-slate-line flex gap-3 sm:gap-7 flex-wrap items-center">
+              <span className="font-mono text-[12.5px] text-fog-dim">Try a prompt:</span>
+              {PROMPT_EXAMPLES.map((example, index) => (
+                <button
+                  key={example.label}
+                  type="button"
+                  onClick={() => setSelectedExampleIndex(index)}
+                  className={cn(
+                    "font-mono text-[12.5px] border rounded-sm px-2.5 py-1 transition-all cursor-pointer",
+                    selectedExampleIndex === index
+                      ? "border-amber text-amber bg-amber/5"
+                      : "border-slate-line text-fog hover:text-cream hover:border-fog-dim"
+                  )}
+                >
+                  {example.label}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <h1 className="mt-5 max-w-5xl text-2xl font-bold tracking-normal text-slate-900 dark:text-white sm:text-4xl md:text-5xl lg:text-5xl leading-normal sm:leading-relaxed pb-1 font-display">
-            From prompt to{" "}
-            <TypewriterText />
-          </h1>
-
-          <p className="mt-4 max-w-2xl text-base text-slate-600 dark:text-slate-300 sm:text-lg">
-            Describe what you want to build. Klyro turns your idea into a working, interactive product in seconds.
-          </p>
-        </div>
-
-        {/* ============================================================================== */}
-        {/* HERO COMMAND CENTER / PROMPT BAR                                               */}
-        {/* ============================================================================== */}
-        <div className="mt-10 mx-auto max-w-3xl">
-          <form
-            onSubmit={handleSubmit}
-            className="group relative rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-3.5 shadow-[0_12px_40px_-10px_rgba(99,102,241,0.12)] backdrop-blur-xl transition-all duration-300 hover:border-indigo-400/80 hover:shadow-[0_16px_50px_-5px_rgba(99,102,241,0.22)] focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/15 focus-within:shadow-[0_20px_60px_-5px_rgba(99,102,241,0.28)]"
-          >
-            <div className="flex items-start gap-3 px-2 pt-1">
-              <textarea
-                id="hero-prompt-input"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSubmit();
-                  }
-                }}
-                rows={2}
-                placeholder={placeholderText}
-                className="w-full resize-none border-0 bg-transparent text-sm sm:text-base font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-0 leading-relaxed transition-colors font-mono"
-              />
+          {/* RIGHT COLUMN: Terminal & Preview Mockup */}
+          <div className="fade-in d3 bg-[#0e0f16] border border-slate-line rounded-md overflow-hidden shadow-[0_30px_60px_-20px_rgba(0,0,0,0.6)]">
+            {/* Terminal Top Bar */}
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-line">
+              <span className="size-[9px] rounded-full bg-[#3a3f4b]" />
+              <span className="size-[9px] rounded-full bg-[#3a3f4b]" />
+              <span className="size-[9px] rounded-full bg-[#3a3f4b]" />
+              <span className="ml-2 font-mono text-xs text-fog-dim">klyro — prompt.md</span>
             </div>
 
-            {/* Bottom Bar inside Prompt */}
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 dark:border-slate-800/80 pt-2.5 px-2">
-              <div className="flex items-center gap-1.5">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-sm"
-                  className="rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 active:scale-90"
-                  title="Attach screenshot or reference"
-                >
-                  <Paperclip className="size-4" />
-                </Button>
-                <div className="hidden sm:inline-flex items-center gap-1 rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-[11px] font-medium text-slate-600 dark:text-slate-300 transition-colors">
-                  <Cpu className="size-3 text-indigo-500" />
-                  <span>Gemini 3.5 Flash</span>
+            {/* Terminal Body */}
+            <div className="p-5 pb-1 font-mono text-[13px] leading-[1.75]">
+              <div className="text-fog flex items-start gap-2">
+                <span className="text-amber shrink-0 select-none">›</span>
+                <span className="text-cream">{activeExample.prompt}</span>
+              </div>
+              <div className="text-fog-dim mt-1.5">{activeExample.intent}</div>
+              {activeExample.files.map((file) => (
+                <div key={file.path} className="text-fog-dim mt-1.5">
+                  <span className="text-[#7fb3a3]">{file.path}</span>{" "}
+                  <span className="text-amber">{file.status}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* In-Terminal Preview Window */}
+            <div className="m-4 sm:m-5 border border-slate-line rounded-sm overflow-hidden bg-paper">
+              <div className="flex gap-2 px-3 py-2 bg-paper-line">
+                <span className="size-[7px] rounded-full bg-black/15" />
+                <span className="size-[7px] rounded-full bg-black/15" />
+                <span className="size-[7px] rounded-full bg-black/15" />
+              </div>
+              <div className="p-4 sm:p-5 text-ink">
+                <h4 className="font-serif font-semibold text-base mb-1 text-[#16181f]">
+                  {activeExample.previewTitle}
+                </h4>
+                <p className="text-xs text-[#5b5f6b] mb-2.5">{activeExample.previewDesc}</p>
+                <div className="flex gap-2">
+                  <div className="h-7 flex-1 rounded-sm bg-[#14161f]/[0.08]" />
+                  <div className="h-7 flex-1 rounded-sm bg-[#14161f]/[0.08]" />
+                  <div className="h-7 w-[70px] shrink-0 rounded-sm bg-amber" />
                 </div>
               </div>
-
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 px-5 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-md shadow-indigo-500/25 transition-all duration-200 hover:scale-[1.03] hover:shadow-indigo-500/40 active:scale-[0.98]"
-              >
-                {isSubmitting ? (
-                  <>
-                    <span className="size-3.5 animate-spin rounded-full border-2 border-white border-t-transparent mr-1.5" />
-                    Opening Klyro...
-                  </>
-                ) : (
-                  <>
-                    <span>Build with Klyro</span>
-                    <ArrowRight className="size-4 ml-1.5 transition-transform duration-200 group-hover:translate-x-0.5" />
-                  </>
-                )}
-              </Button>
             </div>
-          </form>
-
-          {/* Quick Action Pills */}
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-            <span className="text-xs font-semibold text-slate-500 mr-1">Suggestions:</span>
-            {QUICK_ACTIONS.map((item) => (
-              <button
-                key={item.label}
-                type="button"
-                onClick={() => handleSelectQuickAction(item)}
-                className="inline-flex items-center rounded-full border border-slate-200/90 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 px-3.5 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-400 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 hover:shadow-md hover:scale-[1.02] active:scale-95"
-              >
-                <span>{item.label}</span>
-              </button>
-            ))}
           </div>
         </div>
       </div>

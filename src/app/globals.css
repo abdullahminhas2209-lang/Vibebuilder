@@ -1,40 +1,70 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* VibeBuilder design tokens — neutral foundation with a single restrained
-   indigo accent used for primary actions, active states, and focus. */
+/* Klyro custom design tokens — ink / amber / paper palette */
 :root {
-  --radius: 0.625rem;
+  --ink: #14161f;
+  --ink-raised: #1c1f2b;
+  --paper: #f6f3ea;
+  --paper-line: #e4dfd0;
+  --amber: #f2a93b;
+  --amber-deep: #d98f22;
+  --fog: #9aa0ae;
+  --fog-dim: #6b7180;
+  --slate-line: #2b2f3c;
+  --cream-text: #f2f0e8;
+  --ink-text: #16181f;
 
-  --background: oklch(0.985 0.002 260);
-  --foreground: oklch(0.216 0.02 262);
+  /* Border radius scale: sm = 3px, md = 6px */
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius: 6px;
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.216 0.02 262);
+  /* Theme token mappings */
+  --background: #14161f;
+  --foreground: #f2f0e8;
 
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.216 0.02 262);
+  --card: #1c1f2b;
+  --card-foreground: #f2f0e8;
 
-  --primary: oklch(0.505 0.19 277);
-  --primary-foreground: oklch(0.985 0.005 280);
+  --popover: #1c1f2b;
+  --popover-foreground: #f2f0e8;
 
-  --secondary: oklch(0.965 0.005 260);
-  --secondary-foreground: oklch(0.3 0.025 262);
+  --primary: #f2a93b;
+  --primary-foreground: #201404;
 
-  --muted: oklch(0.965 0.005 260);
-  --muted-foreground: oklch(0.546 0.018 261);
+  --secondary: #1c1f2b;
+  --secondary-foreground: #f2f0e8;
 
-  --accent: oklch(0.955 0.012 275);
-  --accent-foreground: oklch(0.32 0.04 277);
+  --muted: #1c1f2b;
+  --muted-foreground: #9aa0ae;
 
-  --destructive: oklch(0.577 0.245 27.3);
+  --accent: #f2a93b;
+  --accent-foreground: #201404;
 
-  --border: oklch(0.915 0.007 261);
-  --input: oklch(0.915 0.007 261);
-  --ring: oklch(0.505 0.19 277);
+  --destructive: #ef4444;
+
+  --border: #2b2f3c;
+  --input: #2b2f3c;
+  --ring: #f2a93b;
+
+  --serif: var(--font-fraunces), Georgia, serif;
+  --sans: var(--font-ibm-plex-sans), -apple-system, sans-serif;
+  --mono: var(--font-ibm-plex-mono), "Courier New", monospace;
 }
 
 @theme inline {
+  --color-ink: #14161f;
+  --color-ink-raised: #1c1f2b;
+  --color-paper: #f6f3ea;
+  --color-paper-line: #e4dfd0;
+  --color-amber: #f2a93b;
+  --color-amber-deep: #d98f22;
+  --color-fog: #9aa0ae;
+  --color-fog-dim: #6b7180;
+  --color-slate-line: #2b2f3c;
+  --color-cream: #f2f0e8;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -54,23 +84,40 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  /* Border radius scale: sm = 3px, md = 6px.
+     rounded-lg, rounded-xl, rounded-2xl, rounded-3xl mapped to 6px */
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 6px;
+  --radius-xl: 6px;
+  --radius-2xl: 6px;
+  --radius-3xl: 6px;
 
-  --font-sans: var(--font-montserrat), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: var(--font-fira-code), monospace;
-  --font-display: var(--font-playfair), Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-serif: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-ibm-plex-sans), -apple-system, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), "Courier New", monospace;
+  --font-display: var(--font-fraunces), Georgia, serif;
+}
+
+@utility font-serif {
+  font-family: var(--font-fraunces), Georgia, serif;
+}
+
+@utility font-sans {
+  font-family: var(--font-ibm-plex-sans), -apple-system, sans-serif;
+}
+
+@utility font-mono {
+  font-family: var(--font-ibm-plex-mono), "Courier New", monospace;
 }
 
 @utility font-display {
-  font-family: var(--font-playfair), Georgia, Cambria, "Times New Roman", Times, serif;
+  font-family: var(--font-fraunces), Georgia, serif;
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
 
   html {
@@ -78,137 +125,50 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
+    background-color: var(--ink);
+    color: var(--cream-text);
+    font-family: var(--font-ibm-plex-sans), -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 3px;
   }
 }
 
-/* Thin, unobtrusive scrollbars for workspace panels. */
+/* Thin, unobtrusive scrollbars for workspace panels */
 @utility scrollbar-panel {
   scrollbar-width: thin;
-  scrollbar-color: oklch(0.82 0.01 261) transparent;
+  scrollbar-color: var(--slate-line) transparent;
 }
 
-/* ---------- Motion ---------- */
-/* Restrained entrance animations shared by the landing page, dashboard,
-   and workspace. Everything is disabled for users who prefer reduced
-   motion (see the media query below). */
-
-@keyframes vb-fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
+/* Orchestrated hero entrance */
+@keyframes rise {
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 }
 
-@keyframes vb-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@utility animate-fade-up {
-  animation: vb-fade-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@utility animate-fade-in {
-  animation: vb-fade-in 0.35s ease-out both;
-}
-
-@keyframes vb-cursor-blink {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
-}
-
-@utility animate-cursor-blink {
-  animation: vb-cursor-blink 0.85s ease-in-out infinite;
-}
-
-@keyframes vb-float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
-@utility animate-float {
-  animation: vb-float 4s ease-in-out infinite;
-}
-
-@keyframes vb-pulse-glow {
-  0%, 100% {
-    opacity: 0.4;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.05);
-  }
-}
-
-@utility animate-pulse-glow {
-  animation: vb-pulse-glow 6s ease-in-out infinite;
-}
-
-@keyframes vb-shimmer {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: -200% 0;
-  }
-}
-
-@utility animate-shimmer {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.08) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  background-size: 200% 100%;
-  animation: vb-shimmer 2.5s infinite;
-}
-
-@keyframes vb-shimmer-slide {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-@utility animate-shimmer-slide {
-  animation: vb-shimmer-slide 1.8s infinite linear;
-}
-
-/* Scroll-triggered reveal driven by components/Reveal.tsx. Elements are
-   only hidden after hydration confirms they sit below the fold, so no
-   content is lost when JavaScript is unavailable. */
-.reveal-pending {
+.fade-in {
   opacity: 0;
-  transform: translateY(20px) scale(0.98);
+  transform: translateY(10px);
+  animation: rise 0.7s ease forwards;
 }
 
-.reveal-visible {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  transition:
-    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+.fade-in.d1 {
+  animation-delay: 0.05s;
+}
+
+.fade-in.d2 {
+  animation-delay: 0.15s;
+}
+
+.fade-in.d3 {
+  animation-delay: 0.25s;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { ArrowRight, LayoutDashboard, LogOut } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu } from "lucide-react";
 
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
@@ -48,34 +48,22 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  function handleDashboardClick(e: React.MouseEvent) {
+  function handleNavScroll(e: React.MouseEvent, id: string) {
     if (window.location.pathname === "/") {
       e.preventDefault();
-      const heroElement = document.getElementById("hero-builder");
-      if (heroElement) {
-        heroElement.scrollIntoView({ behavior: "smooth" });
-        const input = document.getElementById("hero-prompt-input");
-        if (input) input.focus();
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
       }
     }
   }
 
-  function handleExploreClick(e: React.MouseEvent) {
-    if (window.location.pathname === "/") {
+  function handleStartBuilding(e?: React.MouseEvent) {
+    if (e && window.location.pathname === "/") {
       e.preventDefault();
-      const showcaseElement = document.getElementById("what-you-can-build");
-      if (showcaseElement) {
-        showcaseElement.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  }
-
-  function handlePricingClick(e: React.MouseEvent) {
-    if (window.location.pathname === "/") {
-      e.preventDefault();
-      const pricingElement = document.getElementById("pricing");
-      if (pricingElement) {
-        pricingElement.scrollIntoView({ behavior: "smooth" });
+      const hero = document.getElementById("hero-builder");
+      if (hero) {
+        hero.scrollIntoView({ behavior: "smooth" });
       }
     }
   }
@@ -88,94 +76,90 @@ export function Navbar() {
 
   return (
     <>
-      <div className="sticky top-0 z-50 w-full px-4 pt-3 sm:px-6">
-        <header
-          className={cn(
-            "mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6 rounded-2xl transition-all duration-300",
-            scrolled
-              ? "bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)]"
-              : "bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/40 dark:border-slate-800/40 shadow-sm"
-          )}
-        >
-          {/* LEFT: Logo */}
+      <header
+        className={cn(
+          "sticky top-0 z-50 w-full border-b border-slate-line transition-colors duration-200",
+          scrolled ? "bg-ink/95 backdrop-blur-md" : "bg-ink/90 backdrop-blur-md"
+        )}
+      >
+        <div className="mx-auto flex h-[72px] w-full max-w-[1180px] items-center justify-between px-5 sm:px-8">
+          {/* LEFT: Brand Logo */}
           <Logo />
 
-          {/* CENTER: Navigation (Dashboard, How It Works, Explore, Pricing) */}
-          <nav
-            aria-label="Primary"
-            className="hidden items-center gap-1 rounded-full bg-slate-100/70 dark:bg-slate-800/60 p-1 border border-slate-200/50 dark:border-slate-700/50 md:flex"
-          >
+          {/* CENTER: Navigation links matching design reference */}
+          <nav aria-label="Primary" className="hidden items-center gap-9 text-[14.5px] text-fog md:flex">
             <Link
-              href="/#hero-builder"
-              onClick={handleDashboardClick}
-              className="rounded-full px-4 py-1.5 text-xs font-semibold text-slate-800 dark:text-slate-100 transition-colors hover:bg-white dark:hover:bg-slate-700 shadow-sm"
+              href="#how"
+              onClick={(e) => handleNavScroll(e, "how")}
+              className="hover:text-cream transition-colors"
             >
-              Dashboard
+              Product
             </Link>
             <Link
-              href="#how-it-works"
-              className="rounded-full px-4 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 transition-colors hover:bg-white/80 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
+              href="#how"
+              onClick={(e) => handleNavScroll(e, "how")}
+              className="hover:text-cream transition-colors"
             >
-              How It Works
+              How it works
             </Link>
             <Link
               href="#what-you-can-build"
-              onClick={handleExploreClick}
-              className="rounded-full px-4 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 transition-colors hover:bg-white/80 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
+              onClick={(e) => handleNavScroll(e, "what-you-can-build")}
+              className="hover:text-cream transition-colors"
             >
-              Explore
+              Examples
             </Link>
             <Link
               href="#pricing"
-              onClick={handlePricingClick}
-              className="rounded-full px-4 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 transition-colors hover:bg-white/80 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
+              onClick={(e) => handleNavScroll(e, "pricing")}
+              className="hover:text-cream transition-colors"
             >
               Pricing
             </Link>
           </nav>
 
-          {/* RIGHT SIDE: Auth & Primary CTA */}
-          <div className="hidden items-center gap-3 md:flex">
+          {/* RIGHT SIDE: Auth & Primary Action Button */}
+          <div className="hidden items-center gap-[22px] text-[14.5px] md:flex">
             {mounted && profile ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <Button
                   size="sm"
                   asChild
-                  className="rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-xs font-semibold text-white shadow-md shadow-indigo-500/25 hover:from-indigo-500 hover:to-blue-500 hover:shadow-indigo-500/40 hover:scale-[1.02] transition-all border-0 px-4 py-2"
+                  className="rounded-sm bg-amber text-[#201404] hover:bg-amber-deep font-sans font-medium text-[14px] px-4 py-2 border-0 shadow-none"
                 >
                   <Link href="/dashboard" className="gap-1.5 flex items-center">
-                    <LayoutDashboard className="size-3.5 text-white" />
-                    <span className="text-white">My Projects</span>
+                    <LayoutDashboard className="size-3.5" />
+                    <span>My Projects</span>
                   </Link>
                 </Button>
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="gap-2 px-2 rounded-xl">
-                      <span className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-xs font-bold text-white shadow-sm">
+                    <button className="flex items-center gap-2 rounded-sm border border-slate-line bg-ink-raised px-2.5 py-1.5 text-xs text-cream hover:border-fog-dim transition-colors">
+                      <span className="flex size-6 items-center justify-center rounded-sm bg-amber text-xs font-bold text-[#201404]">
                         {profile.initials}
                       </span>
-                      <span className="max-w-[120px] truncate text-xs font-semibold">
+                      <span className="max-w-[110px] truncate font-medium">
                         {profile.firstName}
                       </span>
-                    </Button>
+                    </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-52 rounded-xl p-1.5">
+                  <DropdownMenuContent align="end" className="w-52 rounded-sm border border-slate-line bg-ink-raised p-1.5 text-cream">
                     <DropdownMenuLabel className="px-2 py-1.5">
                       <p className="text-sm font-semibold">{profile.fullName}</p>
-                      <p className="text-xs font-normal text-muted-foreground truncate">{profile.email}</p>
+                      <p className="text-xs text-fog truncate">{profile.email}</p>
                     </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
+                    <DropdownMenuSeparator className="bg-slate-line" />
+                    <DropdownMenuItem asChild className="rounded-sm cursor-pointer hover:bg-slate-line">
                       <Link href="/dashboard">
-                        <LayoutDashboard className="size-4 mr-2 text-indigo-500" />
+                        <LayoutDashboard className="size-4 mr-2 text-amber" />
                         Projects Dashboard
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator />
+                    <DropdownMenuSeparator className="bg-slate-line" />
                     <DropdownMenuItem
                       onClick={() => signOut()}
-                      className="rounded-lg text-destructive focus:bg-destructive/10 focus:text-destructive cursor-pointer"
+                      className="rounded-sm text-red-400 focus:bg-red-500/10 focus:text-red-300 cursor-pointer"
                     >
                       <LogOut className="size-4 mr-2" />
                       Sign Out
@@ -185,22 +169,20 @@ export function Navbar() {
               </div>
             ) : (
               <>
-                <Button
-                  variant="ghost"
-                  size="sm"
+                <button
+                  type="button"
                   onClick={() => openAuth("signin")}
-                  className="rounded-xl text-xs font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100/80 dark:text-slate-300 dark:hover:text-white"
+                  className="text-fog hover:text-cream transition-colors cursor-pointer"
                 >
-                  Sign In / Register
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={() => openAuth("signup")}
-                  className="rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-blue-600 text-xs font-semibold text-white shadow-md shadow-indigo-500/20 hover:from-indigo-500 hover:to-blue-500 hover:shadow-indigo-500/30 gap-1.5 transition-all hover:scale-[1.02]"
+                  Sign in
+                </button>
+                <Link
+                  href="/#hero-builder"
+                  onClick={handleStartBuilding}
+                  className="inline-flex items-center gap-2 font-sans font-medium text-[14.5px] px-5 py-2.5 rounded-sm bg-amber text-[#201404] hover:bg-amber-deep transition-colors cursor-pointer"
                 >
-                  <span>Get Started Free</span>
-                  <ArrowRight className="size-3.5" />
-                </Button>
+                  Start building
+                </Link>
               </>
             )}
           </div>
@@ -208,120 +190,118 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="md:hidden rounded-xl border-slate-200 bg-white/70"
-                aria-label="Open navigation menu"
+              <button
+                type="button"
+                className="md:hidden p-2 text-cream hover:text-amber transition-colors"
+                aria-label="Open menu"
               >
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="size-4"
-                  aria-hidden="true"
-                >
-                  <path d="M4 6h16" />
-                  <path d="M4 12h16" />
-                  <path d="M4 18h16" />
-                </svg>
-              </Button>
+                <Menu className="size-5" />
+              </button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-80 p-6 rounded-l-3xl">
-              <SheetHeader className="pb-4 border-b border-border">
+            <SheetContent side="right" className="w-72 p-6 rounded-none border-l border-slate-line bg-ink text-cream">
+              <SheetHeader className="pb-4 border-b border-slate-line">
                 <SheetTitle asChild>
                   <div>
                     <Logo />
                   </div>
                 </SheetTitle>
               </SheetHeader>
-              <nav aria-label="Mobile" className="flex flex-col gap-1.5 mt-6">
+              <nav aria-label="Mobile" className="flex flex-col gap-3 mt-6 text-sm text-fog">
                 <Link
-                  href="/#hero-builder"
+                  href="#how"
                   onClick={(e) => {
                     setIsOpen(false);
-                    handleDashboardClick(e);
+                    handleNavScroll(e, "how");
                   }}
-                  className="rounded-xl px-3.5 py-2.5 text-sm font-semibold text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
+                  className="py-2 hover:text-cream transition-colors"
                 >
-                  Dashboard
+                  Product
                 </Link>
                 <Link
-                  href="#how-it-works"
-                  onClick={() => setIsOpen(false)}
-                  className="rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  href="#how"
+                  onClick={(e) => {
+                    setIsOpen(false);
+                    handleNavScroll(e, "how");
+                  }}
+                  className="py-2 hover:text-cream transition-colors"
                 >
-                  How It Works
+                  How it works
                 </Link>
                 <Link
                   href="#what-you-can-build"
                   onClick={(e) => {
                     setIsOpen(false);
-                    handleExploreClick(e);
+                    handleNavScroll(e, "what-you-can-build");
                   }}
-                  className="rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  className="py-2 hover:text-cream transition-colors"
                 >
-                  Explore
+                  Examples
                 </Link>
                 <Link
                   href="#pricing"
                   onClick={(e) => {
                     setIsOpen(false);
-                    handlePricingClick(e);
+                    handleNavScroll(e, "pricing");
                   }}
-                  className="rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  className="py-2 hover:text-cream transition-colors"
                 >
                   Pricing
                 </Link>
               </nav>
 
-              <div className="mt-auto flex flex-col gap-2.5 pt-6 border-t border-border">
+              <div className="mt-8 flex flex-col gap-3 pt-6 border-t border-slate-line">
                 {mounted && profile ? (
                   <>
-                    <div className="flex items-center gap-3 px-1 py-2">
-                      <span className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-xs font-bold text-white shadow-sm">
+                    <div className="flex items-center gap-2.5 py-1">
+                      <span className="flex size-7 items-center justify-center rounded-sm bg-amber text-xs font-bold text-[#201404]">
                         {profile.initials}
                       </span>
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-semibold truncate">{profile.fullName}</p>
-                        <p className="text-[10px] text-muted-foreground truncate">{profile.email}</p>
+                        <p className="text-xs font-medium truncate">{profile.fullName}</p>
+                        <p className="text-[11px] text-fog truncate">{profile.email}</p>
                       </div>
                     </div>
-                    <Button asChild className="rounded-xl">
-                      <Link href="/dashboard">Go to Projects</Link>
+                    <Button asChild className="rounded-sm bg-amber text-[#201404] hover:bg-amber-deep">
+                      <Link href="/dashboard" onClick={() => setIsOpen(false)}>
+                        Go to Projects
+                      </Link>
                     </Button>
-                    <Button variant="outline" className="rounded-xl" onClick={() => signOut()}>
+                    <Button
+                      variant="outline"
+                      className="rounded-sm border-slate-line text-cream hover:border-fog-dim bg-transparent"
+                      onClick={() => signOut()}
+                    >
                       Sign Out
                     </Button>
                   </>
                 ) : (
                   <>
-                    <Button
-                      variant="outline"
-                      className="rounded-xl text-xs font-semibold"
+                    <button
+                      type="button"
+                      className="text-left text-sm text-fog hover:text-cream py-1.5"
                       onClick={() => openAuth("signin")}
                     >
-                      Sign In / Register
-                    </Button>
-                    <Button
-                      className="rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-xs font-semibold text-white shadow-md shadow-indigo-500/20"
-                      onClick={() => openAuth("signup")}
+                      Sign in
+                    </button>
+                    <button
+                      type="button"
+                      className="inline-flex items-center justify-center font-medium text-sm px-4 py-2.5 rounded-sm bg-amber text-[#201404] hover:bg-amber-deep transition-colors text-center mt-2"
+                      onClick={() => {
+                        setIsOpen(false);
+                        handleStartBuilding();
+                      }}
                     >
-                      Get Started Free
-                      <ArrowRight className="size-3.5 ml-1" />
-                    </Button>
+                      Start building
+                    </button>
                   </>
                 )}
               </div>
             </SheetContent>
           </Sheet>
-        </header>
-      </div>
+        </div>
+      </header>
 
-      {/* Auth Modal (Sign In / Register) */}
+      {/* Auth Modal */}
       <AuthModal
         open={authOpen}
         onOpenChange={setAuthOpen}

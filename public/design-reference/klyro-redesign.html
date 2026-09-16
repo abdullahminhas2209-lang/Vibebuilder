@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klyro — Describe it. Klyro builds it.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #14161f;
+    --ink-raised: #1c1f2b;
+    --paper: #f6f3ea;
+    --paper-line: #e4dfd0;
+    --amber: #f2a93b;
+    --amber-deep: #d98f22;
+    --fog: #9aa0ae;
+    --fog-dim: #6b7180;
+    --slate-line: #2b2f3c;
+    --cream-text: #f2f0e8;
+    --ink-text: #16181f;
+    --radius-sm: 3px;
+    --radius-md: 6px;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'IBM Plex Sans', -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', 'Courier New', monospace;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background: var(--ink);
+    color: var(--cream-text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a{ color:inherit; text-decoration:none; }
+  img{ max-width:100%; display:block; }
+  .wrap{ max-width: 1180px; margin:0 auto; padding: 0 32px; }
+  section{ padding: 108px 0; }
+  @media (max-width: 720px){ section{ padding: 64px 0; } .wrap{ padding:0 20px; } }
+
+  :focus-visible{ outline: 2px solid var(--amber); outline-offset: 3px; }
+
+  /* ---------- Nav ---------- */
+  header.site{
+    position: sticky; top:0; z-index: 50;
+    background: rgba(20,22,31,0.88);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--slate-line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    height: 72px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; font-family: var(--serif); font-size: 20px; font-weight:600; letter-spacing: -0.01em; }
+  .brand .mark{
+    width: 28px; height:28px; border-radius: var(--radius-sm);
+    background: var(--amber);
+    position:relative;
+    flex-shrink:0;
+  }
+  .brand .mark::before{
+    content:"";
+    position:absolute; inset: 8px 8px 8px 12px;
+    background: var(--ink);
+    clip-path: polygon(0 0, 45% 0, 100% 50%, 45% 100%, 0 100%, 30% 50%);
+  }
+  nav.links{ display:flex; gap: 36px; font-size: 14.5px; color: var(--fog); }
+  nav.links a:hover{ color: var(--cream-text); }
+  .nav-right{ display:flex; align-items:center; gap: 22px; font-size: 14.5px; }
+  .signin{ color: var(--fog); }
+  .signin:hover{ color: var(--cream-text); }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family: var(--sans); font-weight:500; font-size: 14.5px;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    cursor:pointer;
+  }
+  .btn-amber{ background: var(--amber); color: #201404; }
+  .btn-amber:hover{ background: var(--amber-deep); }
+  .btn-ghost{ border-color: var(--slate-line); color: var(--cream-text); }
+  .btn-ghost:hover{ border-color: var(--fog-dim); }
+  .menu-btn{ display:none; background:none; border:none; color:var(--cream-text); font-size:22px; cursor:pointer; }
+  @media (max-width: 860px){
+    nav.links{ display:none; }
+    .nav-right .signin{ display:none; }
+    .menu-btn{ display:block; }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{ padding-top: 92px; padding-bottom: 100px; }
+  .hero-grid{
+    display:grid; grid-template-columns: 1.05fr 0.95fr;
+    gap: 64px; align-items:center;
+  }
+  @media (max-width: 940px){ .hero-grid{ grid-template-columns:1fr; } }
+
+  .eyebrow-line{
+    font-family: var(--mono); font-size: 13px; color: var(--fog-dim);
+    margin-bottom: 22px; display:flex; align-items:center; gap: 10px;
+  }
+  .eyebrow-line .dot{ width:6px; height:6px; background: var(--amber); border-radius:50%; }
+
+  h1.hero-title{
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(38px, 5vw, 58px);
+    line-height: 1.07;
+    letter-spacing: -0.01em;
+    color: var(--cream-text);
+    max-width: 13ch;
+  }
+  .hero-sub{
+    margin-top: 26px;
+    max-width: 46ch;
+    font-size: 17.5px;
+    color: var(--fog);
+    line-height: 1.6;
+  }
+  .hero-cta{ margin-top: 36px; display:flex; align-items:center; gap: 26px; }
+  .hero-cta .learn{ font-size: 14.5px; color: var(--fog); border-bottom: 1px solid var(--slate-line); padding-bottom: 2px; }
+  .hero-cta .learn:hover{ color: var(--cream-text); border-color: var(--fog-dim); }
+
+  .hero-examples{
+    margin-top: 44px; padding-top: 24px; border-top: 1px solid var(--slate-line);
+    display:flex; gap: 28px; flex-wrap:wrap;
+  }
+  .hero-examples span{ font-family: var(--mono); font-size: 12.5px; color: var(--fog-dim); }
+  .hero-examples .chip{
+    font-family: var(--mono); font-size: 12.5px; color: var(--fog);
+    border: 1px solid var(--slate-line); border-radius: var(--radius-sm);
+    padding: 5px 10px;
+  }
+
+  /* terminal mockup */
+  .term{
+    background: #0e0f16;
+    border: 1px solid var(--slate-line);
+    border-radius: var(--radius-md);
+    overflow:hidden;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6);
+  }
+  .term-bar{
+    display:flex; align-items:center; gap:8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--slate-line);
+  }
+  .term-bar .d{ width:9px; height:9px; border-radius:50%; background: #3a3f4b; }
+  .term-bar .label{ margin-left: 8px; font-family: var(--mono); font-size:12px; color: var(--fog-dim); }
+  .term-body{ padding: 20px 20px 4px; font-family: var(--mono); font-size: 13px; line-height:1.75; }
+  .term-body .prompt-line{ color: var(--fog); }
+  .term-body .prompt-line .caret{ color: var(--amber); }
+  .term-body .typed{ color: var(--cream-text); }
+  .term-body .out{ color: var(--fog-dim); margin-top: 6px; }
+  .term-body .file{ color: #7fb3a3; }
+  .term-body .tag{ color: var(--amber); }
+  .term-preview{
+    margin: 16px 20px 20px; border: 1px solid var(--slate-line); border-radius: var(--radius-sm);
+    overflow:hidden; background: var(--paper);
+  }
+  .term-preview .tp-bar{ display:flex; gap:8px; padding:8px 12px; background: var(--paper-line); }
+  .term-preview .tp-bar .d{ width:7px; height:7px; border-radius:50%; background: rgba(0,0,0,0.15); }
+  .term-preview .tp-body{ padding: 18px 16px 20px; color: var(--ink-text); }
+  .term-preview .tp-body h4{ font-family: var(--serif); font-weight:600; font-size:16px; margin-bottom:4px; }
+  .term-preview .tp-body p{ font-size:12px; color:#5b5f6b; margin-bottom:10px; }
+  .term-preview .tp-row{ display:flex; gap:8px; }
+  .term-preview .tp-row .swatch{ height:28px; flex:1; border-radius:3px; background: rgba(20,22,31,0.08); }
+  .term-preview .tp-row .swatch.amber{ background: var(--amber); flex: 0 0 70px; }
+
+  /* ---------- Section headings (varied, no repeated pill) ---------- */
+  .section-head{ max-width: 640px; margin-bottom: 56px; }
+  .section-head h2{
+    font-family: var(--serif); font-weight:500;
+    font-size: clamp(28px, 3.4vw, 38px);
+    line-height:1.15; letter-spacing:-0.01em;
+    color: var(--cream-text);
+  }
+  .section-head p{ margin-top:14px; color: var(--fog); font-size:16px; max-width: 52ch; }
+  .section-head.on-paper h2{ color: var(--ink-text); }
+  .section-head.on-paper p{ color: #565a66; }
+
+  /* ---------- How it works: connected timeline (legit sequence) ---------- */
+  .how{ background: var(--ink); }
+  .timeline{ position:relative; }
+  .timeline::before{
+    content:""; position:absolute; left: 27px; top: 6px; bottom: 6px;
+    width:1px; background: var(--slate-line);
+  }
+  @media (max-width:720px){ .timeline::before{ left: 21px; } }
+  .tl-row{ display:grid; grid-template-columns: 56px 1fr; gap: 28px; position:relative; padding-bottom: 52px; }
+  .tl-row:last-child{ padding-bottom:0; }
+  @media (max-width:720px){ .tl-row{ grid-template-columns: 42px 1fr; gap:18px; } }
+  .tl-num{
+    font-family: var(--serif); font-size: 22px; color: var(--ink);
+    background: var(--fog); width:56px; height:56px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    z-index:1;
+  }
+  .tl-row.active .tl-num{ background: var(--amber); }
+  @media (max-width:720px){ .tl-num{ width:42px; height:42px; font-size:16px; } }
+  .tl-content h3{ font-family: var(--serif); font-weight:600; font-size:20px; color: var(--cream-text); margin-bottom:8px; }
+  .tl-content p{ color: var(--fog); font-size:15px; max-width: 56ch; line-height:1.65; }
+  .tl-content .tl-meta{ margin-top: 10px; font-family: var(--mono); font-size:12px; color: var(--fog-dim); }
+
+  /* ---------- Showcase ---------- */
+  .showcase{ background: var(--ink); }
+  .sc-grid{ display:flex; flex-direction:column; gap: 64px; }
+  .sc-item{ display:grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items:center; }
+  .sc-item.reverse{ direction: rtl; }
+  .sc-item.reverse > *{ direction: ltr; }
+  @media (max-width: 860px){ .sc-item, .sc-item.reverse{ grid-template-columns:1fr; direction:ltr; } }
+
+  .browser{ border-radius: var(--radius-md); overflow:hidden; border:1px solid var(--slate-line); background: var(--paper); box-shadow: 0 30px 60px -24px rgba(0,0,0,0.55); }
+  .browser .bbar{ display:flex; align-items:center; gap:8px; padding:9px 12px; background: var(--paper-line); }
+  .browser .bbar .d{ width:8px; height:8px; border-radius:50%; background: rgba(0,0,0,0.18); }
+  .browser .bbar .url{ margin-left:8px; flex:1; font-family: var(--mono); font-size:11px; color:#7c8091; background:#fff; border-radius:3px; padding:3px 8px; }
+  .browser .bbody{ padding: 20px; color: var(--ink-text); }
+
+  .sc-text .kicker{ font-family: var(--mono); font-size:12.5px; color: var(--amber); margin-bottom:12px; }
+  .sc-text h3{ font-family: var(--serif); font-weight:500; font-size: 28px; color: var(--cream-text); line-height:1.15; margin-bottom:14px; max-width: 14ch;}
+  .sc-text p{ color: var(--fog); font-size:15.5px; max-width: 42ch; margin-bottom: 18px; }
+  .sc-text ul{ list-style:none; }
+  .sc-text ul li{ font-size:14.5px; color: var(--fog); padding-left:16px; position:relative; margin-bottom:8px; }
+  .sc-text ul li::before{ content:"—"; position:absolute; left:0; color: var(--fog-dim); }
+
+  /* dashboard mock content */
+  .dash-top{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; }
+  .dash-top h4{ font-family: var(--serif); font-size:16px; font-weight:600; }
+  .dash-top span{ font-size:11px; color:#7c8091; font-family: var(--mono); }
+  .dash-stats{ display:grid; grid-template-columns: repeat(3,1fr); gap:10px; margin-bottom:14px; }
+  .dash-stats div{ border:1px solid var(--paper-line); border-radius:4px; padding:10px; }
+  .dash-stats div b{ display:block; font-size:15px; font-family: var(--serif); }
+  .dash-stats div small{ font-size:10.5px; color:#7c8091; }
+  .dash-chart{ height:64px; border-radius:4px; background: linear-gradient(180deg, rgba(242,169,59,0.18), rgba(242,169,59,0)); border:1px solid var(--paper-line); position:relative; overflow:hidden; }
+  .dash-chart::after{ content:""; position:absolute; left:0; right:0; bottom:0; height:38%; background: repeating-linear-gradient(90deg, rgba(20,22,31,0.12) 0 8px, transparent 8px 20px); }
+
+  /* restaurant mock content */
+  .rest-hero{ height:120px; border-radius:4px; background: #dcd4bd; margin-bottom:14px; position:relative; }
+  .rest-hero span{ position:absolute; bottom:10px; left:10px; font-family: var(--serif); font-size:16px; color:#2a2410; }
+  .rest-cards{ display:grid; grid-template-columns: repeat(3,1fr); gap:8px; }
+  .rest-cards div{ height:44px; border-radius:4px; background: var(--paper-line); }
+
+  /* ---------- Pricing ---------- */
+  .pricing{ background: var(--ink); }
+  .price-table{
+    border: 1px solid var(--slate-line); border-radius: var(--radius-md);
+    display:grid; grid-template-columns: 1.1fr 1fr 1fr 1fr;
+    overflow:hidden;
+  }
+  @media (max-width: 860px){ .price-table{ grid-template-columns:1fr; } .price-table .col{ border-top:1px solid var(--slate-line); } .price-table .col.feat-col{ display:none; } }
+  .price-table .col{ padding: 28px 24px; border-left: 1px solid var(--slate-line); }
+  .price-table .col:first-child{ border-left:none; }
+  .price-table .col.highlight{ background: rgba(242,169,59,0.07); }
+  .feat-col{ display:flex; flex-direction:column; justify-content:flex-end; }
+  .feat-col .row{ font-size:13.5px; color: var(--fog); padding: 10px 0; border-top: 1px solid var(--slate-line); }
+  .feat-col .row:first-child{ border-top:none; }
+  .plan-name{ font-family: var(--serif); font-size: 19px; margin-bottom:6px; }
+  .plan-desc{ font-size:13px; color: var(--fog-dim); margin-bottom:18px; min-height: 48px; }
+  .plan-price{ font-family: var(--serif); font-size: 34px; margin-bottom: 2px; }
+  .plan-price sup{ font-size:14px; font-family:var(--sans); color:var(--fog); }
+  .plan-cycle{ font-size:12px; color:var(--fog-dim); font-family: var(--mono); margin-bottom: 22px; }
+  .plan-feats{ list-style:none; }
+  .plan-feats li{ font-size:13.5px; color: var(--fog); padding: 10px 0; border-top:1px solid var(--slate-line); }
+  .plan-feats li:first-child{ border-top:none; }
+  .plan-cta{ margin-top:22px; width:100%; justify-content:center; }
+
+  /* ---------- Footer ---------- */
+  footer{ border-top:1px solid var(--slate-line); padding: 48px 0; }
+  .foot-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
+  .foot-row .brand{ font-size:16px; }
+  .foot-links{ display:flex; gap:24px; font-size:13.5px; color: var(--fog); }
+  .foot-copy{ font-family: var(--mono); font-size:11.5px; color: var(--fog-dim); margin-top: 24px; }
+
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+
+  /* single orchestrated hero entrance */
+  .fade-in{ opacity:0; transform: translateY(10px); animation: rise 0.7s ease forwards; }
+  .fade-in.d1{ animation-delay: 0.05s; }
+  .fade-in.d2{ animation-delay: 0.15s; }
+  .fade-in.d3{ animation-delay: 0.25s; }
+  @keyframes rise{ to{ opacity:1; transform:none; } }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap nav">
+    <div class="brand"><span class="mark"></span>Klyro</div>
+    <nav class="links">
+      <a href="#how">Product</a>
+      <a href="#how">How it works</a>
+      <a href="#showcase">Examples</a>
+      <a href="#pricing">Pricing</a>
+    </nav>
+    <div class="nav-right">
+      <a class="signin" href="#">Sign in</a>
+      <a class="btn btn-amber" href="#">Start building</a>
+    </div>
+    <button class="menu-btn" aria-label="Open menu">☰</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow-line fade-in d1"><span class="dot"></span>Built on Gemini 3.5 Flash</div>
+      <h1 class="hero-title fade-in d2">Describe it.<br>Klyro builds it.</h1>
+      <p class="hero-sub fade-in d3">Type what you need in plain language. Klyro writes the code, wires up the pages, and hands you a working app you can click through in under a minute.</p>
+      <div class="hero-cta fade-in d3">
+        <a class="btn btn-amber" href="#">Start building</a>
+        <a class="learn" href="#how">See how it works</a>
+      </div>
+      <div class="hero-examples fade-in d3">
+        <span>Try a prompt:</span>
+        <span class="chip">e-commerce storefront</span>
+        <span class="chip">table booking system</span>
+        <span class="chip">analytics dashboard</span>
+      </div>
+    </div>
+
+    <div class="term fade-in d3">
+      <div class="term-bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="label">klyro — prompt.md</span></div>
+      <div class="term-body">
+        <div class="prompt-line"><span class="caret">›</span> <span class="typed">Build a table booking page for a small restaurant, warm and simple</span></div>
+        <div class="out">Reading intent… 3 pages, 1 form, 1 confirmation state</div>
+        <div class="out"><span class="file">/pages/book.tsx</span> <span class="tag">created</span></div>
+        <div class="out"><span class="file">/components/DateGrid.tsx</span> <span class="tag">created</span></div>
+        <div class="out"><span class="file">/lib/availability.ts</span> <span class="tag">created</span></div>
+      </div>
+      <div class="term-preview">
+        <div class="tp-bar"><span class="d"></span><span class="d"></span><span class="d"></span></div>
+        <div class="tp-body">
+          <h4>Book a table</h4>
+          <p>Choose a date, party size, and time</p>
+          <div class="tp-row">
+            <div class="swatch"></div>
+            <div class="swatch"></div>
+            <div class="swatch amber"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how" id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Five steps between a sentence and a live app</h2>
+      <p>Each step happens automatically, but you can jump in and redirect at any point.</p>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-row active">
+        <div class="tl-num">01</div>
+        <div class="tl-content">
+          <h3>You describe it</h3>
+          <p>Write what you want in plain English, or paste a screenshot of a design you like. No need to mention frameworks or components.</p>
+          <div class="tl-meta">input: text, image, or URL</div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-num">02</div>
+        <div class="tl-content">
+          <h3>Klyro plans the structure</h3>
+          <p>It works out what pages, data, and states your idea needs before writing a single line, so the result holds together instead of feeling bolted on.</p>
+          <div class="tl-meta">output: page map + data model</div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-content">
+          <h3>The app gets written</h3>
+          <p>Klyro generates real, readable Next.js and Tailwind code across multiple files — the kind you could hand to another developer.</p>
+          <div class="tl-meta">stack: Next.js 15 · Tailwind CSS</div>
+        </div>
+      </div>
+      <div class="tl-row active">
+        <div class="tl-num">04</div>
+        <div class="tl-content">
+          <h3>You try it live</h3>
+          <p>A running sandbox opens next to the code, on desktop and mobile sizes, so you can click through it the way a visitor would.</p>
+          <div class="tl-meta">preview: desktop · tablet · mobile</div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-num">05</div>
+        <div class="tl-content">
+          <h3>You ship it</h3>
+          <p>Export the full source as a zip, or deploy straight to Vercel and your own domain when it's ready.</p>
+          <div class="tl-meta">export: zip · Vercel · custom domain</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="showcase" id="showcase">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Two prompts, two very different apps</h2>
+      <p>The same tool, pointed at different problems.</p>
+    </div>
+
+    <div class="sc-grid">
+      <div class="sc-item">
+        <div class="browser">
+          <div class="bbar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="url">instacore.app/dashboard</span></div>
+          <div class="bbody">
+            <div class="dash-top"><h4>InstaCore</h4><span>Good morning, Alex</span></div>
+            <div class="dash-stats">
+              <div><b>$24,780</b><small>Revenue</small></div>
+              <div><b>1,248</b><small>Orders</small></div>
+              <div><b>3.24%</b><small>Conversion</small></div>
+            </div>
+            <div class="dash-chart"></div>
+          </div>
+        </div>
+        <div class="sc-text">
+          <div class="kicker">Prompt: "SaaS analytics dashboard"</div>
+          <h3>Turn raw numbers into a decision</h3>
+          <p>Klyro built the revenue chart, order table, and conversion cards from one line describing the metrics that mattered.</p>
+          <ul>
+            <li>Live-updating charts wired to sample data</li>
+            <li>Sortable order table with status tags</li>
+            <li>Auth-ready layout for a real backend</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sc-item reverse">
+        <div class="browser">
+          <div class="bbar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="url">dineo.restaurant</span></div>
+          <div class="bbody">
+            <div class="rest-hero"><span>Dineo</span></div>
+            <div class="rest-cards"><div></div><div></div><div></div></div>
+          </div>
+        </div>
+        <div class="sc-text">
+          <div class="kicker">Prompt: "restaurant site with table booking"</div>
+          <h3>A menu, a story, a way to book</h3>
+          <p>One sentence turned into a homepage, a menu with photography placeholders, and a working reservation form.</p>
+          <ul>
+            <li>Photo-first layout for dishes and interiors</li>
+            <li>Booking form with date and party size</li>
+            <li>Mobile layout adjusted automatically</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Pricing that scales with how much you build</h2>
+      <p>Start free. Move up when you need more generations or a team.</p>
+    </div>
+
+    <div class="price-table">
+      <div class="col feat-col">
+        <div class="row">Generations / month</div>
+        <div class="row">Live multi-device sandbox</div>
+        <div class="row">Full project export</div>
+        <div class="row">Conversational editing</div>
+        <div class="row">Team seats</div>
+        <div class="row">Support</div>
+      </div>
+
+      <div class="col">
+        <div class="plan-name">Starter</div>
+        <div class="plan-desc">For trying Klyro on a first idea.</div>
+        <div class="plan-price">$0</div>
+        <div class="plan-cycle">forever</div>
+        <ul class="plan-feats">
+          <li>5 / month</li>
+          <li>Yes</li>
+          <li>Single component only</li>
+          <li>No</li>
+          <li>1</li>
+          <li>Community</li>
+        </ul>
+        <a class="btn btn-ghost plan-cta" href="#">Start free</a>
+      </div>
+
+      <div class="col highlight">
+        <div class="plan-name">Pro</div>
+        <div class="plan-desc">For creators shipping real projects.</div>
+        <div class="plan-price">$15<sup>/mo</sup></div>
+        <div class="plan-cycle">billed annually</div>
+        <ul class="plan-feats">
+          <li>Unlimited</li>
+          <li>Yes</li>
+          <li>Full source, one click</li>
+          <li>Yes</li>
+          <li>1</li>
+          <li>Priority</li>
+        </ul>
+        <a class="btn btn-amber plan-cta" href="#">Start with Pro</a>
+      </div>
+
+      <div class="col">
+        <div class="plan-name">Team</div>
+        <div class="plan-desc">For agencies building for clients.</div>
+        <div class="plan-price">$39<sup>/mo</sup></div>
+        <div class="plan-cycle">billed annually</div>
+        <ul class="plan-feats">
+          <li>Unlimited</li>
+          <li>Yes</li>
+          <li>Full source, one click</li>
+          <li>Yes</li>
+          <li>Up to 5</li>
+          <li>Dedicated</li>
+        </ul>
+        <a class="btn btn-ghost plan-cta" href="#">Talk to us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <div class="brand"><span class="mark"></span>Klyro</div>
+      <div class="foot-links">
+        <a href="#how">Product</a>
+        <a href="#showcase">Examples</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#">Sign in</a>
+      </div>
+    </div>
+    <div class="foot-copy">© 2026 Klyro. Prompt to app, in one sitting.</div>
+  </div>
+</footer>
+
+</body>
+</html>

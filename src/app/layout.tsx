@@ -1,24 +1,27 @@
 import React from "react";
 import type { Metadata, Viewport } from "next";
-import { Fira_Code, Montserrat, Playfair_Display } from "next/font/google";
+import { Fraunces, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
-const firaCode = Fira_Code({
-  variable: "--font-fira-code",
+const ibmPlexSans = IBM_Plex_Sans({
+  variable: "--font-ibm-plex-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-ibm-plex-mono",
   subsets: ["latin"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -56,11 +59,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${montserrat.variable} ${firaCode.variable} ${playfair.variable} font-sans h-full antialiased`}
+      className={`${fraunces.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable} font-sans h-full antialiased`}
       suppressHydrationWarning
     >
       <body
-        className="flex min-h-dvh flex-col bg-[#F8FAFC] dark:bg-slate-950 text-slate-900 dark:text-slate-100"
+        className="flex min-h-dvh flex-col bg-[#14161f] text-[#f2f0e8]"
         suppressHydrationWarning
       >
         <AuthProvider>{children}</AuthProvider>
