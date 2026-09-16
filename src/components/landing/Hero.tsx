@@ -4,14 +4,15 @@ import { useState, useEffect, memo } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Cpu, Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { TextEffect } from "@/components/motion-primitives/text-effect";
 
 const DEFAULT_WORDS = [
-  "product.",
-  "website.",
-  "web app.",
   "landing page.",
+  "web app.",
   "SaaS platform.",
-  "storefront.",
+  "e-commerce store.",
+  "dashboard.",
+  "interactive product.",
 ];
 
 const TypewriterText = memo(function TypewriterText({
@@ -203,17 +204,33 @@ export function Hero() {
         <div className="flex flex-col items-center text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-slate-line bg-ink-raised px-3.5 py-1.5 font-mono text-xs text-fog shadow-xs backdrop-blur-md">
             <span className="flex size-1.5 rounded-full bg-amber animate-pulse" />
-            <span>Built on Gemini 3.5 Flash</span>
+            <TextEffect per="char" as="span" preset="fade" delay={0.05}>
+              Built on Gemini 3.5 Flash
+            </TextEffect>
           </div>
 
           <h1 className="mt-6 max-w-4xl font-serif font-normal text-3xl sm:text-5xl lg:text-6xl text-cream tracking-[-0.01em] leading-[1.1] pb-1">
-            From prompt to{" "}
+            <TextEffect
+              per="word"
+              as="span"
+              preset="fade-in-blur"
+              delay={0.15}
+              className="inline"
+            >
+              From prompt to
+            </TextEffect>{" "}
             <TypewriterText />
           </h1>
 
-          <p className="mt-4 max-w-2xl font-sans text-base sm:text-lg text-fog leading-[1.6]">
+          <TextEffect
+            per="word"
+            as="p"
+            preset="fade-in-blur"
+            delay={0.35}
+            className="mt-4 max-w-2xl font-sans text-base sm:text-lg text-fog leading-[1.6]"
+          >
             Describe what you want to build. Klyro turns your idea into a working, interactive product in seconds.
-          </p>
+          </TextEffect>
         </div>
 
         {/* ============================================================================== */}
