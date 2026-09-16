@@ -21,18 +21,22 @@ const TypewriterText = memo(function TypewriterText({
   deletingSpeed = 35,
   pauseDuration = 2000,
   emptyPauseDuration = 280,
+  started = false,
 }: {
   words?: string[];
   typingSpeed?: number;
   deletingSpeed?: number;
   pauseDuration?: number;
   emptyPauseDuration?: number;
+  started?: boolean;
 }) {
   const [wordIndex, setWordIndex] = useState(0);
-  const [displayText, setDisplayText] = useState(words[0] || "product.");
+  const [displayText, setDisplayText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
+    if (!started) return;
+
     let timer: NodeJS.Timeout;
     const currentWord = words[wordIndex] || "";
 
@@ -60,7 +64,7 @@ const TypewriterText = memo(function TypewriterText({
     }
 
     return () => clearTimeout(timer);
-  }, [displayText, isDeleting, wordIndex, words, typingSpeed, deletingSpeed, pauseDuration, emptyPauseDuration]);
+  }, [displayText, isDeleting, wordIndex, words, typingSpeed, deletingSpeed, pauseDuration, emptyPauseDuration, started]);
 
   return (
     <span className="inline-flex items-baseline whitespace-nowrap will-change-contents">
@@ -114,6 +118,27 @@ export function Hero() {
   const router = useRouter();
   const [prompt, setPrompt] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [firstEffectFinished, setFirstEffectFinished] = useState(false);
+  const [typewriterStarted, setTypewriterStarted] = useState(false);
+
+  useEffect(() => {
+    if (firstEffectFinished) {
+      // Pause for a second after the first effect finishes, then start typewriter
+      const timer = setTimeout(() => {
+        setTypewriterStarted(true);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [firstEffectFinished]);
+
+  // Fallback timer to ensure typewriter begins even if onAnimationComplete is skipped
+  useEffect(() => {
+    const fallback = setTimeout(() => {
+      setFirstEffectFinished(true);
+    }, 1400);
+    return () => clearTimeout(fallback);
+  }, []);
 
   // Typewriter effect for prompt placeholder
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
@@ -215,11 +240,13 @@ export function Hero() {
               as="span"
               preset="fade-in-blur"
               delay={0.15}
+              speedReveal={0.7}
               className="inline"
+              onAnimationComplete={() => setFirstEffectFinished(true)}
             >
               From prompt to
             </TextEffect>{" "}
-            <TypewriterText />
+            <TypewriterText started={typewriterStarted} />
           </h1>
 
           <TextEffect
