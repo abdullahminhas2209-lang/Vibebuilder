@@ -6,16 +6,21 @@ export function LogoMark({ className }: { className?: string }) {
     <span
       aria-hidden="true"
       className={cn(
-        "relative flex size-7 shrink-0 items-center justify-center rounded-[3px] bg-amber text-[#201404] shadow-sm",
+        "relative inline-flex size-7 shrink-0 items-center justify-center rounded-[3px] bg-amber shadow-sm overflow-hidden",
         className,
       )}
     >
-      <span
-        className="absolute inset-[7px_7px_7px_10px] bg-ink"
-        style={{
-          clipPath: "polygon(0 0, 45% 0, 100% 50%, 45% 100%, 0 100%, 30% 50%)",
-        }}
-      />
+      <svg
+        viewBox="0 0 28 28"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="size-full"
+      >
+        <polygon
+          points="10,7 14.95,7 21,14 14.95,21 10,21 13.3,14"
+          fill="#14161f"
+        />
+      </svg>
     </span>
   );
 }
