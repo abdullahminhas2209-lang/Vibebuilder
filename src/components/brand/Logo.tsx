@@ -1,10 +1,24 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export function LogoMark({ className }: { className?: string }) {
+export interface LogoMarkProps {
+  className?: string;
+  size?: number | string;
+}
+
+export function LogoMark({ className, size }: LogoMarkProps) {
+  const customStyle =
+    size !== undefined
+      ? {
+          width: typeof size === "number" ? `${size}px` : size,
+          height: typeof size === "number" ? `${size}px` : size,
+        }
+      : undefined;
+
   return (
     <span
       aria-hidden="true"
+      style={customStyle}
       className={cn(
         "relative inline-flex size-7 shrink-0 items-center justify-center rounded-[3px] bg-amber shadow-sm overflow-hidden",
         className,
@@ -25,10 +39,12 @@ export function LogoMark({ className }: { className?: string }) {
   );
 }
 
-interface LogoProps {
+export interface LogoProps {
   /** Target for the wordmark link. Defaults to the landing page. */
   href?: string;
   className?: string;
+  /** Custom size for the mark icon (e.g. 24, 28, 32, "2rem") */
+  size?: number | string;
   /** Hide the wordmark and render only the mark. */
   markOnly?: boolean;
   /** Optional click handler (e.g. to close a mobile drawer on navigation). */
@@ -38,6 +54,7 @@ interface LogoProps {
 export function Logo({
   href = "/",
   className,
+  size,
   markOnly = false,
   onClick,
 }: LogoProps) {
@@ -51,8 +68,10 @@ export function Logo({
         className,
       )}
     >
-      <LogoMark />
+      <LogoMark size={size} />
       {!markOnly && <span>Klyro</span>}
     </Link>
   );
 }
+
+export default Logo;
