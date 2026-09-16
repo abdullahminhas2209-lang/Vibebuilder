@@ -1,104 +1,108 @@
 "use client";
 
-import { ArrowRight, Code2, Cpu, Eye, MessageSquare, Rocket } from "lucide-react";
-import { Reveal } from "@/components/Reveal";
 import { cn } from "@/lib/utils";
 
-const STEPS = [
+interface StepItem {
+  number: string;
+  title: string;
+  description: string;
+  meta: string;
+  active?: boolean;
+}
+
+const TIMELINE_STEPS: StepItem[] = [
   {
-    step: "01",
-    title: "Prompt",
-    icon: MessageSquare,
-    badge: "Input",
-    description: "Describe what you want to build in plain English or paste any design reference.",
-    color: "from-blue-500/20 to-indigo-500/20 text-indigo-600 dark:text-indigo-400",
+    number: "01",
+    title: "You describe it",
+    description:
+      "Write what you want in plain English, or paste a screenshot of a design you like. No need to mention frameworks or components.",
+    meta: "input: text, image, or URL",
+    active: true,
   },
   {
-    step: "02",
-    title: "Understand",
-    icon: Cpu,
-    badge: "AI Reasoning",
-    description: "Klyro analyzes your requirements, architecture, layouts, state, and component hierarchy.",
-    color: "from-indigo-500/20 to-purple-500/20 text-purple-600 dark:text-purple-400",
+    number: "02",
+    title: "Klyro plans the structure",
+    description:
+      "It works out what pages, data, and states your idea needs before writing a single line, so the result holds together instead of feeling bolted on.",
+    meta: "output: page map + data model",
+    active: false,
   },
   {
-    step: "03",
-    title: "Build",
-    icon: Code2,
-    badge: "Code Generation",
-    description: "Generates clean, multi-file Next.js 15, React, and Tailwind CSS code in seconds.",
-    color: "from-purple-500/20 to-pink-500/20 text-pink-600 dark:text-pink-400",
+    number: "03",
+    title: "The app gets written",
+    description:
+      "Klyro generates real, readable Next.js and Tailwind code across multiple files — the kind you could hand to another developer.",
+    meta: "stack: Next.js 15 · Tailwind CSS",
+    active: false,
   },
   {
-    step: "04",
-    title: "Preview",
-    icon: Eye,
-    badge: "Live Sandbox",
-    description: "Test your running interactive application in real-time across Desktop, Tablet, and Mobile.",
-    color: "from-pink-500/20 to-rose-500/20 text-rose-600 dark:text-rose-400",
+    number: "04",
+    title: "You try it live",
+    description:
+      "A running sandbox opens next to the code, on desktop and mobile sizes, so you can click through it the way a visitor would.",
+    meta: "preview: desktop · tablet · mobile",
+    active: true,
   },
   {
-    step: "05",
-    title: "Launch",
-    icon: Rocket,
-    badge: "Production Ready",
-    description: "One-click export full source code ZIP or deploy directly to Vercel and your custom domain.",
-    color: "from-rose-500/20 to-emerald-500/20 text-emerald-600 dark:text-emerald-400",
+    number: "05",
+    title: "You ship it",
+    description:
+      "Export the full source as a zip, or deploy straight to Vercel and your own domain when it's ready.",
+    meta: "export: zip · Vercel · custom domain",
+    active: false,
   },
 ];
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="relative py-20 lg:py-28 border-t border-slate-200/60 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-950/30">
-      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-        <Reveal>
-          <div className="mx-auto max-w-2xl text-center">
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200/80 bg-indigo-50/80 dark:border-indigo-900/50 dark:bg-indigo-950/40 px-3 py-1 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-3 shadow-xs transition-transform duration-300 hover:scale-105">
-              <span>Workflow</span>
-            </div>
-            <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
-              How Klyro Works
-            </h2>
-            <p className="mt-3 text-base text-slate-600 dark:text-slate-300">
-              Five continuous steps from a natural language sentence to a production-ready application.
-            </p>
-          </div>
-        </Reveal>
+    <section
+      id="how"
+      aria-label="How it works"
+      className="py-[72px] sm:py-[108px] bg-ink border-t border-slate-line scroll-mt-20"
+    >
+      <div className="max-w-[1180px] mx-auto px-5 sm:px-8">
+        {/* Section Heading — clean, no repeated pill badges */}
+        <div className="max-w-[640px] mb-14">
+          <h2 className="font-serif font-normal text-[28px] sm:text-[34px] lg:text-[38px] leading-[1.15] tracking-[-0.01em] text-cream">
+            Five steps between a sentence and a live app
+          </h2>
+          <p className="mt-3.5 text-fog text-base max-w-[52ch]">
+            Each step happens automatically, but you can jump in and redirect at any point.
+          </p>
+        </div>
 
-        {/* Workflow Steps Grid */}
-        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          {STEPS.map((item, index) => (
-            <Reveal key={item.title} delay={index * 60}>
-              <div className="group relative flex flex-col justify-between h-full rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-5 shadow-sm backdrop-blur-md transition-all duration-300 ease-out hover:-translate-y-2 hover:border-indigo-400 hover:shadow-[0_20px_35px_-10px_rgba(99,102,241,0.2)] hover:bg-white dark:hover:bg-slate-900">
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-mono font-bold text-slate-400 dark:text-slate-600 group-hover:text-indigo-500 transition-colors duration-200">
-                      {item.step}
-                    </span>
-                    <span className="rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] font-semibold text-slate-600 dark:text-slate-300 transition-colors group-hover:bg-indigo-50 dark:group-hover:bg-indigo-950/80 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
-                      {item.badge}
-                    </span>
-                  </div>
-
-                  <div className={cn("flex size-11 items-center justify-center rounded-xl bg-gradient-to-br shadow-inner mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-md", item.color)}>
-                    <item.icon className="size-5 transition-transform duration-300" />
-                  </div>
-
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                    {item.description}
-                  </p>
-                </div>
-
-                {index < STEPS.length - 1 && (
-                  <div className="hidden lg:flex items-center justify-end pt-3 text-slate-300 dark:text-slate-700 group-hover:text-indigo-500 transition-all duration-300">
-                    <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1.5" />
-                  </div>
+        {/* Connected Vertical Timeline */}
+        <div className="relative before:content-[''] before:absolute before:left-[21px] sm:before:left-[27px] before:top-2 before:bottom-2 before:w-[1px] before:bg-slate-line">
+          {TIMELINE_STEPS.map((step) => (
+            <div
+              key={step.number}
+              className="grid grid-cols-[42px_1fr] sm:grid-cols-[56px_1fr] gap-4 sm:gap-7 relative pb-10 sm:pb-[52px] last:pb-0"
+            >
+              {/* Timeline Node */}
+              <div
+                className={cn(
+                  "w-[42px] h-[42px] sm:w-[56px] sm:h-[56px] rounded-full flex items-center justify-center font-serif text-base sm:text-[22px] z-10 select-none transition-colors",
+                  step.active
+                    ? "bg-amber text-[#14161f] shadow-sm font-medium"
+                    : "bg-fog text-[#14161f]"
                 )}
+              >
+                {step.number}
               </div>
-            </Reveal>
+
+              {/* Timeline Content */}
+              <div className="pt-1">
+                <h3 className="font-serif font-semibold text-lg sm:text-xl text-cream mb-2">
+                  {step.title}
+                </h3>
+                <p className="text-fog text-[15px] max-w-[56ch] leading-[1.65]">
+                  {step.description}
+                </p>
+                <div className="mt-2.5 font-mono text-xs text-fog-dim">
+                  {step.meta}
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </div>
