@@ -119,15 +119,15 @@ export function AuthModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md p-6 sm:p-7 overflow-hidden bg-[#0B0F19] border-slate-800 text-slate-100 shadow-2xl rounded-3xl ring-1 ring-white/10">
+      <DialogContent className="sm:max-w-md p-6 sm:p-7 overflow-hidden bg-ink-raised border-slate-line text-cream shadow-2xl rounded-md">
         <DialogHeader className="text-center sm:text-center mb-2">
-          <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 mb-2 shadow-inner">
+          <div className="mx-auto flex size-12 items-center justify-center rounded-sm bg-amber/15 text-amber border border-amber/30 mb-2 shadow-inner">
             <ShieldCheck className="size-6" />
           </div>
-          <DialogTitle className="text-xl font-bold tracking-tight text-white">
+          <DialogTitle className="font-serif font-normal text-xl tracking-tight text-cream">
             {tab === "signin" ? "Welcome back to Klyro" : "Create your Klyro account"}
           </DialogTitle>
-          <DialogDescription className="text-xs text-slate-400 mt-1">
+          <DialogDescription className="text-xs text-fog mt-1">
             {tab === "signin"
               ? "Sign in with your email and password to access your workspaces."
               : "Register with your details to start generating full-stack websites."}
@@ -135,14 +135,14 @@ export function AuthModal({
         </DialogHeader>
 
         {/* Tab Toggle */}
-        <div className="flex rounded-xl bg-slate-950/80 p-1 border border-slate-800 mb-4">
+        <div className="flex rounded-sm bg-ink p-1 border border-slate-line mb-4">
           <button
             type="button"
             onClick={() => handleTabSwitch("signin")}
-            className={`flex-1 rounded-lg py-2 text-xs font-semibold transition-all ${
+            className={`flex-1 rounded-[3px] py-2 text-xs font-semibold transition-all cursor-pointer ${
               tab === "signin"
-                ? "bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-md"
-                : "text-slate-400 hover:text-white"
+                ? "bg-amber text-[#201404] shadow-xs"
+                : "text-fog hover:text-cream"
             }`}
           >
             Sign In
@@ -150,10 +150,10 @@ export function AuthModal({
           <button
             type="button"
             onClick={() => handleTabSwitch("signup")}
-            className={`flex-1 rounded-lg py-2 text-xs font-semibold transition-all ${
+            className={`flex-1 rounded-[3px] py-2 text-xs font-semibold transition-all cursor-pointer ${
               tab === "signup"
-                ? "bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-md"
-                : "text-slate-400 hover:text-white"
+                ? "bg-amber text-[#201404] shadow-xs"
+                : "text-fog hover:text-cream"
             }`}
           >
             Register / Sign Up
@@ -162,14 +162,14 @@ export function AuthModal({
 
         {/* Error / Success Alerts */}
         {error && (
-          <div className="flex items-start gap-2.5 rounded-xl border border-rose-900/60 bg-rose-950/60 p-3 text-xs text-rose-300">
+          <div className="flex items-start gap-2.5 rounded-sm border border-rose-900/60 bg-rose-950/60 p-3 text-xs text-rose-300">
             <AlertCircle className="size-4 shrink-0 mt-0.5" />
             <p className="leading-tight font-medium">{error}</p>
           </div>
         )}
 
         {success && (
-          <div className="flex items-center gap-2.5 rounded-xl border border-emerald-900/60 bg-emerald-950/60 p-3 text-xs text-emerald-300">
+          <div className="flex items-center gap-2.5 rounded-sm border border-emerald-900/60 bg-emerald-950/60 p-3 text-xs text-emerald-300">
             <CheckCircle2 className="size-4 shrink-0" />
             <p className="font-medium">{success}</p>
           </div>
@@ -179,31 +179,31 @@ export function AuthModal({
           {tab === "signup" && (
             <div className="grid grid-cols-2 gap-2.5">
               <div>
-                <label className="text-xs font-medium text-slate-200 block mb-1.5">
+                <label className="text-xs font-medium text-cream block mb-1.5">
                   First Name
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-fog" />
                   <Input
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="e.g. Ali"
-                    className="pl-9 text-xs h-10 bg-slate-950 border-slate-700/80 text-white placeholder:text-slate-500 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 caret-white"
+                    className="pl-9 text-xs h-10 bg-ink border-slate-line text-cream placeholder:text-fog-dim rounded-sm focus:border-amber focus:ring-2 focus:ring-amber/20 caret-white"
                     required
                   />
                 </div>
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-200 block mb-1.5">
+                <label className="text-xs font-medium text-cream block mb-1.5">
                   Last Name
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-fog" />
                   <Input
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     placeholder="e.g. Khan"
-                    className="pl-9 text-xs h-10 bg-slate-950 border-slate-700/80 text-white placeholder:text-slate-500 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 caret-white"
+                    className="pl-9 text-xs h-10 bg-ink border-slate-line text-cream placeholder:text-fog-dim rounded-sm focus:border-amber focus:ring-2 focus:ring-amber/20 caret-white"
                     required
                   />
                 </div>
@@ -212,17 +212,17 @@ export function AuthModal({
           )}
 
           <div>
-            <label className="text-xs font-medium text-slate-200 block mb-1.5">
+            <label className="text-xs font-medium text-cream block mb-1.5">
               Email Address
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-fog" />
               <Input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="pl-9 text-xs h-10 bg-slate-950 border-slate-700/80 text-white placeholder:text-slate-500 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 caret-white"
+                className="pl-9 text-xs h-10 bg-ink border-slate-line text-cream placeholder:text-fog-dim rounded-sm focus:border-amber focus:ring-2 focus:ring-amber/20 caret-white"
                 autoComplete="email"
                 required
               />
@@ -231,28 +231,28 @@ export function AuthModal({
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="text-xs font-medium text-slate-200">
+              <label className="text-xs font-medium text-cream">
                 Password
               </label>
               {tab === "signup" && (
-                <span className="text-[10px] text-slate-400">Min. 6 characters</span>
+                <span className="text-[10px] text-fog-dim">Min. 6 characters</span>
               )}
             </div>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-fog" />
               <Input
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="pl-9 pr-9 text-xs h-10 font-mono bg-slate-950 border-slate-700/80 text-white placeholder:text-slate-500 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 caret-white"
+                className="pl-9 pr-9 text-xs h-10 font-mono bg-ink border-slate-line text-cream placeholder:text-fog-dim rounded-sm focus:border-amber focus:ring-2 focus:ring-amber/20 caret-white"
                 autoComplete={tab === "signin" ? "current-password" : "new-password"}
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-fog hover:text-cream"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
@@ -266,7 +266,7 @@ export function AuthModal({
 
           <Button
             type="submit"
-            className="w-full mt-3 h-10 text-xs font-semibold rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white shadow-lg shadow-indigo-600/30 hover:from-indigo-500 hover:to-blue-500 gap-1.5 transition-all hover:scale-[1.01]"
+            className="w-full mt-3 h-10 text-xs font-semibold rounded-sm bg-amber text-[#201404] hover:bg-amber-deep shadow-xs gap-1.5 transition-colors cursor-pointer"
             disabled={loading}
           >
             {loading ? (
