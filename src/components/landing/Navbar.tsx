@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/sheet";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { useAuth } from "@/context/AuthContext";
+import { AnimatedBackground } from "@/components/motion-primitives/animated-background";
 import { cn } from "@/lib/utils";
 
 const emptySubscribe = () => () => {};
@@ -86,36 +87,50 @@ export function Navbar() {
           {/* LEFT: Brand Logo */}
           <Logo />
 
-          {/* CENTER: Navigation links matching design reference */}
-          <nav aria-label="Primary" className="hidden items-center gap-9 text-[14.5px] text-fog md:flex">
-            <Link
-              href="#how"
-              onClick={(e) => handleNavScroll(e, "how")}
-              className="hover:text-cream transition-colors"
+          {/* CENTER: Navigation links with animated background pill hover */}
+          <nav aria-label="Primary" className="hidden items-center gap-1 text-[14.5px] text-fog md:flex">
+            <AnimatedBackground
+              className="rounded-sm bg-white/[0.08]"
+              transition={{
+                type: "spring",
+                bounce: 0.15,
+                duration: 0.3,
+              }}
+              enableHover
             >
-              Product
-            </Link>
-            <Link
-              href="#how"
-              onClick={(e) => handleNavScroll(e, "how")}
-              className="hover:text-cream transition-colors"
-            >
-              How it works
-            </Link>
-            <Link
-              href="#what-you-can-build"
-              onClick={(e) => handleNavScroll(e, "what-you-can-build")}
-              className="hover:text-cream transition-colors"
-            >
-              Examples
-            </Link>
-            <Link
-              href="#pricing"
-              onClick={(e) => handleNavScroll(e, "pricing")}
-              className="hover:text-cream transition-colors"
-            >
-              Pricing
-            </Link>
+              <Link
+                data-id="product"
+                href="#how"
+                onClick={(e) => handleNavScroll(e, "how")}
+                className="px-3.5 py-1.5 text-fog hover:text-cream transition-colors data-[checked=true]:text-cream"
+              >
+                Product
+              </Link>
+              <Link
+                data-id="how-it-works"
+                href="#how"
+                onClick={(e) => handleNavScroll(e, "how")}
+                className="px-3.5 py-1.5 text-fog hover:text-cream transition-colors data-[checked=true]:text-cream"
+              >
+                How it works
+              </Link>
+              <Link
+                data-id="examples"
+                href="#what-you-can-build"
+                onClick={(e) => handleNavScroll(e, "what-you-can-build")}
+                className="px-3.5 py-1.5 text-fog hover:text-cream transition-colors data-[checked=true]:text-cream"
+              >
+                Examples
+              </Link>
+              <Link
+                data-id="pricing"
+                href="#pricing"
+                onClick={(e) => handleNavScroll(e, "pricing")}
+                className="px-3.5 py-1.5 text-fog hover:text-cream transition-colors data-[checked=true]:text-cream"
+              >
+                Pricing
+              </Link>
+            </AnimatedBackground>
           </nav>
 
           {/* RIGHT SIDE: Auth & Primary Action Button */}
