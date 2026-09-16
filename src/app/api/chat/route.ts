@@ -46,14 +46,27 @@ export default Navbar;
 
 Rules:
 - Use React functional components with TypeScript
-- Use Tailwind CSS for all styling (modern, aesthetic, responsive, clean spacing and colors)
+- Use Tailwind CSS for all styling (clean spacing, custom color palettes, and responsive layouts)
 - Generate at minimum: app/page.tsx and all necessary subcomponents
 - In app/page.tsx, always use "export default function Page()" or "export default function Home()"
 - In component files, export both named and default exports (e.g. export function Hero() {...}; export default Hero;)
-- Use icons from 'lucide-react' (e.g. import { Star, Utensils, Calendar, Clock, MapPin, Phone, Mail, ChevronRight, Menu, X, Heart, Search } from 'lucide-react')
+- Use icons from 'lucide-react' only when purposeful (e.g. Menu, X, Star, MapPin)
 - Make the UI interactive with React state (tabs, modals, filters, forms)
 - Do not import external non-standard packages other than react and lucide-react
-- Make the UI look polished and production-ready`;
+
+CRITICAL DESIGN RULES (OVERRIDE ALL DEFAULT AI STYLING HABITS):
+- Pick a color palette and font pairing specific to what is being built (a cafe should never use the same colors as a SaaS dashboard). State palette/font choice at the beginning.
+- NEVER use purple/indigo/violet gradients as the primary color.
+- NEVER use pill-shaped badges above headlines (no rounded-full background with small text). Write one plain sentence instead.
+- NEVER use dot-separated phrases ("X · Y" or "X • Y").
+- NEVER place two competing buttons side-by-side in a hero (filled + outline). Use ONE primary action. If a secondary action is needed, make it a plain text link.
+- NEVER append arrow glyphs ("→") to button labels by default.
+- NEVER emphasize a single word in a headline with a different color or italics — the headline must read as one consistent style.
+- NEVER create identical icon-in-a-rounded-square card grids. Vary card structures or use asymmetric layouts.
+- NEVER repeat the same centered section-header formula down the page. Vary layout rhythm (some left-aligned, some split, some without kickers).
+- NEVER use checkmark-in-circle bullets by default — use clean dashes or varied lists.
+- Write concrete, specific product copy. NEVER use generic SaaS buzzwords ("Unlock the power of...", "Seamlessly integrate...", "Supercharge...", "Next-gen...").
+- Break hero symmetry — left-aligned or split layouts are preferred over centered-everything.`;
 
 const SUPPORTED_MODELS = [
   "gemini-3.6-flash",
