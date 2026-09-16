@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface StepItem {
@@ -7,7 +8,6 @@ interface StepItem {
   title: string;
   description: string;
   meta: string;
-  active?: boolean;
 }
 
 const TIMELINE_STEPS: StepItem[] = [
@@ -17,7 +17,6 @@ const TIMELINE_STEPS: StepItem[] = [
     description:
       "Write what you want in plain English, or paste a screenshot of a design you like. No need to mention frameworks or components.",
     meta: "input: text, image, or URL",
-    active: true,
   },
   {
     number: "02",
@@ -25,7 +24,6 @@ const TIMELINE_STEPS: StepItem[] = [
     description:
       "It works out what pages, data, and states your idea needs before writing a single line, so the result holds together instead of feeling bolted on.",
     meta: "output: page map + data model",
-    active: false,
   },
   {
     number: "03",
@@ -33,7 +31,6 @@ const TIMELINE_STEPS: StepItem[] = [
     description:
       "Klyro generates real, readable Next.js and Tailwind code across multiple files — the kind you could hand to another developer.",
     meta: "stack: Next.js 15 · Tailwind CSS",
-    active: false,
   },
   {
     number: "04",
@@ -41,7 +38,6 @@ const TIMELINE_STEPS: StepItem[] = [
     description:
       "A running sandbox opens next to the code, on desktop and mobile sizes, so you can click through it the way a visitor would.",
     meta: "preview: desktop · tablet · mobile",
-    active: true,
   },
   {
     number: "05",
@@ -49,11 +45,63 @@ const TIMELINE_STEPS: StepItem[] = [
     description:
       "Export the full source as a zip, or deploy straight to Vercel and your own domain when it's ready.",
     meta: "export: zip · Vercel · custom domain",
-    active: false,
   },
 ];
 
 export function HowItWorks() {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  const renderCard = (step: StepItem, index: number) => {
+    const isHovered = hoveredIndex === index;
+
+    return (
+      <div
+        key={step.number}
+        onMouseEnter={() => setHoveredIndex(index)}
+        onMouseLeave={() => setHoveredIndex(null)}
+        onFocus={() => setHoveredIndex(index)}
+        onBlur={() => setHoveredIndex(null)}
+        tabIndex={0}
+        className={cn(
+          "group relative flex flex-col sm:flex-row gap-4 sm:gap-5 items-start p-6 sm:p-7 rounded-md border transition-all duration-300 cursor-pointer outline-none h-full",
+          isHovered
+            ? "bg-ink-raised/85 border-amber/40 shadow-lg shadow-black/25"
+            : "bg-ink-raised/35 border-slate-line/80 hover:border-slate-line"
+        )}
+      >
+        {/* Circular Number Badge — Gray by default, turns yellow on hover */}
+        <div
+          className={cn(
+            "w-[44px] h-[44px] sm:w-[52px] sm:h-[52px] rounded-full flex items-center justify-center font-serif text-lg sm:text-[22px] shrink-0 select-none transition-all duration-300",
+            isHovered
+              ? "bg-amber text-[#14161f] shadow-[0_0_20px_rgba(242,169,59,0.35)] scale-105 font-medium"
+              : "bg-fog text-[#14161f] font-normal group-hover:bg-amber group-hover:text-[#14161f] group-hover:shadow-[0_0_20px_rgba(242,169,59,0.35)] group-hover:scale-105"
+          )}
+        >
+          {step.number}
+        </div>
+
+        {/* Step Content */}
+        <div className="flex-1 min-w-0 pt-0.5">
+          <h3
+            className={cn(
+              "font-serif font-semibold text-lg sm:text-xl mb-2 transition-colors duration-200",
+              isHovered ? "text-cream" : "text-cream/90"
+            )}
+          >
+            {step.title}
+          </h3>
+          <p className="text-fog text-[14.5px] sm:text-[15px] leading-[1.65]">
+            {step.description}
+          </p>
+          <div className="mt-3 font-mono text-xs text-fog-dim">
+            {step.meta}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <section
       id="how"
@@ -61,8 +109,8 @@ export function HowItWorks() {
       className="py-[72px] sm:py-[108px] bg-ink border-t border-slate-line scroll-mt-20"
     >
       <div className="max-w-[1180px] mx-auto px-5 sm:px-8">
-        {/* Section Heading — clean, no repeated pill badges */}
-        <div className="max-w-[640px] mb-14">
+        {/* Section Heading */}
+        <div className="max-w-[640px] mb-12 sm:mb-14">
           <h2 className="font-serif font-normal text-[28px] sm:text-[34px] lg:text-[38px] leading-[1.15] tracking-[-0.01em] text-cream">
             Five steps between a sentence and a live app
           </h2>
@@ -71,39 +119,22 @@ export function HowItWorks() {
           </p>
         </div>
 
-        {/* Connected Vertical Timeline */}
-        <div className="relative before:content-[''] before:absolute before:left-[21px] sm:before:left-[27px] before:top-2 before:bottom-2 before:w-[1px] before:bg-slate-line">
-          {TIMELINE_STEPS.map((step) => (
-            <div
-              key={step.number}
-              className="grid grid-cols-[42px_1fr] sm:grid-cols-[56px_1fr] gap-4 sm:gap-7 relative pb-10 sm:pb-[52px] last:pb-0"
-            >
-              {/* Timeline Node */}
-              <div
-                className={cn(
-                  "w-[42px] h-[42px] sm:w-[56px] sm:h-[56px] rounded-full flex items-center justify-center font-serif text-base sm:text-[22px] z-10 select-none transition-colors",
-                  step.active
-                    ? "bg-amber text-[#14161f] shadow-sm font-medium"
-                    : "bg-fog text-[#14161f]"
-                )}
-              >
-                {step.number}
-              </div>
+        {/* Horizontal Layout: Row 1 (1, 2) · Row 2 (3, 4) · Row 3 (5 Centered) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Row 1 */}
+          {renderCard(TIMELINE_STEPS[0], 0)}
+          {renderCard(TIMELINE_STEPS[1], 1)}
 
-              {/* Timeline Content */}
-              <div className="pt-1">
-                <h3 className="font-serif font-semibold text-lg sm:text-xl text-cream mb-2">
-                  {step.title}
-                </h3>
-                <p className="text-fog text-[15px] max-w-[56ch] leading-[1.65]">
-                  {step.description}
-                </p>
-                <div className="mt-2.5 font-mono text-xs text-fog-dim">
-                  {step.meta}
-                </div>
-              </div>
+          {/* Row 2 */}
+          {renderCard(TIMELINE_STEPS[2], 2)}
+          {renderCard(TIMELINE_STEPS[3], 3)}
+
+          {/* Row 3: Step 5 Centered Below the Four Above */}
+          <div className="md:col-span-2 flex justify-center">
+            <div className="w-full md:w-[calc(50%-0.75rem)]">
+              {renderCard(TIMELINE_STEPS[4], 4)}
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </section>
