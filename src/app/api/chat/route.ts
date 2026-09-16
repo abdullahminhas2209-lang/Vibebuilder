@@ -56,13 +56,376 @@ Rules:
 - Make the UI look polished and production-ready`;
 
 const SUPPORTED_MODELS = [
-  "gemini-2.5-flash",
-  "gemini-2.0-flash",
-  "gemini-1.5-flash",
-  "gemini-1.5-flash-latest",
-  "gemini-1.5-pro",
-  "gemini-pro-latest",
+  "gemini-3.6-flash",
+  "gemini-3.5-flash",
+  "gemini-flash-latest",
+  "gemini-3.5-flash-lite",
+  "gemini-3.1-flash-lite",
 ];
+
+function extractBrandName(prompt: string, fallback: string): string {
+  const match = prompt.match(/(?:for|called|named|brand)\s+["']?([A-Za-z0-9\s&'-]+?)["']?(?:\s+(?:cafe|app|website|store|gym|bar|shop)|\.|\,|$)/i);
+  if (match && match[1] && match[1].trim().length > 1 && match[1].trim().length < 30) {
+    const cleaned = match[1].trim();
+    return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+  }
+  return fallback;
+}
+
+function generateCafeTemplate(prompt: string): string {
+  const brand = extractBrandName(prompt, "The Velvet Bean");
+  return `I have crafted a cozy, modern artisan cafe landing page for **${brand}** with a live coffee menu, story section, and table reservation flow.
+
+\`\`\`tsx
+// app/page.tsx
+import React from 'react';
+import { Navbar } from '@/components/Navbar';
+import { Hero } from '@/components/Hero';
+import { MenuSection } from '@/components/MenuSection';
+import { HoursLocation } from '@/components/HoursLocation';
+
+export default function Page() {
+  return (
+    <div className="min-h-screen bg-[#14161f] text-[#f2f0e8] font-sans selection:bg-[#f2a93b] selection:text-[#14161f]">
+      <Navbar />
+      <Hero />
+      <MenuSection />
+      <HoursLocation />
+    </div>
+  );
+}
+export default Page;
+\`\`\`
+
+\`\`\`tsx
+// components/Navbar.tsx
+"use client";
+import React, { useState } from 'react';
+import { Coffee, Menu, X, Phone } from 'lucide-react';
+
+export function Navbar() {
+  const [open, setOpen] = useState(false);
+  return (
+    <nav className="border-b border-[#2b2f3c] bg-[#14161f]/95 backdrop-blur px-6 py-4 flex items-center justify-between sticky top-0 z-50 text-[#f2f0e8]">
+      <div className="flex items-center gap-2.5 font-serif font-semibold text-xl tracking-tight text-[#f2f0e8]">
+        <span className="flex size-7 items-center justify-center rounded-[3px] bg-[#f2a93b] text-[#14161f]">
+          <Coffee className="size-4" />
+        </span>
+        <span>${brand}</span>
+      </div>
+      <div className="hidden md:flex items-center gap-8 text-sm text-[#9aa0ae] font-sans">
+        <a href="#menu" className="hover:text-[#f2a93b] transition-colors">Our Menu</a>
+        <a href="#story" className="hover:text-[#f2a93b] transition-colors">The Roastery</a>
+        <a href="#hours" className="hover:text-[#f2a93b] transition-colors">Hours & Location</a>
+        <button className="rounded-sm bg-[#f2a93b] px-4 py-2 font-medium text-[#14161f] hover:bg-[#d98f22] transition-colors shadow-xs">
+          Reserve Table
+        </button>
+      </div>
+      <button onClick={() => setOpen(!open)} className="md:hidden text-[#9aa0ae] hover:text-[#f2f0e8]" aria-label="Toggle menu">
+        {open ? <X className="size-5" /> : <Menu className="size-5" />}
+      </button>
+      {open && (
+        <div className="absolute top-full left-0 right-0 border-b border-[#2b2f3c] bg-[#1c1f2b] p-6 flex flex-col gap-4 md:hidden">
+          <a href="#menu" onClick={() => setOpen(false)} className="text-sm text-[#9aa0ae] hover:text-[#f2a93b]">Our Menu</a>
+          <a href="#story" onClick={() => setOpen(false)} className="text-sm text-[#9aa0ae] hover:text-[#f2a93b]">The Roastery</a>
+          <a href="#hours" onClick={() => setOpen(false)} className="text-sm text-[#9aa0ae] hover:text-[#f2a93b]">Hours & Location</a>
+          <button className="rounded-sm bg-[#f2a93b] px-4 py-2 text-sm font-semibold text-[#14161f]">
+            Reserve Table
+          </button>
+        </div>
+      )}
+    </nav>
+  );
+}
+export default Navbar;
+\`\`\`
+
+\`\`\`tsx
+// components/Hero.tsx
+"use client";
+import React from 'react';
+import { Coffee, Sparkles, ArrowRight, Heart } from 'lucide-react';
+
+export function Hero() {
+  return (
+    <section className="px-6 py-20 max-w-5xl mx-auto text-center text-[#f2f0e8]">
+      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm border border-[#f2a93b]/30 bg-[#f2a93b]/10 text-[#f2a93b] text-xs font-mono font-medium mb-6">
+        <Sparkles className="size-3.5 text-[#f2a93b]" />
+        <span>Single-Origin Roasts · Baked Daily In-House</span>
+      </div>
+      <h1 className="text-4xl sm:text-6xl font-serif font-normal tracking-tight text-[#f2f0e8] mb-6 leading-[1.15]">
+        Craft Coffee & Warm Gatherings
+      </h1>
+      <p className="text-[#9aa0ae] text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed font-sans">
+        Welcome to ${brand}. A warm neighborhood sanctuary where artisanal pour-overs meet buttery fresh croissants and calm mornings.
+      </p>
+      <div className="flex flex-wrap justify-center gap-4">
+        <a href="#menu" className="inline-flex items-center gap-2 rounded-sm bg-[#f2a93b] px-6 py-3 font-semibold text-[#14161f] shadow-sm hover:bg-[#d98f22] transition-colors cursor-pointer text-sm">
+          Explore Daily Menu <ArrowRight className="size-4" />
+        </a>
+        <a href="#hours" className="inline-flex items-center gap-2 rounded-sm border border-[#2b2f3c] bg-[#1c1f2b] px-6 py-3 font-medium text-[#f2f0e8] hover:bg-[#2b2f3c] transition-colors text-sm">
+          Visit Us Today
+        </a>
+      </div>
+      <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+        <div className="rounded-md border border-[#2b2f3c] bg-[#1c1f2b] p-4 text-left">
+          <p className="font-mono text-xs text-[#f2a93b]">01 / ROAST</p>
+          <p className="font-serif font-semibold text-sm text-[#f2f0e8] mt-1">Small Batch</p>
+          <p className="text-xs text-[#9aa0ae] mt-1">Ethically sourced single origins</p>
+        </div>
+        <div className="rounded-md border border-[#2b2f3c] bg-[#1c1f2b] p-4 text-left">
+          <p className="font-mono text-xs text-[#f2a93b]">02 / BAKERY</p>
+          <p className="font-serif font-semibold text-sm text-[#f2f0e8] mt-1">Fresh Pastries</p>
+          <p className="text-xs text-[#9aa0ae] mt-1">Baked 6 AM every morning</p>
+        </div>
+        <div className="rounded-md border border-[#2b2f3c] bg-[#1c1f2b] p-4 text-left">
+          <p className="font-mono text-xs text-[#f2a93b]">03 / SPACE</p>
+          <p className="font-serif font-semibold text-sm text-[#f2f0e8] mt-1">Cozy Seating</p>
+          <p className="text-xs text-[#9aa0ae] mt-1">Free gigabit Wi-Fi & books</p>
+        </div>
+        <div className="rounded-md border border-[#2b2f3c] bg-[#1c1f2b] p-4 text-left">
+          <p className="font-mono text-xs text-[#f2a93b]">04 / COMMUNITY</p>
+          <p className="font-serif font-semibold text-sm text-[#f2f0e8] mt-1">Weekend Events</p>
+          <p className="text-xs text-[#9aa0ae] mt-1">Acoustic evenings & cupping</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+export default Hero;
+\`\`\`
+
+\`\`\`tsx
+// components/MenuSection.tsx
+"use client";
+import React, { useState } from 'react';
+import { Coffee, Sparkles } from 'lucide-react';
+
+const CATEGORIES = ["Espresso & Milk", "Pour Over & Brew", "Artisan Bakery", "Seasonal Specials"];
+
+const MENU_ITEMS = [
+  { name: "Velvet Cortado", category: "Espresso & Milk", price: "$4.50", desc: "Equal parts double espresso and silky steamed oat milk." },
+  { name: "Cardamom Rose Latte", category: "Seasonal Specials", price: "$6.00", desc: "House cardamom syrup, dried rose petals, espresso & whole milk." },
+  { name: "Ethiopia Guji Pour Over", category: "Pour Over & Brew", price: "$5.50", desc: "Floral bergamot notes, candied peach sweetness, jasmine finish." },
+  { name: "Madagascar Vanilla Cold Brew", category: "Pour Over & Brew", price: "$5.25", desc: "Slow-steeped 18 hours with real bourbon vanilla pods." },
+  { name: "Saffron Pistachio Brioche", category: "Artisan Bakery", price: "$5.00", desc: "Flaky laminated dough, roasted Sicilian pistachios, floral syrup." },
+  { name: "Almond Croissant", category: "Artisan Bakery", price: "$4.75", desc: "Twice-baked butter croissant with rich almond frangipane cream." }
+];
+
+export function MenuSection() {
+  const [activeTab, setActiveTab] = useState("Espresso & Milk");
+  const filtered = MENU_ITEMS.filter(item => activeTab === "Seasonal Specials" ? true : item.category === activeTab);
+
+  return (
+    <section id="menu" className="border-t border-[#2b2f3c] bg-[#1c1f2b]/40 py-20 px-6">
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-12">
+          <p className="font-mono text-xs text-[#f2a93b] uppercase tracking-wider">Handcrafted Selection</p>
+          <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-[#f2f0e8] mt-2">Our Signature Menu</h2>
+          <p className="text-sm text-[#9aa0ae] mt-2 font-sans">Every cup is ground to order on our Mahlkönig grinders and pulled with precision.</p>
+        </div>
+        <div className="flex flex-wrap justify-center gap-2 mb-10">
+          {CATEGORIES.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveTab(cat)}
+              className={\`px-4 py-2 text-xs font-mono rounded-sm transition-all \${activeTab === cat ? 'bg-[#f2a93b] text-[#14161f] font-semibold' : 'bg-[#1c1f2b] text-[#9aa0ae] hover:text-[#f2f0e8] border border-[#2b2f3c]'}\`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          {filtered.map(item => (
+            <div key={item.name} className="rounded-md border border-[#2b2f3c] bg-[#14161f] p-5 hover:border-[#f2a93b]/40 transition-colors">
+              <div className="flex justify-between items-baseline">
+                <h3 className="font-serif text-base font-semibold text-[#f2f0e8]">{item.name}</h3>
+                <span className="font-mono text-sm font-semibold text-[#f2a93b]">{item.price}</span>
+              </div>
+              <p className="text-xs text-[#9aa0ae] mt-2 leading-relaxed font-sans">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+export default MenuSection;
+\`\`\`
+
+\`\`\`tsx
+// components/HoursLocation.tsx
+"use client";
+import React from 'react';
+import { Clock, MapPin, Phone, Instagram } from 'lucide-react';
+
+export function HoursLocation() {
+  return (
+    <section id="hours" className="border-t border-[#2b2f3c] bg-[#14161f] py-16 px-6">
+      <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8">
+        <div className="rounded-md border border-[#2b2f3c] bg-[#1c1f2b] p-6">
+          <div className="flex items-center gap-2 text-[#f2a93b] mb-3">
+            <Clock className="size-5" />
+            <span className="font-mono text-xs uppercase tracking-wider font-semibold">Hours</span>
+          </div>
+          <p className="text-sm font-medium text-[#f2f0e8]">Monday – Friday</p>
+          <p className="text-xs text-[#9aa0ae] mb-3 font-mono">6:30 AM – 6:00 PM</p>
+          <p className="text-sm font-medium text-[#f2f0e8]">Saturday & Sunday</p>
+          <p className="text-xs text-[#9aa0ae] font-mono">7:30 AM – 7:00 PM</p>
+        </div>
+        <div className="rounded-md border border-[#2b2f3c] bg-[#1c1f2b] p-6">
+          <div className="flex items-center gap-2 text-[#f2a93b] mb-3">
+            <MapPin className="size-5" />
+            <span className="font-mono text-xs uppercase tracking-wider font-semibold">Location</span>
+          </div>
+          <p className="text-sm font-medium text-[#f2f0e8]">428 Roastery Lane</p>
+          <p className="text-xs text-[#9aa0ae] mb-2 font-sans">Artisan District, Portland OR</p>
+          <p className="text-xs text-[#f2a93b] font-mono cursor-pointer hover:underline">Get Directions →</p>
+        </div>
+        <div className="rounded-md border border-[#2b2f3c] bg-[#1c1f2b] p-6">
+          <div className="flex items-center gap-2 text-[#f2a93b] mb-3">
+            <Phone className="size-5" />
+            <span className="font-mono text-xs uppercase tracking-wider font-semibold">Contact & Social</span>
+          </div>
+          <p className="text-sm font-medium text-[#f2f0e8] font-mono">(503) 842-1920</p>
+          <p className="text-xs text-[#9aa0ae] mb-3 font-sans">hello@velvetbean.coffee</p>
+          <div className="flex items-center gap-2 text-xs text-[#f2a93b] font-mono">
+            <Instagram className="size-4" />
+            <span>@velvetbeancoffee</span>
+          </div>
+        </div>
+      </div>
+      <div className="text-center mt-12 pt-6 border-t border-[#2b2f3c]/60 text-xs text-[#6b7180] font-mono">
+        © 2026 ${brand} · Handcrafted with pride.
+      </div>
+    </section>
+  );
+}
+export default HoursLocation;
+\`\`\``;
+}
+
+function generateGenericTemplate(prompt: string): string {
+  const words = prompt
+    .replace(/^(build|create|design|make|give me|i want)\s+(a|an|the)?\s*/i, "")
+    .replace(/[.!?]+$/, "")
+    .trim();
+  const title = words ? words.charAt(0).toUpperCase() + words.slice(1) : "Modern Application";
+
+  return `I have created the responsive application components for your request: "${prompt}".
+
+\`\`\`tsx
+// app/page.tsx
+import React from 'react';
+import { Navbar } from '@/components/Navbar';
+import { Hero } from '@/components/Hero';
+import { Features } from '@/components/Features';
+
+export default function Page() {
+  return (
+    <div className="min-h-screen bg-[#14161f] text-[#f2f0e8] font-sans selection:bg-[#f2a93b] selection:text-[#14161f]">
+      <Navbar />
+      <Hero />
+      <Features />
+    </div>
+  );
+}
+export default Page;
+\`\`\`
+
+\`\`\`tsx
+// components/Navbar.tsx
+"use client";
+import React, { useState } from 'react';
+import { Sparkles, Menu, X } from 'lucide-react';
+
+export function Navbar() {
+  const [open, setOpen] = useState(false);
+  return (
+    <nav className="border-b border-[#2b2f3c] bg-[#14161f]/90 backdrop-blur px-6 py-4 flex items-center justify-between sticky top-0 z-50 text-[#f2f0e8]">
+      <div className="flex items-center gap-2.5 font-serif font-semibold text-xl tracking-tight text-[#f2f0e8]">
+        <span className="flex size-6 items-center justify-center rounded-[3px] bg-[#f2a93b] text-[#14161f] font-mono text-xs font-bold shadow-xs">›</span>
+        <span>${title.split(' ')[0]}</span>
+      </div>
+      <div className="hidden md:flex items-center gap-7 text-sm text-[#9aa0ae] font-sans">
+        <a href="#overview" className="hover:text-[#f2f0e8] transition-colors">Overview</a>
+        <a href="#features" className="hover:text-[#f2f0e8] transition-colors">Features</a>
+        <a href="#contact" className="hover:text-[#f2f0e8] transition-colors">Contact</a>
+        <button className="rounded-sm bg-[#f2a93b] px-4 py-2 font-semibold text-[#14161f] hover:bg-[#d98f22] transition-colors shadow-xs text-xs">
+          Get Started
+        </button>
+      </div>
+    </nav>
+  );
+}
+export default Navbar;
+\`\`\`
+
+\`\`\`tsx
+// components/Hero.tsx
+"use client";
+import React from 'react';
+import { ArrowRight, Sparkles } from 'lucide-react';
+
+export function Hero() {
+  return (
+    <section className="px-6 py-24 max-w-5xl mx-auto text-center text-[#f2f0e8]">
+      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm border border-[#f2a93b]/30 bg-[#f2a93b]/10 text-[#f2a93b] text-xs font-mono font-medium mb-6">
+        <Sparkles className="size-3.5 text-[#f2a93b]" />
+        <span>Crafted For You</span>
+      </div>
+      <h1 className="text-4xl sm:text-6xl font-serif font-normal tracking-tight text-[#f2f0e8] mb-6 leading-[1.12]">
+        ${title}
+      </h1>
+      <p className="text-[#9aa0ae] text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed font-sans">
+        A custom, beautifully engineered experience tailored to your exact prompt, built with modern components and reactive states.
+      </p>
+      <div className="flex flex-wrap justify-center gap-4">
+        <button className="inline-flex items-center gap-2 rounded-sm bg-[#f2a93b] px-6 py-3 font-semibold text-[#14161f] shadow-sm hover:bg-[#d98f22] transition-colors cursor-pointer text-sm">
+          Explore Now <ArrowRight className="w-4 h-4" />
+        </button>
+      </div>
+    </section>
+  );
+}
+export default Hero;
+\`\`\`
+
+\`\`\`tsx
+// components/Features.tsx
+"use client";
+import React from 'react';
+import { CheckCircle2, Zap, Shield, Sparkles } from 'lucide-react';
+
+export function Features() {
+  return (
+    <section id="features" className="border-t border-[#2b2f3c] bg-[#1c1f2b]/40 py-20 px-6">
+      <div className="max-w-5xl mx-auto">
+        <h2 className="font-serif text-3xl font-semibold text-center text-[#f2f0e8] mb-12">Engineered With Precision</h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          <div className="rounded-md border border-[#2b2f3c] bg-[#14161f] p-6">
+            <Zap className="size-6 text-[#f2a93b] mb-4" />
+            <h3 className="font-serif text-lg font-semibold text-[#f2f0e8] mb-2">Fast Performance</h3>
+            <p className="text-xs text-[#9aa0ae] leading-relaxed">Built for instant load times, seamless transitions, and smooth reactivity.</p>
+          </div>
+          <div className="rounded-md border border-[#2b2f3c] bg-[#14161f] p-6">
+            <Shield className="size-6 text-[#f2a93b] mb-4" />
+            <h3 className="font-serif text-lg font-semibold text-[#f2f0e8] mb-2">Modern Layout</h3>
+            <p className="text-xs text-[#9aa0ae] leading-relaxed">Responsive typography, warm palette, and custom editorial design system.</p>
+          </div>
+          <div className="rounded-md border border-[#2b2f3c] bg-[#14161f] p-6">
+            <Sparkles className="size-6 text-[#f2a93b] mb-4" />
+            <h3 className="font-serif text-lg font-semibold text-[#f2f0e8] mb-2">Interactive Components</h3>
+            <p className="text-xs text-[#9aa0ae] leading-relaxed">Stateful controls, modals, tabs, and live browser sandbox ready.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+export default Features;
+\`\`\``;
+}
 
 function generateSmartFallback(
   prompt: string,
@@ -126,82 +489,12 @@ function generateSmartFallback(
     return parts.join("\n");
   }
 
-  // Fallback template for initial project generation
-  return `I have created the responsive application components for your request: "${prompt}".
+  const pLower = (prompt || "").toLowerCase();
+  if (pLower.includes("cafe") || pLower.includes("coffee") || pLower.includes("bakery") || pLower.includes("bistro")) {
+    return generateCafeTemplate(prompt);
+  }
 
-\`\`\`tsx
-// app/page.tsx
-import React from 'react';
-import { Navbar } from '@/components/Navbar';
-import { Hero } from '@/components/Hero';
-
-export default function Page() {
-  return (
-    <div className="min-h-screen bg-[#14161f] text-[#f2f0e8] font-sans">
-      <Navbar />
-      <Hero />
-    </div>
-  );
-}
-\`\`\`
-
-\`\`\`tsx
-// components/Navbar.tsx
-"use client";
-import React, { useState } from 'react';
-import { Menu, X } from 'lucide-react';
-
-export function Navbar() {
-  const [open, setOpen] = useState(false);
-  return (
-    <nav className="border-b border-[#2b2f3c] bg-[#14161f]/90 backdrop-blur px-6 py-4 flex items-center justify-between sticky top-0 z-50 text-[#f2f0e8]">
-      <div className="flex items-center gap-2.5 font-serif font-semibold text-xl tracking-tight text-[#f2f0e8]">
-        <span className="flex size-6 items-center justify-center rounded-[3px] bg-[#f2a93b] text-[#14161f] font-mono text-xs font-bold shadow-xs">›</span>
-        <span>KlyroApp</span>
-      </div>
-      <div className="hidden md:flex items-center gap-7 text-sm text-[#9aa0ae] font-sans">
-        <a href="#features" className="hover:text-[#f2f0e8] transition-colors">Features</a>
-        <a href="#pricing" className="hover:text-[#f2f0e8] transition-colors">Pricing</a>
-        <a href="#contact" className="hover:text-[#f2f0e8] transition-colors">Contact</a>
-        <button className="rounded-sm bg-[#f2a93b] px-4 py-2 font-medium text-[#14161f] hover:bg-[#d98f22] transition-colors shadow-xs">
-          Get Started
-        </button>
-      </div>
-    </nav>
-  );
-}
-export default Navbar;
-\`\`\`
-
-\`\`\`tsx
-// components/Hero.tsx
-"use client";
-import React from 'react';
-import { ArrowRight, Sparkles } from 'lucide-react';
-
-export function Hero() {
-  return (
-    <section className="px-6 py-24 max-w-5xl mx-auto text-center text-[#f2f0e8]">
-      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm border border-[#f2a93b]/30 bg-[#f2a93b]/10 text-[#f2a93b] text-xs font-mono font-medium mb-6">
-        <Sparkles className="size-3.5 text-[#f2a93b]" />
-        <span>Modern & Production Ready</span>
-      </div>
-      <h1 className="text-4xl sm:text-6xl font-serif font-normal tracking-tight text-[#f2f0e8] mb-6 leading-[1.12]">
-        Build Next-Gen Applications Fast
-      </h1>
-      <p className="text-[#9aa0ae] text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed font-sans">
-        Engineered with interactive state, responsive layout, and production-ready Tailwind design.
-      </p>
-      <div className="flex flex-wrap justify-center gap-4">
-        <button className="inline-flex items-center gap-2 rounded-sm bg-[#f2a93b] px-6 py-3 font-medium text-[#14161f] shadow-sm hover:bg-[#d98f22] transition-colors cursor-pointer">
-          Explore Now <ArrowRight className="w-4 h-4" />
-        </button>
-      </div>
-    </section>
-  );
-}
-export default Hero;
-\`\`\``;
+  return generateGenericTemplate(prompt);
 }
 
 export async function POST(req: NextRequest) {
@@ -283,6 +576,7 @@ export async function POST(req: NextRequest) {
 
     for (const modelName of SUPPORTED_MODELS) {
       try {
+        console.log(`[Klyro AI] Attempting Gemini model: ${modelName}`);
         const model = genAI.getGenerativeModel({
           model: modelName,
           systemInstruction: SYSTEM_PROMPT,
@@ -295,15 +589,15 @@ export async function POST(req: NextRequest) {
           streamResult = await model.generateContentStream(promptWithContext);
         }
 
-        if (streamResult) break;
-      } catch (err) {
-        lastError = err;
-        console.warn(`Model ${modelName} encountered error:`, err);
-        // If error is 429 quota, don't spam other models, switch to smart fallback
-        const errStr = String(err);
-        if (errStr.includes("429") || errStr.includes("quota") || errStr.includes("Too Many Requests")) {
+        if (streamResult) {
+          console.log(`[Klyro AI] Stream successfully initiated with: ${modelName}`);
           break;
         }
+      } catch (err) {
+        lastError = err;
+        console.warn(`[Klyro AI] Model ${modelName} encountered error:`, err);
+        // Continue trying other supported models before resorting to fallback
+        continue;
       }
     }
 
