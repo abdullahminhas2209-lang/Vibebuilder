@@ -1,171 +1,151 @@
 "use client";
 
-import Image from "next/image";
-import { ArrowUpRight } from "lucide-react";
-import { Reveal } from "@/components/Reveal";
-import { InfiniteSlider } from "@/components/motion-primitives/infinite-slider";
-import { cn } from "@/lib/utils";
-
-const SHOWCASE_ITEMS = [
-  {
-    id: "saas-analytics",
-    title: "SaaS Analytics Dashboard",
-    category: "SaaS Analytics",
-    image: "/showcase/saas.png",
-    aspect: "2/1",
-    alt: "Klyro SaaS Analytics Dashboard preview displaying revenue charts, active metrics, conversion rates, and traffic sources",
-    prompt: "Create a modern SaaS analytics dashboard with revenue charts, active user metrics, and team management settings.",
-  },
-  {
-    id: "restaurant-booking",
-    title: "Restaurant & Table Booking",
-    category: "Restaurant Booking",
-    image: "/showcase/restaurant.jpg",
-    aspect: "16/9",
-    alt: "Klyro Restaurant and Table Booking website preview featuring fine dining hero, table reservation widget, and menu specialties",
-    prompt: "Build a luxury restaurant website with seasonal menu, wood-fired kitchen story, and online table reservation flow.",
-  },
-  {
-    id: "developer-portfolio",
-    title: "Developer Portfolio",
-    category: "Developer Portfolio",
-    image: "/showcase/developer.png",
-    aspect: "16/9",
-    alt: "Klyro Developer Portfolio preview showcasing project cards, developer skills breakdown, and client contact integration",
-    prompt: "Build a minimal developer portfolio with interactive project showcase, tech stack badges, and contact modal.",
-  },
-  {
-    id: "ecommerce-store",
-    title: "E-Commerce Store",
-    category: "E-Commerce",
-    image: "/showcase/ecommerce.png",
-    aspect: "2/1",
-    alt: "Klyro Modern E-Commerce Store preview with trending lifestyle catalog, category navigation, and shopping bag integration",
-    prompt: "Design a high-converting e-commerce storefront for homeware products with product grid, cart drawer, and checkout.",
-  },
-  {
-    id: "fitness-studio",
-    title: "Fitness Studio Landing",
-    category: "Fitness Studio",
-    image: "/showcase/fitness.png",
-    aspect: "16/9",
-    alt: "Klyro Fitness Studio Landing Page preview with class schedules, trainer highlights, membership tiers, and mobile app preview",
-    prompt: "Build a fitness studio landing page with class schedule, coach bios, membership tiers, and free trial booking.",
-  },
-];
-
 export function WhatYouCanBuildSection() {
-  function handleCardClick(promptText: string) {
-    const hero = document.getElementById("hero-builder");
-    if (hero) {
-      hero.scrollIntoView({ behavior: "smooth" });
-      const input = document.getElementById("hero-prompt-input") as HTMLTextAreaElement | HTMLInputElement | null;
-      if (input) {
-        input.value = promptText;
-        input.focus();
-        // Trigger React change event if needed
-        input.dispatchEvent(new Event("input", { bubbles: true }));
-      }
-    }
-  }
-
   return (
     <section
-      id="what-you-can-build"
-      aria-label="What You Can Build"
-      className="relative scroll-mt-20 border-t border-slate-800/80 bg-[#0B0F19] py-20 text-slate-100 lg:py-28 overflow-hidden"
+      id="showcase"
+      aria-label="Showcase"
+      className="py-[72px] sm:py-[108px] bg-ink border-t border-slate-line scroll-mt-20"
     >
-      {/* Subtle purple & blue ambient background glows matching Klyro aesthetic */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] rounded-full bg-gradient-to-r from-indigo-600/10 via-purple-600/10 to-blue-600/10 blur-[130px]"
-      />
+      <div id="what-you-can-build" className="scroll-mt-20" />
+      <div className="max-w-[1180px] mx-auto px-5 sm:px-8">
+        {/* Section Heading */}
+        <div className="max-w-[640px] mb-14">
+          <h2 className="font-serif font-normal text-[28px] sm:text-[34px] lg:text-[38px] leading-[1.15] tracking-[-0.01em] text-cream">
+            Two prompts, two very different apps
+          </h2>
+          <p className="mt-3.5 text-fog text-base max-w-[52ch]">
+            The same tool, pointed at different problems.
+          </p>
+        </div>
 
-      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-        <Reveal>
-          <div className="mx-auto max-w-2xl text-center">
-            {/* Header pill badge */}
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3.5 py-1 text-xs font-semibold text-indigo-400 mb-3.5 shadow-xs">
-              <span>Showcase</span>
+        {/* Staggered Browser Showcases */}
+        <div className="flex flex-col gap-16">
+          {/* ITEM 1: SaaS Analytics Dashboard (Browser on Left, Text on Right) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+            {/* Browser Window Chrome */}
+            <div className="rounded-md overflow-hidden border border-slate-line bg-paper shadow-[0_30px_60px_-24px_rgba(0,0,0,0.55)]">
+              {/* Traffic-light dots + URL bar chrome */}
+              <div className="flex items-center gap-2 px-3 py-2.5 bg-paper-line border-b border-paper-line">
+                <span className="size-2 rounded-full bg-black/20" />
+                <span className="size-2 rounded-full bg-black/20" />
+                <span className="size-2 rounded-full bg-black/20" />
+                <span className="ml-2 flex-1 font-mono text-[11px] text-[#7c8091] bg-white rounded-[3px] px-2 py-0.5 shadow-xs">
+                  instacore.app/dashboard
+                </span>
+              </div>
+
+              {/* Browser Body Mockup */}
+              <div className="p-5 text-ink">
+                <div className="flex justify-between items-start mb-4">
+                  <h4 className="font-serif text-base font-semibold text-[#16181f]">InstaCore</h4>
+                  <span className="text-[11px] text-[#7c8091] font-mono">Good morning, Alex</span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2.5 mb-3.5">
+                  <div className="border border-paper-line rounded px-2.5 py-2">
+                    <b className="block text-[15px] font-serif text-[#16181f]">$24,780</b>
+                    <small className="text-[10.5px] text-[#7c8091]">Revenue</small>
+                  </div>
+                  <div className="border border-paper-line rounded px-2.5 py-2">
+                    <b className="block text-[15px] font-serif text-[#16181f]">1,248</b>
+                    <small className="text-[10.5px] text-[#7c8091]">Orders</small>
+                  </div>
+                  <div className="border border-paper-line rounded px-2.5 py-2">
+                    <b className="block text-[15px] font-serif text-[#16181f]">3.24%</b>
+                    <small className="text-[10.5px] text-[#7c8091]">Conversion</small>
+                  </div>
+                </div>
+
+                <div className="h-16 rounded border border-paper-line bg-gradient-to-b from-amber/20 to-amber/0 relative overflow-hidden">
+                  <div
+                    className="absolute inset-x-0 bottom-0 h-[38%]"
+                    style={{
+                      background:
+                        "repeating-linear-gradient(90deg, rgba(20,22,31,0.12) 0 8px, transparent 8px 20px)",
+                    }}
+                  />
+                </div>
+              </div>
             </div>
-
-            {/* Main Section Heading */}
-            <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
-              What You Can Build
-            </h2>
 
             {/* Supporting Copy */}
-            <p className="mt-3 text-sm sm:text-base text-slate-400 leading-relaxed max-w-xl mx-auto">
-              Turn your ideas into beautiful, production-ready websites with Klyro.
-            </p>
+            <div>
+              <div className="font-mono text-[12.5px] text-amber mb-3">
+                Prompt: &ldquo;SaaS analytics dashboard&rdquo;
+              </div>
+              <h3 className="font-serif font-normal text-[26px] sm:text-[28px] text-cream leading-[1.15] mb-3.5 max-w-[14ch]">
+                Turn raw numbers into a decision
+              </h3>
+              <p className="text-fog text-[15.5px] max-w-[42ch] mb-4 leading-relaxed">
+                Klyro built the revenue chart, order table, and conversion cards from one line describing the metrics that mattered.
+              </p>
+              <ul className="space-y-2">
+                <li className="text-[14.5px] text-fog pl-4 relative before:content-['—'] before:absolute before:left-0 before:text-fog-dim">
+                  Live-updating charts wired to sample data
+                </li>
+                <li className="text-[14.5px] text-fog pl-4 relative before:content-['—'] before:absolute before:left-0 before:text-fog-dim">
+                  Sortable order table with status tags
+                </li>
+                <li className="text-[14.5px] text-fog pl-4 relative before:content-['—'] before:absolute before:left-0 before:text-fog-dim">
+                  Auth-ready layout for a real backend
+                </li>
+              </ul>
+            </div>
           </div>
-        </Reveal>
-      </div>
 
-      {/* Showcase Slider Container with Subtle Edge Fades */}
-      <div className="relative mt-12 sm:mt-16 w-full">
-        {/* Subtle Left Edge Fade Mask */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 left-0 z-20 w-12 sm:w-24 md:w-36 lg:w-48 bg-gradient-to-r from-[#0B0F19] via-[#0B0F19]/80 to-transparent"
-        />
+          {/* ITEM 2: Restaurant & Table Booking (Alternating: Text on Left, Browser on Right) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+            {/* Supporting Copy (placed first on desktop) */}
+            <div className="order-2 lg:order-1">
+              <div className="font-mono text-[12.5px] text-amber mb-3">
+                Prompt: &ldquo;restaurant site with table booking&rdquo;
+              </div>
+              <h3 className="font-serif font-normal text-[26px] sm:text-[28px] text-cream leading-[1.15] mb-3.5 max-w-[14ch]">
+                A menu, a story, a way to book
+              </h3>
+              <p className="text-fog text-[15.5px] max-w-[42ch] mb-4 leading-relaxed">
+                One sentence turned into a homepage, a menu with photography placeholders, and a working reservation form.
+              </p>
+              <ul className="space-y-2">
+                <li className="text-[14.5px] text-fog pl-4 relative before:content-['—'] before:absolute before:left-0 before:text-fog-dim">
+                  Photo-first layout for dishes and interiors
+                </li>
+                <li className="text-[14.5px] text-fog pl-4 relative before:content-['—'] before:absolute before:left-0 before:text-fog-dim">
+                  Booking form with date and party size
+                </li>
+                <li className="text-[14.5px] text-fog pl-4 relative before:content-['—'] before:absolute before:left-0 before:text-fog-dim">
+                  Mobile layout adjusted automatically
+                </li>
+              </ul>
+            </div>
 
-        {/* Subtle Right Edge Fade Mask */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 right-0 z-20 w-12 sm:w-24 md:w-36 lg:w-48 bg-gradient-to-l from-[#0B0F19] via-[#0B0F19]/80 to-transparent"
-        />
-
-        {/* Motion Primitives Infinite Slider */}
-        <InfiniteSlider
-          speed={70}
-          speedOnHover={15}
-          gap={24}
-          className="py-4"
-        >
-          {SHOWCASE_ITEMS.map((item) => (
-            <div
-              key={item.id}
-              role="button"
-              tabIndex={0}
-              onClick={() => handleCardClick(item.prompt)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  handleCardClick(item.prompt);
-                }
-              }}
-              aria-label={`Build ${item.title} with Klyro`}
-              className="group relative flex flex-col shrink-0 w-[84vw] sm:w-[480px] md:w-[560px] lg:w-[660px] xl:w-[720px] 2xl:w-[760px] rounded-[22px] border border-slate-800/80 bg-[#0F172A]/90 backdrop-blur-md shadow-2xl shadow-black/80 overflow-hidden cursor-pointer transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-indigo-500/50 hover:shadow-[0_12px_45px_-10px_rgba(99,102,241,0.25)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/70"
-            >
-              {/* Large Desktop Website Preview */}
-              <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#070B16]">
-                <Image
-                  src={item.image}
-                  alt={item.alt}
-                  fill
-                  sizes="(max-width: 640px) 85vw, (max-width: 1024px) 560px, 760px"
-                  className={cn(
-                    "transition-transform duration-500 ease-out group-hover:scale-[1.015]",
-                    item.aspect === "2/1" ? "object-contain" : "object-cover object-top"
-                  )}
-                  priority={item.id === "saas-analytics"}
-                />
+            {/* Browser Window Chrome (placed second on desktop) */}
+            <div className="order-1 lg:order-2 rounded-md overflow-hidden border border-slate-line bg-paper shadow-[0_30px_60px_-24px_rgba(0,0,0,0.55)]">
+              {/* Traffic-light dots + URL bar chrome */}
+              <div className="flex items-center gap-2 px-3 py-2.5 bg-paper-line border-b border-paper-line">
+                <span className="size-2 rounded-full bg-black/20" />
+                <span className="size-2 rounded-full bg-black/20" />
+                <span className="size-2 rounded-full bg-black/20" />
+                <span className="ml-2 flex-1 font-mono text-[11px] text-[#7c8091] bg-white rounded-[3px] px-2 py-0.5 shadow-xs">
+                  dineo.restaurant
+                </span>
               </div>
 
-              {/* Subtle Category Label Bar */}
-              <div className="flex items-center justify-between px-5 py-3 bg-[#0B0F19]/90 border-t border-slate-800/70 transition-colors duration-200 group-hover:bg-[#0D1426]">
-                <span className="text-xs sm:text-sm font-medium text-slate-300 transition-colors duration-200 group-hover:text-white">
-                  {item.category}
-                </span>
-                <span className="text-[11px] font-medium text-slate-500 transition-colors duration-200 group-hover:text-indigo-400 flex items-center gap-1">
-                  <span>Build This</span>
-                  <ArrowUpRight className="size-3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </span>
+              {/* Browser Body Mockup */}
+              <div className="p-5 text-ink">
+                <div className="h-[120px] rounded bg-[#dcd4bd] mb-3.5 relative flex items-end p-2.5">
+                  <span className="font-serif text-base font-semibold text-[#2a2410]">Dineo</span>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="h-11 rounded bg-paper-line" />
+                  <div className="h-11 rounded bg-paper-line" />
+                  <div className="h-11 rounded bg-paper-line" />
+                </div>
               </div>
             </div>
-          ))}
-        </InfiniteSlider>
+          </div>
+        </div>
       </div>
     </section>
   );
