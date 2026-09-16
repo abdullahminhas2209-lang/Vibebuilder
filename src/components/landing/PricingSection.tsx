@@ -16,15 +16,6 @@ interface Plan {
   features: string[];
 }
 
-const FEATURES = [
-  "Generations / month",
-  "Live multi-device sandbox",
-  "Full project export",
-  "Conversational editing",
-  "Team seats",
-  "Support",
-];
-
 const PLANS: Plan[] = [
   {
     name: "Starter",
@@ -35,12 +26,11 @@ const PLANS: Plan[] = [
     ctaHref: "#hero-builder",
     ctaStyle: "ghost",
     features: [
-      "5 / month",
-      "Yes",
-      "Single component only",
-      "No",
-      "1",
-      "Community",
+      "5 app generations each month",
+      "Live multi-device sandbox preview",
+      "Single-component code export",
+      "Community support",
+      "1 workspace seat",
     ],
   },
   {
@@ -54,12 +44,12 @@ const PLANS: Plan[] = [
     ctaHref: "#hero-builder",
     ctaStyle: "amber",
     features: [
-      "Unlimited",
-      "Yes",
-      "Full source, one click",
-      "Yes",
-      "1",
-      "Priority",
+      "Unlimited app generations",
+      "Full project source export in one click",
+      "Conversational AI editing & redirecting",
+      "Live multi-device sandbox preview",
+      "Priority generation speed",
+      "1 workspace seat",
     ],
   },
   {
@@ -72,12 +62,11 @@ const PLANS: Plan[] = [
     ctaHref: "#hero-builder",
     ctaStyle: "ghost",
     features: [
-      "Unlimited",
-      "Yes",
-      "Full source, one click",
-      "Yes",
-      "Up to 5",
-      "Dedicated",
+      "Everything in Pro included",
+      "Up to 5 team workspace seats",
+      "Shared project workspaces",
+      "Export directly to Vercel or zip",
+      "Dedicated priority support",
     ],
   },
 ];
@@ -111,43 +100,25 @@ export function PricingSection() {
           </p>
         </div>
 
-        {/* Comparison Table */}
-        <div className="border border-slate-line rounded-md grid grid-cols-1 lg:grid-cols-[1.1fr_1fr_1fr_1fr] overflow-hidden">
-          {/* Feature labels column (hidden on mobile) */}
-          <div className="hidden lg:flex flex-col justify-end py-7 px-6 border-slate-line">
-            <div className="flex-1" />
-            <div className="divide-y divide-slate-line">
-              {FEATURES.map((feat) => (
-                <div
-                  key={feat}
-                  className="h-[44px] flex items-center text-[13.5px] text-fog"
-                >
-                  {feat}
-                </div>
-              ))}
-            </div>
-            {/* Spacer matching CTA button height + margin */}
-            <div className="mt-[22px] h-[41px] invisible" aria-hidden="true" />
-          </div>
-
-          {/* Plan Columns */}
-          {PLANS.map((plan, pIdx) => (
+        {/* Pricing Tiers Grid */}
+        <div className="border border-slate-line rounded-md grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-line bg-ink overflow-hidden">
+          {PLANS.map((plan) => (
             <div
               key={plan.name}
               className={cn(
-                "py-7 px-6 flex flex-col justify-between border-t border-slate-line lg:border-t-0 lg:border-l lg:border-slate-line",
-                pIdx === 0 && "border-t-0",
-                plan.highlight && "bg-amber/[0.07]"
+                "py-8 px-6 sm:px-7 flex flex-col justify-between transition-colors",
+                plan.highlight ? "bg-amber/[0.06]" : "bg-ink"
               )}
             >
               <div>
-                <h3 className="font-serif text-[19px] text-cream mb-1.5 font-normal">
+                <h3 className="font-serif text-xl text-cream mb-1.5 font-normal">
                   {plan.name}
                 </h3>
-                <p className="text-[13px] text-fog-dim mb-[18px] min-h-[48px] leading-relaxed">
+                <p className="text-[13px] text-fog-dim mb-5 min-h-[40px] leading-relaxed">
                   {plan.desc}
                 </p>
-                <div className="font-serif text-[34px] text-cream leading-tight mb-0.5">
+
+                <div className="font-serif text-[38px] text-cream leading-tight mb-0.5">
                   {plan.price}
                   {plan.unit && (
                     <sup className="text-sm font-sans text-fog font-normal ml-0.5">
@@ -155,36 +126,29 @@ export function PricingSection() {
                     </sup>
                   )}
                 </div>
-                <div className="text-xs text-fog-dim font-mono mb-[22px]">
+                <div className="text-xs text-fog-dim font-mono mb-7">
                   {plan.cycle}
                 </div>
 
-                <ul className="divide-y divide-slate-line">
-                  {plan.features.map((featVal, fIdx) => (
-                    <li
-                      key={fIdx}
-                      className="h-[44px] flex items-center justify-between lg:justify-start text-[13.5px] text-fog"
-                    >
-                      <span className="lg:hidden text-fog-dim text-xs font-mono pr-3">
-                        {FEATURES[fIdx]}
-                      </span>
-                      <span className="text-cream lg:text-fog font-medium lg:font-normal">
-                        {featVal}
-                      </span>
+                <ul className="space-y-3 border-t border-slate-line pt-6 text-[13.5px] text-fog leading-relaxed">
+                  {plan.features.map((feature, fIdx) => (
+                    <li key={fIdx} className="flex items-start gap-2.5">
+                      <span className="text-fog-dim select-none font-mono text-xs mt-0.5">—</span>
+                      <span className="text-fog">{feature}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="mt-[22px]">
+              <div className="mt-8 pt-4">
                 <Link
                   href={plan.ctaHref}
                   onClick={() => handleCtaClick(plan.ctaHref)}
                   className={cn(
-                    "w-full h-[41px] inline-flex items-center justify-center rounded-[3px] font-sans font-medium text-[14.5px] transition-colors",
+                    "w-full h-[41px] inline-flex items-center justify-center rounded-[3px] font-sans font-medium text-[14.5px] transition-colors cursor-pointer",
                     plan.ctaStyle === "amber"
-                      ? "bg-amber text-[#201404] hover:bg-amber-deep"
-                      : "border border-slate-line text-cream hover:border-fog-dim bg-transparent"
+                      ? "bg-amber text-[#201404] hover:bg-amber-deep font-semibold shadow-xs"
+                      : "border border-slate-line text-cream hover:border-fog-dim bg-transparent hover:bg-ink-raised"
                   )}
                 >
                   {plan.ctaText}
