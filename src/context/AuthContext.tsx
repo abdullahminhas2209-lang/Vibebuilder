@@ -11,6 +11,8 @@ export interface UserProfile {
   lastName: string;
   fullName: string;
   initials: string;
+  avatarUrl?: string;
+  provider?: string;
 }
 
 interface SignUpData {
@@ -26,6 +28,8 @@ interface AuthContextType {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error?: string }>;
   signUp: (data: SignUpData) => Promise<{ error?: string; message?: string }>;
+  signInWithGoogle: (redirectPath?: string) => Promise<{ error?: string; url?: string }>;
+  loginWithGoogleFallback: (email: string, name?: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -59,10 +63,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   function mapUserToProfile(u: SupabaseUser): UserProfile {
     const meta = u.user_metadata || {};
-    const firstName = meta.first_name || meta.firstName || u.email?.split("@")[0] || "User";
-    const lastName = meta.last_name || meta.lastName || "";
-    const fullName = meta.full_name || `${firstName} ${lastName}`.trim();
+    const firstName =
+      meta.given_name ||
+      meta.first_name ||
+      meta.firstName ||
+      meta.name?.split(" ")[0] ||
+      u.email?.split("@")[0] ||
+      "User";
+    const lastName =
+      meta.family_name ||
+      meta.last_name ||
+      meta.lastName ||
+      meta.name?.split(" ").slice(1).join(" ") ||
+      "";
+    const fullName = meta.full_name || meta.name || `${firstName} ${lastName}`.trim();
     const initials = getInitials(firstName, lastName);
+    const avatarUrl = meta.avatar_url || meta.picture || "";
+    const provider = u.app_metadata?.provider || (meta.iss?.includes("google") ? "google" : "email");
 
     return {
       id: u.id,
@@ -71,6 +88,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       lastName,
       fullName,
       initials,
+      avatarUrl,
+      provider,
     };
   }
 
@@ -208,6 +227,68 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { message: "Account created! You can now access your dashboard." };
   }
 
+  async function signInWithGoogle(redirectPath: string = "project") {
+    if (!isSupabaseConfigured || !supabase) {
+      return { error: "Supabase client is not initialized in this environment." };
+    }
+
+    try {
+      const origin = typeof window !== "undefined" ? window.location.origin : "";
+      const redirectUrl = `${origin}/auth/callback?redirect=${encodeURIComponent(redirectPath)}`;
+
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: redirectUrl,
+          queryParams: {
+            prompt: "select_account",
+            access_type: "offline",
+          },
+        },
+      });
+
+      if (error) {
+        return { error: error.message };
+      }
+
+      if (data?.url) {
+        if (typeof window !== "undefined") {
+          window.location.href = data.url;
+        }
+        return { url: data.url };
+      }
+
+      return {};
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to initiate Google sign in.";
+      return { error: message };
+    }
+  }
+
+  async function loginWithGoogleFallback(email: string, name?: string) {
+    const cleanEmail = email.trim();
+    const emailPrefix = cleanEmail.split("@")[0] || "User";
+    const fullName = name && name.trim() ? name.trim() : emailPrefix;
+    const parts = fullName.split(" ");
+    const firstName = parts[0] || emailPrefix;
+    const lastName = parts.slice(1).join(" ") || "";
+
+    const mockProfile: UserProfile = {
+      id: `google_${Date.now()}`,
+      email: cleanEmail,
+      firstName,
+      lastName,
+      fullName,
+      initials: getInitials(firstName, lastName),
+      provider: "google",
+    };
+
+    setProfile(mockProfile);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(mockProfile));
+    }
+  }
+
   async function signOut() {
     if (isSupabaseConfigured && supabase) {
       await supabase.auth.signOut();
@@ -217,6 +298,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (typeof window !== "undefined") {
       localStorage.removeItem(USER_STORAGE_KEY);
       localStorage.removeItem(LEGACY_USER_STORAGE_KEY);
+      sessionStorage.removeItem("klyro_pending_prompt");
+      localStorage.removeItem("klyro_pending_prompt");
     }
   }
 
@@ -228,6 +311,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loading,
         signIn,
         signUp,
+        signInWithGoogle,
+        loginWithGoogleFallback,
         signOut,
       }}
     >

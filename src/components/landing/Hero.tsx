@@ -6,6 +6,7 @@ import { ArrowRight, Cpu, Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
 import { BorderTrail } from "@/components/motion-primitives/border-trail";
+import { useAuth } from "@/context/AuthContext";
 
 const TYPEWRITER_PLACEHOLDERS = [
   "Build a modern SaaS analytics dashboard with metrics...",
@@ -41,6 +42,7 @@ const QUICK_ACTIONS = [
 
 export function Hero() {
   const router = useRouter();
+  const { user, profile } = useAuth();
   const [prompt, setPrompt] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -83,6 +85,17 @@ export function Hero() {
     if (event) event.preventDefault();
     const effectivePrompt =
       prompt.trim() || placeholderText || "Build a modern SaaS product with landing page and dashboard";
+
+    const isAuthenticated = Boolean(user || profile);
+    if (!isAuthenticated) {
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("klyro_pending_prompt", effectivePrompt);
+        localStorage.setItem("klyro_pending_prompt", effectivePrompt);
+      }
+      router.push(`/auth?prompt=${encodeURIComponent(effectivePrompt)}&redirect=project`);
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
