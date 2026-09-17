@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Cpu, Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -45,6 +45,8 @@ export function Hero() {
   const { user, profile } = useAuth();
   const [prompt, setPrompt] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isShiftPressedRef = useRef(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
   // Typewriter effect for prompt placeholder
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
@@ -81,10 +83,13 @@ export function Hero() {
     return () => clearTimeout(timer);
   }, [placeholderText, isDeletingPlaceholder, placeholderIndex]);
 
-  async function handleSubmit(event?: React.FormEvent) {
+  async function handleSubmit(event?: React.FormEvent, overridePrompt?: string) {
     if (event) event.preventDefault();
+    if (isSubmitting) return;
+
+    const rawPrompt = overridePrompt !== undefined ? overridePrompt : prompt;
     const effectivePrompt =
-      prompt.trim() || placeholderText || "Build a modern SaaS product with landing page and dashboard";
+      rawPrompt.trim() || placeholderText || "Build a modern SaaS product with landing page and dashboard";
 
     const isAuthenticated = Boolean(user || profile);
     if (!isAuthenticated) {
@@ -120,6 +125,7 @@ export function Hero() {
       router.push(`/project/${newProject.id}?prompt=${encodeURIComponent(effectivePrompt)}`);
     } catch (err) {
       console.error("Failed to create project:", err);
+      setIsSubmitting(false);
       const fallbackId = `proj_${Date.now()}`;
       router.push(`/project/${fallbackId}?prompt=${encodeURIComponent(effectivePrompt)}`);
     }
@@ -178,6 +184,7 @@ export function Hero() {
         {/* ============================================================================== */}
         <div className="mt-10 mx-auto max-w-3xl">
           <form
+            ref={formRef}
             onSubmit={handleSubmit}
             className="group relative rounded-md border border-slate-line bg-ink-raised p-4 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-200 hover:border-slate-line/80 focus-within:border-amber focus-within:ring-1 focus-within:ring-amber/30"
           >
@@ -195,11 +202,38 @@ export function Hero() {
               <textarea
                 id="hero-prompt-input"
                 value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
+                enterKeyHint="go"
+                onChange={(e) => {
+                  const val = e.target.value;
+                  // If Enter was tapped on virtual/mobile keyboard (which inserts \n)
+                  if (!isShiftPressedRef.current && (val.includes("\n") || val.includes("\r"))) {
+                    const cleaned = val.replace(/[\r\n]+/g, " ").trim();
+                    setPrompt(cleaned);
+                    handleSubmit(undefined, cleaned);
+                    return;
+                  }
+                  setPrompt(val);
+                }}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
+                  if (e.key === "Shift" || e.shiftKey) {
+                    isShiftPressedRef.current = true;
+                  }
+
+                  const isEnter =
+                    e.key === "Enter" ||
+                    e.code === "Enter" ||
+                    e.code === "NumpadEnter" ||
+                    e.keyCode === 13 ||
+                    e.which === 13;
+
+                  if (isEnter && !e.shiftKey) {
                     e.preventDefault();
-                    handleSubmit();
+                    handleSubmit(undefined, e.currentTarget.value);
+                  }
+                }}
+                onKeyUp={(e) => {
+                  if (e.key === "Shift" || !e.shiftKey) {
+                    isShiftPressedRef.current = false;
                   }
                 }}
                 rows={2}
