@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -250,20 +250,6 @@ export function AuthModal({
           </DialogDescription>
         </DialogHeader>
 
-        {/* Pending prompt notice if arrived with prompt */}
-        {pendingPrompt && (
-          <div className="mb-2 rounded-sm border border-amber/30 bg-amber/5 p-3 text-xs text-cream">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="size-1.5 rounded-full bg-amber animate-pulse" />
-              <span className="font-mono text-[11px] uppercase tracking-wider text-amber font-semibold">
-                Project Ready to Build
-              </span>
-            </div>
-            <p className="font-mono text-fog text-[11px] line-clamp-2 italic">
-              "{pendingPrompt}"
-            </p>
-          </div>
-        )}
 
         {/* Continue with Google */}
         <div className="space-y-2 mt-1">

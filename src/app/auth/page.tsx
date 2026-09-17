@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -242,23 +242,6 @@ function AuthPageInner() {
             </p>
           </div>
 
-          {/* Pending prompt notice banner */}
-          {pendingPrompt && (
-            <div className="mb-5 rounded-sm border border-amber/30 bg-amber/5 p-3.5 text-xs text-cream">
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="size-1.5 rounded-full bg-amber animate-pulse" />
-                <span className="font-mono text-[11px] uppercase tracking-wider text-amber font-semibold">
-                  Project Ready to Build
-                </span>
-              </div>
-              <p className="font-mono text-fog text-xs line-clamp-2 italic">
-                "{pendingPrompt}"
-              </p>
-              <p className="mt-1.5 text-[11px] text-fog-dim font-sans">
-                Sign in or continue with Google to automatically open your preview window and build this project.
-              </p>
-            </div>
-          )}
 
           {/* Continue with Google button */}
           <div className="space-y-3">
