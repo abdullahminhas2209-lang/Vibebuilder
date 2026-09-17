@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, Cpu, Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
+import { BorderTrail } from "@/components/motion-primitives/border-trail";
 
 const TYPEWRITER_PLACEHOLDERS = [
   "Build a modern SaaS analytics dashboard with metrics...",
@@ -167,6 +168,16 @@ export function Hero() {
             onSubmit={handleSubmit}
             className="group relative rounded-md border border-slate-line bg-ink-raised p-4 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-200 hover:border-slate-line/80 focus-within:border-amber focus-within:ring-1 focus-within:ring-amber/30"
           >
+            <BorderTrail
+              size={100}
+              borderRadius={6}
+              className="bg-gradient-to-l from-amber via-amber-deep to-transparent"
+              transition={{
+                repeat: Infinity,
+                duration: 6,
+                ease: "linear",
+              }}
+            />
             <div className="flex items-start gap-3 px-1 pt-1">
               <textarea
                 id="hero-prompt-input"
