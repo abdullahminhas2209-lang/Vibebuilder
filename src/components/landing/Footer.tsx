@@ -42,7 +42,7 @@ export function Footer() {
               Pricing
             </Link>
             <Link
-              href="/auth"
+              href="/signin"
               className="hover:text-cream transition-colors"
             >
               Sign in

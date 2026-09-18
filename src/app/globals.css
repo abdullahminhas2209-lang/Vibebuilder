@@ -97,6 +97,8 @@
   --font-sans: var(--font-ibm-plex-sans), -apple-system, sans-serif;
   --font-mono: var(--font-ibm-plex-mono), "Courier New", monospace;
   --font-display: var(--font-fraunces), Georgia, serif;
+  --font-playfair: var(--font-playfair), Georgia, serif;
+  --font-montserrat: var(--font-montserrat), -apple-system, sans-serif;
 }
 
 @utility font-serif {
@@ -113,6 +115,14 @@
 
 @utility font-display {
   font-family: var(--font-fraunces), Georgia, serif;
+}
+
+@utility font-playfair {
+  font-family: var(--font-playfair), Georgia, serif;
+}
+
+@utility font-montserrat {
+  font-family: var(--font-montserrat), -apple-system, sans-serif;
 }
 
 @layer base {

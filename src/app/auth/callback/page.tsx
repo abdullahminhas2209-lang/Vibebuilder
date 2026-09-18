@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -61,55 +61,15 @@ function CallbackHandler() {
     }
 
     async function proceedToDestination() {
-      setStatusText("Preparing your workspace...");
+      setStatusText("Finalizing sign in...");
 
-      // Check for saved prompt
-      let pendingPrompt: string | null = null;
-      if (typeof window !== "undefined") {
-        pendingPrompt =
-          sessionStorage.getItem("klyro_pending_prompt") ||
-          localStorage.getItem("klyro_pending_prompt");
-      }
+      // Import sanitized return state
+      const { getAuthReturnState, sanitizeReturnUrl } = await import("@/lib/auth-return");
+      const savedState = getAuthReturnState();
+      const redirectParam = searchParams?.get("redirect");
 
-      if (pendingPrompt && pendingPrompt.trim()) {
-        const cleanPrompt = pendingPrompt.trim();
-        try {
-          const uniqueId = `proj_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
-          const words = cleanPrompt
-            .replace(/^(build|create|design|make)\s+(a|an|the)?\s*/i, "")
-            .split(/\s+/)
-            .slice(0, 4)
-            .join(" ");
-          const derivedName = words
-            ? words.charAt(0).toUpperCase() + words.slice(1)
-            : "New Klyro Project";
-
-          const { createProject } = await import("@/lib/supabase/db");
-          const newProject = await createProject({
-            id: uniqueId,
-            name: derivedName,
-            description: cleanPrompt,
-            type: "Web Application",
-            status: "active",
-          });
-
-          if (typeof window !== "undefined") {
-            sessionStorage.removeItem("klyro_pending_prompt");
-            localStorage.removeItem("klyro_pending_prompt");
-          }
-
-          router.push(`/project/${newProject.id}?prompt=${encodeURIComponent(cleanPrompt)}`);
-          return;
-        } catch (err) {
-          console.error("Failed to auto-create project on callback:", err);
-          const fallbackId = `proj_${Date.now()}`;
-          router.push(`/project/${fallbackId}?prompt=${encodeURIComponent(cleanPrompt)}`);
-          return;
-        }
-      }
-
-      // If no pending prompt, redirect to dashboard
-      router.push("/dashboard");
+      const destination = sanitizeReturnUrl(redirectParam || savedState?.returnUrl || "/");
+      router.push(destination);
     }
 
     handleAuthRedirect();

@@ -1,8 +1,22 @@
 import React from "react";
 import type { Metadata, Viewport } from "next";
-import { Fraunces, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { Fraunces, IBM_Plex_Mono, IBM_Plex_Sans, Montserrat, Playfair_Display } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -62,7 +76,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable} font-sans h-full antialiased`}
+      className={`${fraunces.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable} ${playfair.variable} ${montserrat.variable} font-sans h-full antialiased`}
       suppressHydrationWarning
     >
       <body

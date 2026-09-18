@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { LayoutDashboard, LogOut, Menu } from "lucide-react";
 
 import { Logo } from "@/components/brand/Logo";
@@ -24,11 +25,13 @@ import {
 import { AuthModal } from "@/components/auth/AuthModal";
 import { useAuth } from "@/context/AuthContext";
 import { AnimatedBackground } from "@/components/motion-primitives/animated-background";
+import { saveAuthReturnState } from "@/lib/auth-return";
 import { cn } from "@/lib/utils";
 
 const emptySubscribe = () => () => {};
 
 export function Navbar() {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState<"signin" | "signup">("signin");
@@ -67,6 +70,24 @@ export function Navbar() {
         hero.scrollIntoView({ behavior: "smooth" });
       }
     }
+  }
+
+  function handleSignInClick() {
+    setIsOpen(false);
+    if (typeof window !== "undefined") {
+      const heroTextarea = document.getElementById("hero-prompt-input") as HTMLTextAreaElement | null;
+      const currentPrompt = heroTextarea?.value?.trim();
+      if (currentPrompt) {
+        saveAuthReturnState({
+          prompt: currentPrompt,
+          returnUrl: "/",
+          action: "build",
+        });
+        router.push(`/signin?prompt=${encodeURIComponent(currentPrompt)}&returnUrl=/`);
+        return;
+      }
+    }
+    router.push("/signin");
   }
 
   function openAuth(mode: "signin" | "signup") {
@@ -186,7 +207,7 @@ export function Navbar() {
               <>
                 <button
                   type="button"
-                  onClick={() => openAuth("signin")}
+                  onClick={handleSignInClick}
                   className="text-fog hover:text-cream transition-colors cursor-pointer"
                 >
                   Sign in
@@ -294,7 +315,7 @@ export function Navbar() {
                     <button
                       type="button"
                       className="text-left text-sm text-fog hover:text-cream py-1.5"
-                      onClick={() => openAuth("signin")}
+                      onClick={handleSignInClick}
                     >
                       Sign in
                     </button>

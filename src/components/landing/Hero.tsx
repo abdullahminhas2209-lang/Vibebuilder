@@ -7,6 +7,10 @@ import { Button } from "@/components/ui/button";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
 import { BorderTrail } from "@/components/motion-primitives/border-trail";
 import { useAuth } from "@/context/AuthContext";
+import {
+  saveAuthReturnState,
+  consumeAuthReturnState,
+} from "@/lib/auth-return";
 
 const TYPEWRITER_PLACEHOLDERS = [
   "Build a modern SaaS analytics dashboard with metrics...",
@@ -45,8 +49,21 @@ export function Hero() {
   const { user, profile } = useAuth();
   const [prompt, setPrompt] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationMessage, setValidationMessage] = useState<string | null>(null);
+  const [promptRestoredNotice, setPromptRestoredNotice] = useState(false);
   const isShiftPressedRef = useRef(false);
   const formRef = useRef<HTMLFormElement>(null);
+
+  // Restore prompt if returning from sign in or registration
+  useEffect(() => {
+    const returnState = consumeAuthReturnState();
+    if (returnState && returnState.prompt) {
+      setPrompt(returnState.prompt);
+      setPromptRestoredNotice(true);
+      const timer = setTimeout(() => setPromptRestoredNotice(false), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // Typewriter effect for prompt placeholder
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
@@ -83,30 +100,44 @@ export function Hero() {
     return () => clearTimeout(timer);
   }, [placeholderText, isDeletingPlaceholder, placeholderIndex]);
 
-  async function handleSubmit(event?: React.FormEvent, overridePrompt?: string) {
+  // Unified build action: exactly the same function for both Enter key and "Build with Klyro" button
+  async function handleBuild(event?: React.FormEvent, overridePrompt?: string) {
     if (event) event.preventDefault();
     if (isSubmitting) return;
 
-    const rawPrompt = overridePrompt !== undefined ? overridePrompt : prompt;
-    const effectivePrompt =
-      rawPrompt.trim() || placeholderText || "Build a modern SaaS product with landing page and dashboard";
+    setValidationMessage(null);
 
-    const isAuthenticated = Boolean(user || profile);
-    if (!isAuthenticated) {
-      if (typeof window !== "undefined") {
-        sessionStorage.setItem("klyro_pending_prompt", effectivePrompt);
-        localStorage.setItem("klyro_pending_prompt", effectivePrompt);
-      }
-      router.push(`/auth?prompt=${encodeURIComponent(effectivePrompt)}&redirect=project`);
+    const rawPrompt = overridePrompt !== undefined ? overridePrompt : prompt;
+    const trimmedPrompt = rawPrompt.trim();
+
+    // 19. Validate empty prompt — show message and do not redirect
+    if (!trimmedPrompt) {
+      setValidationMessage("Tell Klyro what you want to build.");
+      const textarea = document.getElementById("hero-prompt-input");
+      if (textarea) textarea.focus();
       return;
     }
 
+    const isAuthenticated = Boolean(user || profile);
+    if (!isAuthenticated) {
+      // 12. Save pending prompt + return destination, lock submission, and redirect
+      setIsSubmitting(true);
+      saveAuthReturnState({
+        prompt: trimmedPrompt,
+        returnUrl: "/",
+        action: "build",
+      });
+      router.push(`/signin?prompt=${encodeURIComponent(trimmedPrompt)}&returnUrl=/`);
+      return;
+    }
+
+    // 18. Authenticated user proceeds directly to build
     setIsSubmitting(true);
 
     try {
       const uniqueId = `proj_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
 
-      const words = effectivePrompt
+      const words = trimmedPrompt
         .replace(/^(build|create|design|make)\s+(a|an|the)?\s*/i, "")
         .split(/\s+/)
         .slice(0, 4)
@@ -117,22 +148,23 @@ export function Hero() {
       const newProject = await createProject({
         id: uniqueId,
         name: derivedName,
-        description: effectivePrompt,
+        description: trimmedPrompt,
         type: "Web Application",
         status: "active",
       });
 
-      router.push(`/project/${newProject.id}?prompt=${encodeURIComponent(effectivePrompt)}`);
+      router.push(`/project/${newProject.id}?prompt=${encodeURIComponent(trimmedPrompt)}`);
     } catch (err) {
       console.error("Failed to create project:", err);
       setIsSubmitting(false);
       const fallbackId = `proj_${Date.now()}`;
-      router.push(`/project/${fallbackId}?prompt=${encodeURIComponent(effectivePrompt)}`);
+      router.push(`/project/${fallbackId}?prompt=${encodeURIComponent(trimmedPrompt)}`);
     }
   }
 
   function handleSelectQuickAction(item: (typeof QUICK_ACTIONS)[0]) {
     setPrompt(item.prompt);
+    if (validationMessage) setValidationMessage(null);
     const textarea = document.getElementById("hero-prompt-input");
     if (textarea) textarea.focus();
   }
@@ -185,7 +217,7 @@ export function Hero() {
         <div className="mt-10 mx-auto max-w-3xl">
           <form
             ref={formRef}
-            onSubmit={handleSubmit}
+            onSubmit={handleBuild}
             className="group relative rounded-md border border-slate-line bg-ink-raised p-4 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-200 hover:border-slate-line/80 focus-within:border-amber focus-within:ring-1 focus-within:ring-amber/30"
           >
             <BorderTrail
@@ -205,11 +237,12 @@ export function Hero() {
                 enterKeyHint="go"
                 onChange={(e) => {
                   const val = e.target.value;
+                  if (validationMessage) setValidationMessage(null);
                   // If Enter was tapped on virtual/mobile keyboard (which inserts \n)
                   if (!isShiftPressedRef.current && (val.includes("\n") || val.includes("\r"))) {
                     const cleaned = val.replace(/[\r\n]+/g, " ").trim();
                     setPrompt(cleaned);
-                    handleSubmit(undefined, cleaned);
+                    handleBuild(undefined, cleaned);
                     return;
                   }
                   setPrompt(val);
@@ -228,7 +261,7 @@ export function Hero() {
 
                   if (isEnter && !e.shiftKey) {
                     e.preventDefault();
-                    handleSubmit(undefined, e.currentTarget.value);
+                    handleBuild(undefined, e.currentTarget.value);
                   }
                 }}
                 onKeyUp={(e) => {
@@ -241,6 +274,22 @@ export function Hero() {
                 className="w-full resize-none border-0 bg-transparent text-sm sm:text-base font-mono text-cream placeholder:text-fog-dim focus:outline-none focus:ring-0 leading-relaxed transition-colors"
               />
             </div>
+
+            {/* Validation or Prompt Restored Notifications */}
+            {validationMessage && (
+              <div className="px-1 pt-1">
+                <p className="text-xs font-sans text-amber font-medium">
+                  {validationMessage}
+                </p>
+              </div>
+            )}
+            {promptRestoredNotice && !validationMessage && (
+              <div className="px-1 pt-1">
+                <p className="text-xs font-sans text-emerald-400 font-medium">
+                  Prompt restored from your session. Ready to build!
+                </p>
+              </div>
+            )}
 
             {/* Bottom Bar inside Prompt Box */}
             <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-slate-line pt-3 px-1">
@@ -268,7 +317,7 @@ export function Hero() {
                 {isSubmitting ? (
                   <>
                     <span className="size-3.5 animate-spin rounded-full border-2 border-[#201404] border-t-transparent mr-1.5" />
-                    Opening Klyro...
+                    <span>Preparing...</span>
                   </>
                 ) : (
                   <>
