@@ -20,7 +20,7 @@ export function AuthVisualPanel({ className = "" }: AuthVisualPanelProps) {
 
   return (
     <div
-      className={`relative w-full h-full min-h-0 overflow-hidden bg-[#10121a] flex items-center justify-center ${className}`}
+      className={`relative w-full h-full rounded-xl sm:rounded-2xl overflow-hidden border border-slate-line bg-[#10121a] shadow-inner flex items-center justify-center ${className}`}
       aria-label="Klyro logo animation visual"
     >
       <video

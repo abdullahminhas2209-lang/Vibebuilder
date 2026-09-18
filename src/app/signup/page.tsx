@@ -147,190 +147,193 @@ function SignUpContent() {
   }
 
   return (
-    <div className="h-dvh max-h-dvh w-full bg-ink text-cream grid grid-cols-1 lg:grid-cols-2 overflow-hidden font-montserrat antialiased">
-      {/* Left Column: Registration Form */}
-      <div className="h-full flex flex-col justify-between p-6 sm:p-10 lg:p-12 xl:p-16 max-w-lg w-full mx-auto overflow-y-auto">
-        <div>
-          <Logo className="text-cream hover:opacity-90 transition-opacity" />
-        </div>
-
-        <div className="my-auto py-4">
-          <h1 className="font-playfair text-3xl sm:text-4xl font-semibold text-cream tracking-tight">
-            Create Your Account
-          </h1>
-          <p className="mt-2 text-sm text-fog font-normal leading-relaxed">
-            Start building modern websites and applications with Klyro
-          </p>
-
-          {errorMessage && (
-            <div
-              role="alert"
-              className="mt-4 rounded-md border border-rose-900/60 bg-rose-950/60 p-3 text-xs text-rose-300 font-medium leading-normal"
-            >
-              {errorMessage}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-            <div>
-              <label
-                htmlFor="signup-name"
-                className="block text-xs font-semibold uppercase tracking-wider text-fog mb-1.5"
-              >
-                Full Name
-              </label>
-              <input
-                id="signup-name"
-                type="text"
-                required
-                autoComplete="name"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="Enter your name"
-                className="w-full h-11 px-3.5 rounded-md bg-ink-raised border border-slate-line text-cream text-sm placeholder:text-fog-dim transition-colors duration-150 focus:outline-none focus:border-amber focus:ring-1 focus:ring-amber/30"
-              />
+    <div className="min-h-dvh w-full bg-ink flex items-center justify-center p-4 sm:p-6 lg:p-10 font-montserrat antialiased">
+      {/* Centered Registration Card Container */}
+      <div className="w-full max-w-[1060px] bg-ink-raised rounded-2xl sm:rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] border border-slate-line overflow-hidden grid grid-cols-1 lg:grid-cols-2">
+        {/* Left Column: Form */}
+        <div className="p-7 sm:p-10 lg:p-12 flex flex-col justify-between">
+          <div>
+            <div className="mb-6">
+              <Logo className="text-cream hover:opacity-90 transition-opacity" />
             </div>
 
-            <div>
-              <label
-                htmlFor="signup-email"
-                className="block text-xs font-semibold uppercase tracking-wider text-fog mb-1.5"
-              >
-                Email
-              </label>
-              <input
-                id="signup-email"
-                type="email"
-                required
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                className="w-full h-11 px-3.5 rounded-md bg-ink-raised border border-slate-line text-cream text-sm placeholder:text-fog-dim transition-colors duration-150 focus:outline-none focus:border-amber focus:ring-1 focus:ring-amber/30"
-              />
-            </div>
+            <h1 className="font-playfair text-3xl sm:text-4xl font-semibold text-cream tracking-tight">
+              Create Your Account
+            </h1>
+            <p className="mt-2 text-sm text-fog font-normal leading-relaxed">
+              Start building modern websites and applications with Klyro
+            </p>
 
-            <div>
-              <label
-                htmlFor="signup-password"
-                className="block text-xs font-semibold uppercase tracking-wider text-fog mb-1.5"
+            {errorMessage && (
+              <div
+                role="alert"
+                className="mt-4 rounded-md border border-rose-900/60 bg-rose-950/60 p-3 text-xs text-rose-300 font-medium leading-normal"
               >
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  id="signup-password"
-                  type={showPassword ? "text" : "password"}
-                  required
-                  autoComplete="new-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Create a password (min. 6 chars)"
-                  className="w-full h-11 pl-3.5 pr-11 rounded-md bg-ink-raised border border-slate-line text-cream text-sm placeholder:text-fog-dim transition-colors duration-150 focus:outline-none focus:border-amber focus:ring-1 focus:ring-amber/30"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-fog hover:text-cream transition-colors p-1 cursor-pointer"
-                >
-                  {showPassword ? (
-                    <EyeOff className="size-4" />
-                  ) : (
-                    <Eye className="size-4" />
-                  )}
-                </button>
+                {errorMessage}
               </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+              <div>
+                <label
+                  htmlFor="signup-name"
+                  className="block text-xs font-semibold uppercase tracking-wider text-fog mb-1.5"
+                >
+                  Full Name
+                </label>
+                <input
+                  id="signup-name"
+                  type="text"
+                  required
+                  autoComplete="name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Enter your name"
+                  className="w-full h-11 px-3.5 rounded-md bg-ink border border-slate-line text-cream text-sm placeholder:text-fog-dim transition-colors duration-150 focus:outline-none focus:border-amber focus:ring-1 focus:ring-amber/30"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="signup-email"
+                  className="block text-xs font-semibold uppercase tracking-wider text-fog mb-1.5"
+                >
+                  Email
+                </label>
+                <input
+                  id="signup-email"
+                  type="email"
+                  required
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="w-full h-11 px-3.5 rounded-md bg-ink border border-slate-line text-cream text-sm placeholder:text-fog-dim transition-colors duration-150 focus:outline-none focus:border-amber focus:ring-1 focus:ring-amber/30"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="signup-password"
+                  className="block text-xs font-semibold uppercase tracking-wider text-fog mb-1.5"
+                >
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    id="signup-password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    autoComplete="new-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Create a password (min. 6 chars)"
+                    className="w-full h-11 pl-3.5 pr-11 rounded-md bg-ink border border-slate-line text-cream text-sm placeholder:text-fog-dim transition-colors duration-150 focus:outline-none focus:border-amber focus:ring-1 focus:ring-amber/30"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-fog hover:text-cream transition-colors p-1 cursor-pointer"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="size-4" />
+                    ) : (
+                      <Eye className="size-4" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting || isGoogleSubmitting}
+                className="w-full h-11 mt-2 rounded-md bg-amber hover:bg-amber-deep text-[#201404] text-sm font-semibold tracking-wide transition-colors duration-150 flex items-center justify-center gap-2 shadow-xs disabled:opacity-60 cursor-pointer"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin text-[#201404]" />
+                    <span>Creating Account...</span>
+                  </>
+                ) : (
+                  <span>Create Account</span>
+                )}
+              </button>
+            </form>
+
+            <div className="relative my-5 flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-slate-line" />
+              </div>
+              <span className="relative bg-ink-raised px-3 text-xs text-fog-dim uppercase tracking-wider font-medium">
+                or
+              </span>
             </div>
 
             <button
-              type="submit"
+              type="button"
+              onClick={handleGoogleSignUp}
               disabled={isSubmitting || isGoogleSubmitting}
-              className="w-full h-11 mt-2 rounded-md bg-amber hover:bg-amber-deep text-[#201404] text-sm font-semibold tracking-wide transition-colors duration-150 flex items-center justify-center gap-2 shadow-xs disabled:opacity-60 cursor-pointer"
+              className="w-full h-11 rounded-md bg-ink border border-slate-line hover:border-fog-dim text-cream text-sm font-medium transition-colors duration-150 flex items-center justify-center gap-2.5 shadow-xs disabled:opacity-60 cursor-pointer"
             >
-              {isSubmitting ? (
+              {isGoogleSubmitting ? (
                 <>
-                  <Loader2 className="size-4 animate-spin text-[#201404]" />
-                  <span>Creating Account...</span>
+                  <Loader2 className="size-4 animate-spin text-amber" />
+                  <span>Connecting...</span>
                 </>
               ) : (
-                <span>Create Account</span>
+                <>
+                  <GoogleIcon className="size-4 shrink-0" />
+                  <span>Sign up with Google</span>
+                </>
               )}
             </button>
-          </form>
 
-          <div className="relative my-5 flex items-center justify-center">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-line" />
-            </div>
-            <span className="relative bg-ink px-3 text-xs text-fog-dim uppercase tracking-wider font-medium">
-              or
-            </span>
+            {showGmailFallback && (
+              <form
+                onSubmit={handleDirectGmailFallback}
+                className="mt-3 p-3 bg-ink rounded-md border border-slate-line space-y-2"
+              >
+                <span className="block text-xs font-semibold text-amber">
+                  Instant Google Email Registration
+                </span>
+                <div className="flex gap-2">
+                  <input
+                    type="email"
+                    value={directGmail}
+                    onChange={(e) => setDirectGmail(e.target.value)}
+                    placeholder="name@gmail.com"
+                    className="flex-1 h-9 px-3 rounded bg-ink-raised border border-slate-line text-xs text-cream focus:outline-none focus:border-amber"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="h-9 px-4 rounded bg-amber text-[#201404] text-xs font-semibold hover:bg-amber-deep transition-colors"
+                  >
+                    Continue
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
 
-          <button
-            type="button"
-            onClick={handleGoogleSignUp}
-            disabled={isSubmitting || isGoogleSubmitting}
-            className="w-full h-11 rounded-md bg-ink-raised border border-slate-line hover:border-fog-dim text-cream text-sm font-medium transition-colors duration-150 flex items-center justify-center gap-2.5 shadow-xs disabled:opacity-60 cursor-pointer"
-          >
-            {isGoogleSubmitting ? (
-              <>
-                <Loader2 className="size-4 animate-spin text-amber" />
-                <span>Connecting...</span>
-              </>
-            ) : (
-              <>
-                <GoogleIcon className="size-4 shrink-0" />
-                <span>Sign up with Google</span>
-              </>
-            )}
-          </button>
-
-          {showGmailFallback && (
-            <form
-              onSubmit={handleDirectGmailFallback}
-              className="mt-3 p-3 bg-ink-raised rounded-md border border-slate-line space-y-2"
-            >
-              <span className="block text-xs font-semibold text-amber">
-                Instant Google Email Registration
-              </span>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  value={directGmail}
-                  onChange={(e) => setDirectGmail(e.target.value)}
-                  placeholder="name@gmail.com"
-                  className="flex-1 h-9 px-3 rounded bg-ink border border-slate-line text-xs text-cream focus:outline-none focus:border-amber"
-                />
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="h-9 px-4 rounded bg-amber text-[#201404] text-xs font-semibold hover:bg-amber-deep transition-colors"
-                >
-                  Continue
-                </button>
-              </div>
-            </form>
-          )}
+          <div className="mt-6 pt-4 border-t border-slate-line/60 text-center">
+            <p className="text-xs text-fog">
+              Already have an account?{" "}
+              <Link
+                href="/signin"
+                className="font-semibold text-amber hover:underline"
+              >
+                Sign in
+              </Link>
+            </p>
+          </div>
         </div>
 
-        <div className="pt-2 text-center">
-          <p className="text-xs text-fog">
-            Already have an account?{" "}
-            <Link
-              href="/signin"
-              className="font-semibold text-amber hover:underline"
-            >
-              Sign in
-            </Link>
-          </p>
+        {/* Right Column: Klyro Video Panel */}
+        <div className="p-4 sm:p-6 lg:p-8 flex items-center justify-center bg-ink/40 border-t lg:border-t-0 lg:border-l border-slate-line">
+          <AuthVisualPanel className="h-[280px] sm:h-[360px] lg:h-full min-h-[280px] lg:min-h-[500px]" />
         </div>
-      </div>
-
-      {/* Right Column: Full-Height Klyro Video Panel */}
-      <div className="hidden lg:block h-full w-full relative overflow-hidden border-l border-slate-line bg-[#10121a]">
-        <AuthVisualPanel className="h-full w-full" />
       </div>
     </div>
   );
@@ -340,7 +343,7 @@ export default function SignUpPage() {
   return (
     <Suspense
       fallback={
-        <div className="h-dvh w-full bg-ink flex items-center justify-center">
+        <div className="min-h-dvh w-full bg-ink flex items-center justify-center">
           <Loader2 className="size-6 animate-spin text-amber" />
         </div>
       }
