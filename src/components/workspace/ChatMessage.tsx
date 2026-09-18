@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, CheckCircle2, Cpu, FileCode2, Sparkles, Zap } from "lucide-react";
+import { Check, CheckCircle2, Cpu, FileCode2, Loader2, Zap } from "lucide-react";
 
 import { LogoMark } from "@/components/brand/Logo";
 import { mockUser } from "@/lib/mock-data";
@@ -108,7 +108,7 @@ export function ChatMessage({ message }: { message: ChatMessageType }) {
               <div className="relative z-10 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="flex items-center gap-1.5 rounded-sm bg-amber/15 border border-amber/30 px-2 py-0.5 text-[11px] font-mono font-semibold text-amber">
-                    <Sparkles className="size-3 text-amber animate-spin" />
+                    <Loader2 className="size-3 text-amber animate-spin" />
                     Generating...
                   </span>
                   <span className="flex items-center gap-1.5 text-[10px] text-amber font-mono">

@@ -11,10 +11,10 @@ import {
   Monitor,
   RotateCw,
   Smartphone,
-  Sparkles,
   Tablet,
 } from "lucide-react";
 
+import { LogoMark } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
 import { MockSite } from "@/components/workspace/MockSite";
 import type { Project } from "@/lib/types";
@@ -232,9 +232,8 @@ export function PreviewPanel({
             <MockSite config={project.preview} />
           ) : (
             <div className="flex min-h-[600px] w-full flex-col items-center justify-center p-8 text-center bg-ink text-cream">
-              <div className="relative mb-4 flex size-14 items-center justify-center rounded-md border border-amber/30 bg-amber/10 text-amber shadow-lg shadow-amber/5">
-                <Sparkles className="size-6 animate-pulse text-amber" aria-hidden="true" />
-                <span className="absolute -top-1 -right-1 size-2.5 rounded-full bg-amber animate-ping" />
+              <div className="relative mb-4 flex size-14 items-center justify-center rounded-md border border-slate-line bg-ink-raised shadow-inner">
+                <LogoMark size={28} />
               </div>
               <h3 className="text-base font-serif font-semibold text-cream">Live Sandbox Initializing</h3>
               <p className="mt-2 max-w-sm text-xs text-fog leading-relaxed font-sans">
