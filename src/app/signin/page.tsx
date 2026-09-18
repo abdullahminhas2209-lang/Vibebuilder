@@ -48,8 +48,6 @@ function SignInContent() {
   function handleSuccessfulAuth(targetUrl?: string) {
     const existingState = getAuthReturnState();
     const destination = sanitizeReturnUrl(targetUrl || existingState?.returnUrl || "/");
-
-    // Seamlessly transition to the destination where the prompt is restored
     router.push(destination);
   }
 
@@ -91,7 +89,6 @@ function SignInContent() {
     try {
       const res = await signInWithGoogle("/auth/callback?redirect=/");
       if (res.error) {
-        // When Google OAuth is not configured on Supabase, activate developer-friendly direct Gmail fallback
         setShowGmailFallback(true);
         setErrorMessage("Google OAuth provider is not yet enabled in your Supabase dashboard. You can continue instantly with your Google email below.");
         setIsGoogleSubmitting(false);
@@ -128,203 +125,200 @@ function SignInContent() {
   }
 
   return (
-    <div className="min-h-dvh w-full bg-[#14161f] flex items-center justify-center p-4 sm:p-6 lg:p-10 font-montserrat antialiased">
-      {/* Centered Login Container */}
-      <div className="w-full max-w-[1100px] bg-[#faf8f5] rounded-2xl sm:rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] border border-[#e5e1d8] overflow-hidden grid grid-cols-1 lg:grid-cols-2">
-        {/* Left Column: Sign In Form */}
-        <div className="p-7 sm:p-10 lg:p-14 flex flex-col justify-between">
-          <div>
-            {/* Klyro Brand Logo */}
-            <div className="mb-8">
-              <Logo className="text-[#14161f] hover:opacity-90 transition-opacity" />
-            </div>
+    <div className="h-dvh max-h-dvh w-full bg-ink text-cream grid grid-cols-1 lg:grid-cols-2 overflow-hidden font-montserrat antialiased">
+      {/* Left Column: Sign In Form (fills screen height, nicely proportioned) */}
+      <div className="h-full flex flex-col justify-between p-6 sm:p-10 lg:p-12 xl:p-16 max-w-lg w-full mx-auto overflow-y-auto">
+        {/* Top: Logo */}
+        <div>
+          <Logo className="text-cream hover:opacity-90 transition-opacity" />
+        </div>
 
-            {/* Header Section */}
-            <h1 className="font-playfair text-3xl sm:text-4xl font-semibold text-[#14161f] tracking-tight">
-              Welcome Back
-            </h1>
-            <p className="mt-2 text-sm text-[#5f6368] font-normal leading-relaxed">
-              Enter your email &amp; password to access your account
-            </p>
+        {/* Center: Heading & Form */}
+        <div className="my-auto py-4">
+          <h1 className="font-playfair text-3xl sm:text-4xl font-semibold text-cream tracking-tight">
+            Welcome Back
+          </h1>
+          <p className="mt-2 text-sm text-fog font-normal leading-relaxed">
+            Enter your email &amp; password to access your account
+          </p>
 
-            {/* Error Notification */}
-            {errorMessage && (
-              <div
-                role="alert"
-                className="mt-5 rounded-lg border border-red-200 bg-red-50/90 p-3.5 text-xs text-red-700 font-medium leading-normal"
-              >
-                {errorMessage}
-              </div>
-            )}
-
-            {/* Primary Sign In Form */}
-            <form onSubmit={handleSubmit} className="mt-7 space-y-4">
-              <div>
-                <label
-                  htmlFor="signin-email"
-                  className="block text-xs font-semibold uppercase tracking-wider text-[#2b2f3c] mb-1.5"
-                >
-                  Email
-                </label>
-                <input
-                  id="signin-email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="w-full h-11 sm:h-12 px-3.5 rounded-lg bg-white border border-[#d6d2c4] text-[#14161f] text-sm placeholder:text-[#9aa0ae] transition-colors duration-150 focus:outline-none focus:border-[#14161f] focus:ring-1 focus:ring-[#14161f]"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="signin-password"
-                  className="block text-xs font-semibold uppercase tracking-wider text-[#2b2f3c] mb-1.5"
-                >
-                  Password
-                </label>
-                <div className="relative">
-                  <input
-                    id="signin-password"
-                    type={showPassword ? "text" : "password"}
-                    required
-                    autoComplete="current-password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
-                    className="w-full h-11 sm:h-12 pl-3.5 pr-11 rounded-lg bg-white border border-[#d6d2c4] text-[#14161f] text-sm placeholder:text-[#9aa0ae] transition-colors duration-150 focus:outline-none focus:border-[#14161f] focus:ring-1 focus:ring-[#14161f]"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#80868b] hover:text-[#14161f] transition-colors p-1"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="size-4" />
-                    ) : (
-                      <Eye className="size-4" />
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              {/* Remember me & Forgot Password */}
-              <div className="flex items-center justify-between pt-1">
-                <label className="flex items-center gap-2 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="size-4 rounded border-[#d6d2c4] text-[#14161f] focus:ring-[#14161f] accent-[#14161f] cursor-pointer"
-                  />
-                  <span className="text-xs text-[#5f6368] font-medium">Remember me</span>
-                </label>
-
-                <Link
-                  href="/forgot-password"
-                  className="text-xs font-medium text-[#14161f] hover:underline"
-                >
-                  Forgot Password?
-                </Link>
-              </div>
-
-              {/* Primary Sign In Button */}
-              <button
-                type="submit"
-                disabled={isSubmitting || isGoogleSubmitting}
-                className="w-full h-11 sm:h-12 mt-2 rounded-lg bg-[#14161f] hover:bg-[#252836] text-[#f2f0e8] text-sm font-semibold tracking-wide transition-colors duration-150 flex items-center justify-center gap-2 shadow-sm disabled:opacity-60 cursor-pointer"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="size-4 animate-spin text-[#f2a93b]" />
-                    <span>Signing in...</span>
-                  </>
-                ) : (
-                  <span>Sign In</span>
-                )}
-              </button>
-            </form>
-
-            {/* Divider */}
-            <div className="relative my-6 flex items-center justify-center">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#e2ddd3]" />
-              </div>
-              <span className="relative bg-[#faf8f5] px-3 text-xs text-[#80868b] uppercase tracking-wider font-medium">
-                or
-              </span>
-            </div>
-
-            {/* Secondary: Google Sign In */}
-            <button
-              type="button"
-              onClick={handleGoogleSignIn}
-              disabled={isSubmitting || isGoogleSubmitting}
-              className="w-full h-11 sm:h-12 rounded-lg bg-white border border-[#d6d2c4] hover:bg-[#f2efe9] text-[#2b2f3c] text-sm font-medium transition-colors duration-150 flex items-center justify-center gap-2.5 shadow-2xs disabled:opacity-60 cursor-pointer"
+          {/* Error Notification */}
+          {errorMessage && (
+            <div
+              role="alert"
+              className="mt-4 rounded-md border border-rose-900/60 bg-rose-950/60 p-3 text-xs text-rose-300 font-medium leading-normal"
             >
-              {isGoogleSubmitting ? (
+              {errorMessage}
+            </div>
+          )}
+
+          {/* Primary Form */}
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <div>
+              <label
+                htmlFor="signin-email"
+                className="block text-xs font-semibold uppercase tracking-wider text-fog mb-1.5"
+              >
+                Email
+              </label>
+              <input
+                id="signin-email"
+                type="email"
+                required
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                className="w-full h-11 px-3.5 rounded-md bg-ink-raised border border-slate-line text-cream text-sm placeholder:text-fog-dim transition-colors duration-150 focus:outline-none focus:border-amber focus:ring-1 focus:ring-amber/30"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="signin-password"
+                className="block text-xs font-semibold uppercase tracking-wider text-fog mb-1.5"
+              >
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  id="signin-password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="w-full h-11 pl-3.5 pr-11 rounded-md bg-ink-raised border border-slate-line text-cream text-sm placeholder:text-fog-dim transition-colors duration-150 focus:outline-none focus:border-amber focus:ring-1 focus:ring-amber/30"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-fog hover:text-cream transition-colors p-1 cursor-pointer"
+                >
+                  {showPassword ? (
+                    <EyeOff className="size-4" />
+                  ) : (
+                    <Eye className="size-4" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Remember me & Forgot Password */}
+            <div className="flex items-center justify-between pt-0.5">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="size-4 rounded border-slate-line bg-ink-raised text-amber focus:ring-amber/30 accent-[#f2a93b] cursor-pointer"
+                />
+                <span className="text-xs text-fog font-medium">Remember me</span>
+              </label>
+
+              <Link
+                href="/forgot-password"
+                className="text-xs font-medium text-fog hover:text-cream transition-colors"
+              >
+                Forgot Password?
+              </Link>
+            </div>
+
+            {/* Primary Sign In Button */}
+            <button
+              type="submit"
+              disabled={isSubmitting || isGoogleSubmitting}
+              className="w-full h-11 mt-2 rounded-md bg-amber hover:bg-amber-deep text-[#201404] text-sm font-semibold tracking-wide transition-colors duration-150 flex items-center justify-center gap-2 shadow-xs disabled:opacity-60 cursor-pointer"
+            >
+              {isSubmitting ? (
                 <>
-                  <Loader2 className="size-4 animate-spin text-[#14161f]" />
-                  <span>Connecting...</span>
+                  <Loader2 className="size-4 animate-spin text-[#201404]" />
+                  <span>Signing in...</span>
                 </>
               ) : (
-                <>
-                  <GoogleIcon className="size-4 shrink-0" />
-                  <span>Sign in with Google</span>
-                </>
+                <span>Sign In</span>
               )}
             </button>
+          </form>
 
-            {/* Direct Gmail fallback for environments without live Google OAuth keys */}
-            {showGmailFallback && (
-              <form
-                onSubmit={handleDirectGmailFallback}
-                className="mt-3 p-3 bg-white rounded-lg border border-[#e5e1d8] space-y-2"
-              >
-                <span className="block text-xs font-semibold text-[#14161f]">
-                  Instant Google Email Authentication
-                </span>
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    value={directGmail}
-                    onChange={(e) => setDirectGmail(e.target.value)}
-                    placeholder="name@gmail.com"
-                    className="flex-1 h-9 px-3 rounded-md bg-[#faf8f5] border border-[#d6d2c4] text-xs text-[#14161f] focus:outline-none focus:border-[#14161f]"
-                  />
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="h-9 px-4 rounded-md bg-[#14161f] text-[#f2f0e8] text-xs font-semibold hover:bg-[#252836] transition-colors"
-                  >
-                    Continue
-                  </button>
-                </div>
-              </form>
+          {/* Divider */}
+          <div className="relative my-5 flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-line" />
+            </div>
+            <span className="relative bg-ink px-3 text-xs text-fog-dim uppercase tracking-wider font-medium">
+              or
+            </span>
+          </div>
+
+          {/* Secondary: Google Sign In */}
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            disabled={isSubmitting || isGoogleSubmitting}
+            className="w-full h-11 rounded-md bg-ink-raised border border-slate-line hover:border-fog-dim text-cream text-sm font-medium transition-colors duration-150 flex items-center justify-center gap-2.5 shadow-xs disabled:opacity-60 cursor-pointer"
+          >
+            {isGoogleSubmitting ? (
+              <>
+                <Loader2 className="size-4 animate-spin text-amber" />
+                <span>Connecting...</span>
+              </>
+            ) : (
+              <>
+                <GoogleIcon className="size-4 shrink-0" />
+                <span>Sign in with Google</span>
+              </>
             )}
-          </div>
+          </button>
 
-          {/* Bottom Sign Up Link */}
-          <div className="mt-8 pt-4 border-t border-[#e2ddd3]/60 text-center">
-            <p className="text-xs text-[#5f6368]">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/signup"
-                className="font-semibold text-[#14161f] hover:underline"
-              >
-                Sign up
-              </Link>
-            </p>
-          </div>
+          {/* Fallback for environments without live Google OAuth keys */}
+          {showGmailFallback && (
+            <form
+              onSubmit={handleDirectGmailFallback}
+              className="mt-3 p-3 bg-ink-raised rounded-md border border-slate-line space-y-2"
+            >
+              <span className="block text-xs font-semibold text-amber">
+                Instant Google Email Authentication
+              </span>
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  value={directGmail}
+                  onChange={(e) => setDirectGmail(e.target.value)}
+                  placeholder="name@gmail.com"
+                  className="flex-1 h-9 px-3 rounded bg-ink border border-slate-line text-xs text-cream focus:outline-none focus:border-amber"
+                />
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="h-9 px-4 rounded bg-amber text-[#201404] text-xs font-semibold hover:bg-amber-deep transition-colors"
+                >
+                  Continue
+                </button>
+              </div>
+            </form>
+          )}
         </div>
 
-        {/* Right Column: Klyro Video Panel */}
-        <div className="p-4 sm:p-6 lg:p-8 flex items-center justify-center bg-[#f0ece1]/50 border-t lg:border-t-0 lg:border-l border-[#e5e1d8]">
-          <AuthVisualPanel className="h-[280px] sm:h-[360px] lg:h-full min-h-[280px] lg:min-h-[580px]" />
+        {/* Bottom: Sign Up Link */}
+        <div className="pt-2 text-center">
+          <p className="text-xs text-fog">
+            Don&apos;t have an account?{" "}
+            <Link
+              href="/signup"
+              className="font-semibold text-amber hover:underline"
+            >
+              Sign up
+            </Link>
+          </p>
         </div>
+      </div>
+
+      {/* Right Column: Full-Height Klyro Video Panel */}
+      <div className="hidden lg:block h-full w-full relative overflow-hidden border-l border-slate-line bg-[#10121a]">
+        <AuthVisualPanel className="h-full w-full" />
       </div>
     </div>
   );
@@ -334,8 +328,8 @@ export default function SignInPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-dvh w-full bg-[#14161f] flex items-center justify-center">
-          <Loader2 className="size-6 animate-spin text-[#f2a93b]" />
+        <div className="h-dvh w-full bg-ink flex items-center justify-center">
+          <Loader2 className="size-6 animate-spin text-amber" />
         </div>
       }
     >
