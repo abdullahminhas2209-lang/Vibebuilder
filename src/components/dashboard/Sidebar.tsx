@@ -36,7 +36,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const { profile, signOut } = useAuth();
 
   const userName = profile?.fullName || "Guest User";
-  const userEmail = profile?.email || "guest@klyro.app";
+  const userEmail = profile?.email || "guest@example.com";
   const userInitials = profile?.initials || "GU";
 
   async function handleSignOut() {

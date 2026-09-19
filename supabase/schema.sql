@@ -1,5 +1,5 @@
 -- ==============================================================================
--- VibeBuilder Supabase Database Schema
+-- Klyro Supabase Database Schema
 -- Production ready schema for AI Website Builder
 -- ==============================================================================
 

@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { MockSite } from "@/components/workspace/MockSite";
 import type { Project } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { NEXT_PUBLIC_SITE_URL } from "@/lib/constants";
 
 type ViewportSize = "desktop" | "tablet" | "mobile";
 
@@ -40,7 +41,7 @@ export function PreviewPanel({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const previewUrl = `https://${project.id}.preview.klyro.app`;
+  const previewUrl = `${NEXT_PUBLIC_SITE_URL}/preview/${project.id}`;
 
   function handleReload() {
     if (isReloading || (!project.generated && !generatedHtml)) {

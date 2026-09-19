@@ -1,30 +1,33 @@
-# VibeBuilder
+# Klyro
 
-**Build websites by describing what you want.**
+**From prompt to product.**
 
-VibeBuilder is a modern AI-powered vibe-coding platform. Describe your idea in plain language — VibeBuilder turns it into a working interface you can preview, edit, and refine.
+Klyro turns natural language descriptions into interactive, clean Next.js and Tailwind web applications. Describe your idea in plain English — Klyro structures the pages, layouts, and components so you can preview, edit, and export your source code.
 
 ---
 
-## Phase 1 — Frontend UI Shell
+## Environment & Deployment Configuration
 
-This repository contains the complete **Phase 1 frontend shell** of VibeBuilder. The UI is fully built and ready to connect to a real AI coding engine in Phase 2.
+- **Site URL**: Configured via `NEXT_PUBLIC_SITE_URL`. Defaults in code to `https://klyro-gamma.vercel.app`.
+- **Note**: To change the site URL later, update `NEXT_PUBLIC_SITE_URL` in Vercel → Project Settings → Environment Variables and redeploy.
+- **AI Model**: Powered by Google Gemini 3.5 Flash (`gemini-3.5-flash`).
 
-### What's included
+---
 
-- **Landing Page** — Hero, Features, How It Works, Final CTA, Footer
-- **Dashboard** — Sidebar navigation, project cards, project grid
-- **Project Workspace** — AI Chat panel, Live Preview, Code viewer, File Explorer
-- **Mock interactions** — Simulated AI chat responses (no real API calls)
-- **Responsive design** — Desktop, tablet, and mobile layouts
+## What Klyro Generates (and What It Doesn't)
 
-### What's NOT included (Phase 2)
+### What Klyro Generates
+- Clean, editable React functional components with TypeScript and Next.js App Router conventions
+- Responsive Tailwind CSS styling
+- Client-side interactive states (tabs, modals, filters, forms)
+- Realistic mock sample data
+- Multi-file project source ready for ZIP export or Git commit
 
-- AI/LLM integration
-- Backend or database
-- Authentication
-- Real code generation or execution
-- Deployment pipeline
+### What You Connect Yourself
+- Production database instances (e.g. Supabase, PostgreSQL)
+- Authentication providers (e.g. NextAuth, Clerk, Supabase Auth)
+- Payment gateways (e.g. Stripe, Lemon Squeezy)
+- Transactional email providers (e.g. Resend, SendGrid)
 
 ---
 
@@ -36,7 +39,7 @@ This repository contains the complete **Phase 1 frontend shell** of VibeBuilder.
 | React | 19 |
 | TypeScript | 5 |
 | Tailwind CSS | 4 |
-| shadcn/ui | latest |
+| Motion | 13 |
 | Lucide React | latest |
 
 ---
@@ -46,6 +49,9 @@ This repository contains the complete **Phase 1 frontend shell** of VibeBuilder.
 ```bash
 # Install dependencies
 npm install
+
+# Set up environment variables
+cp .env.example .env.local
 
 # Run development server
 npm run dev
@@ -59,42 +65,14 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 | Route | Description |
 |-------|-------------|
-| `/` | Landing page |
+| `/` | Landing page (Hero, How It Works, Showcase, Pricing, FAQ) |
+| `/contact` | Team inquiry and contact form |
+| `/terms` | Terms of Service and code ownership policy |
+| `/privacy` | Privacy Policy and data protection compliance |
+| `/signin` | Account login |
+| `/signup` | Account registration (supports ?plan=pro waitlist state) |
 | `/dashboard` | Project dashboard |
-| `/project/[id]` | Project workspace |
-| `/project/demo` | Demo workspace (New Project) |
-
----
-
-## Project Structure
-
-```
-src/
-├── app/
-│   ├── page.tsx              # Landing page
-│   ├── dashboard/page.tsx    # Dashboard
-│   └── project/[id]/page.tsx # Workspace
-├── components/
-│   ├── landing/              # Landing page components
-│   ├── dashboard/            # Dashboard components
-│   ├── workspace/            # Workspace components
-│   └── ui/                   # shadcn/ui components
-└── lib/
-    ├── mock-data.ts          # Centralized mock data
-    ├── mock-chat.ts          # Mock chat logic
-    ├── types.ts              # TypeScript types
-    └── utils.ts              # Utilities
-```
-
----
-
-## CI/CD
-
-GitHub Actions runs on every push and pull request:
-
-- ✅ ESLint
-- ✅ TypeScript type check
-- ✅ Next.js production build
+| `/project/[id]` | Real-time AI editing workspace |
 
 ---
 

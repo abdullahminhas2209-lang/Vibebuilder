@@ -17,7 +17,7 @@ import type {
 
 export const mockUser: User = {
   name: "Alex Rivera",
-  email: "alex@vibebuilder.app",
+  email: "alex@example.com",
   initials: "AR",
 };
 

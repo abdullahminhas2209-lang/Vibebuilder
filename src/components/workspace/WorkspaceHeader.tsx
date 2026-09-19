@@ -18,6 +18,7 @@ import {
 
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
+import { NEXT_PUBLIC_SITE_URL } from "@/lib/constants";
 import {
   Dialog,
   DialogContent,
@@ -67,7 +68,10 @@ export function WorkspaceHeader({
   const [downloading, setDownloading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
 
-  const shareUrl = typeof window !== "undefined" ? window.location.href : `https://klyro.app/project/${project.id}`;
+  const shareUrl =
+    typeof window !== "undefined"
+      ? window.location.href
+      : `${NEXT_PUBLIC_SITE_URL}/project/${project.id}`;
 
   async function handleCopyShareUrl() {
     try {
