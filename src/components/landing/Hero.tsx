@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Cpu, Paperclip } from "lucide-react";
+import { Cpu, Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
 import { BorderTrail } from "@/components/motion-primitives/border-trail";
@@ -181,16 +181,13 @@ export function Hero() {
       </div>
 
       <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
-        {/* Top Header / Eyebrow Badge */}
+        {/* Top Editorial Eyebrow & Headline (No pill badges, consistent typography) */}
         <div className="flex flex-col items-center text-center">
-          <div className="inline-flex items-center gap-2 rounded-[3px] border border-slate-line bg-ink-raised px-3 py-1 font-mono text-xs text-fog shadow-xs">
-            <span className="flex size-1.5 rounded-full bg-amber animate-pulse" />
-            <TextEffect per="word" as="span" preset="fade" delay={0.05}>
-              {`Built on ${AI_MODEL_DISPLAY_NAME}`}
-            </TextEffect>
-          </div>
+          <p className="font-mono text-xs uppercase tracking-widest text-fog-dim mb-3">
+            Powered by {AI_MODEL_DISPLAY_NAME}
+          </p>
 
-          <h1 className="mt-6 max-w-4xl font-serif font-normal text-3xl sm:text-5xl lg:text-6xl text-cream tracking-[-0.01em] leading-[1.1] pb-1">
+          <h1 className="max-w-4xl font-serif font-normal text-3xl sm:text-5xl lg:text-6xl text-cream tracking-[-0.01em] leading-[1.1] pb-1">
             <TextEffect
               per="word"
               as="span"
@@ -198,16 +195,7 @@ export function Hero() {
               delay={0.15}
               className="inline"
             >
-              From Prompt to
-            </TextEffect>{" "}
-            <TextEffect
-              per="word"
-              as="span"
-              preset="fade-in-blur"
-              delay={0.3}
-              className="inline text-amber"
-            >
-              Product
+              From Prompt to Product
             </TextEffect>
           </h1>
         </div>
@@ -321,10 +309,7 @@ export function Hero() {
                     <span>Preparing...</span>
                   </>
                 ) : (
-                  <>
-                    <span>Build with Klyro</span>
-                    <ArrowRight className="size-4 ml-1.5 transition-transform duration-200 group-hover:translate-x-0.5" />
-                  </>
+                  <span>Build with Klyro</span>
                 )}
               </Button>
             </div>
