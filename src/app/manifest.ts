@@ -1,0 +1,31 @@
+import { MetadataRoute } from "next";
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: "Klyro — From Prompt to Product",
+    short_name: "Klyro",
+    description:
+      "Turn natural language prompts into clean, editable Next.js and Tailwind web applications.",
+    start_url: "/",
+    display: "standalone",
+    background_color: "#14161f",
+    theme_color: "#14161f",
+    icons: [
+      {
+        src: "/icon.svg",
+        sizes: "any",
+        type: "image/svg+xml",
+      },
+      {
+        src: "/apple-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+      {
+        src: "/favicon.ico",
+        sizes: "any",
+        type: "image/x-icon",
+      },
+    ],
+  };
+}
