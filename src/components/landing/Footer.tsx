@@ -21,25 +21,31 @@ export function Footer() {
           <Logo />
           <div className="flex items-center gap-6 text-[13.5px] text-fog">
             <Link
-              href="#how"
+              href="/#how"
               onClick={(e) => handleNavScroll(e, "how")}
               className="hover:text-cream transition-colors"
             >
               Product
             </Link>
             <Link
-              href="#showcase"
-              onClick={(e) => handleNavScroll(e, "showcase")}
+              href="/#what-you-can-build"
+              onClick={(e) => handleNavScroll(e, "what-you-can-build")}
               className="hover:text-cream transition-colors"
             >
               Examples
             </Link>
             <Link
-              href="#pricing"
+              href="/#pricing"
               onClick={(e) => handleNavScroll(e, "pricing")}
               className="hover:text-cream transition-colors"
             >
               Pricing
+            </Link>
+            <Link
+              href="/privacy"
+              className="hover:text-cream transition-colors"
+            >
+              Privacy Policy
             </Link>
             <Link
               href="/signin"
