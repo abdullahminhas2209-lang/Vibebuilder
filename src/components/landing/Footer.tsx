@@ -42,12 +42,6 @@ export function Footer() {
               Pricing
             </Link>
             <Link
-              href="/privacy"
-              className="hover:text-cream transition-colors"
-            >
-              Privacy Policy
-            </Link>
-            <Link
               href="/signin"
               className="hover:text-cream transition-colors"
             >
@@ -55,8 +49,16 @@ export function Footer() {
             </Link>
           </div>
         </div>
-        <div className="font-mono text-[11.5px] text-fog-dim mt-6 text-center sm:text-left">
-          © 2026 Klyro. Prompt to app, in one sitting.
+        <div className="font-mono text-[11.5px] text-fog-dim mt-8 pt-6 border-t border-slate-line/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <span>© 2026 Klyro. Prompt to app, in one sitting.</span>
+          <div className="flex items-center gap-4 text-fog">
+            <Link
+              href="/privacy"
+              className="hover:text-cream transition-colors"
+            >
+              Privacy Policy
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
