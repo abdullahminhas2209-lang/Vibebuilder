@@ -1,5 +1,6 @@
 import React from "react";
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Fraunces, IBM_Plex_Mono, IBM_Plex_Sans, Montserrat, Playfair_Display } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
@@ -84,6 +85,10 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <AuthProvider>{children}</AuthProvider>
+        <Script
+          src="https://accounts.google.com/gsi/client"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

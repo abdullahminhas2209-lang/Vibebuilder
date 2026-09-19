@@ -28,7 +28,7 @@ export function AuthModal({
   defaultTab = "signin",
 }: AuthModalProps) {
   const router = useRouter();
-  const { signIn, signUp, signInWithGoogle, loginWithGoogleFallback } = useAuth();
+  const { signIn, signUp, signInWithGoogle } = useAuth();
 
   const [tab, setTab] = useState<"signin" | "signup">(defaultTab);
   const [firstName, setFirstName] = useState("");
@@ -40,10 +40,6 @@ export function AuthModal({
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-
-  // Fallback for direct official Gmail entry
-  const [showGmailFallback, setShowGmailFallback] = useState(false);
-  const [directGmail, setDirectGmail] = useState("");
 
   // Check for pending prompt in storage
   const [pendingPrompt, setPendingPrompt] = useState<string | null>(null);
@@ -65,7 +61,6 @@ export function AuthModal({
     setError(null);
     setSuccess(null);
     setPassword("");
-    setShowGmailFallback(false);
   }
 
   function handleTabSwitch(newTab: "signin" | "signup") {
@@ -129,43 +124,22 @@ export function AuthModal({
     setGoogleLoading(true);
 
     try {
-      const res = await signInWithGoogle("project");
+      const res = await signInWithGoogle("/dashboard");
       if (res.error) {
-        setShowGmailFallback(true);
-        setError("Google OAuth provider is not yet enabled in your Supabase dashboard. Enter your official Gmail below to continue directly.");
+        setError(res.error);
       } else if (res.url) {
         setSuccess("Redirecting to Google account picker...");
+      } else {
+        setSuccess("Signed in with Google! Launching workspace...");
+        window.setTimeout(() => {
+          handlePostAuthSuccess();
+        }, 500);
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Failed to connect with Google";
       setError(msg);
-      setShowGmailFallback(true);
     } finally {
       setGoogleLoading(false);
-    }
-  }
-
-  async function handleDirectGmailSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!directGmail.trim() || !directGmail.includes("@")) {
-      setError("Please provide a valid Gmail address.");
-      return;
-    }
-
-    setError(null);
-    setLoading(true);
-
-    try {
-      await loginWithGoogleFallback(directGmail.trim());
-      setSuccess("Signed in with Google identity! Launching workspace...");
-      window.setTimeout(() => {
-        handlePostAuthSuccess();
-      }, 600);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to sign in with Gmail";
-      setError(msg);
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -266,32 +240,6 @@ export function AuthModal({
             )}
             <span>Continue with Google</span>
           </Button>
-
-          {showGmailFallback && (
-            <form onSubmit={handleDirectGmailSubmit} className="rounded-sm border border-amber/30 bg-ink p-2.5 space-y-2">
-              <div className="flex items-center gap-2 text-xs text-amber font-mono">
-                <GoogleIcon className="size-3.5 shrink-0" />
-                <span>Enter official Gmail to continue directly</span>
-              </div>
-              <div className="flex gap-2">
-                <Input
-                  type="email"
-                  placeholder="your.email@gmail.com"
-                  value={directGmail}
-                  onChange={(e) => setDirectGmail(e.target.value)}
-                  className="text-xs h-8 bg-ink-raised border-slate-line text-cream placeholder:text-fog-dim focus:border-amber focus:ring-1 focus:ring-amber/20"
-                  required
-                />
-                <Button
-                  type="submit"
-                  disabled={!directGmail.trim() || loading}
-                  className="h-8 px-3 text-xs bg-amber text-[#201404] hover:bg-amber-deep font-medium shrink-0 cursor-pointer shadow-xs"
-                >
-                  {loading ? <Loader2 className="size-3.5 animate-spin" /> : "Continue"}
-                </Button>
-              </div>
-            </form>
-          )}
 
           <div className="relative my-3 flex items-center justify-center">
             <div className="absolute inset-0 flex items-center">

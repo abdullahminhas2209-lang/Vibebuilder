@@ -17,7 +17,7 @@ import {
 function SignInContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { signIn, signInWithGoogle, loginWithGoogleFallback } = useAuth();
+  const { signIn, signInWithGoogle } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,12 +27,13 @@ function SignInContent() {
   const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Fallback for direct Google/Gmail login if Supabase OAuth is unconfigured in development
-  const [showGmailFallback, setShowGmailFallback] = useState(false);
-  const [directGmail, setDirectGmail] = useState("");
-
   // Inspect or initialize return state from search params or storage
   useEffect(() => {
+    const errorParam = searchParams?.get("error");
+    if (errorParam) {
+      setErrorMessage(decodeURIComponent(errorParam));
+    }
+
     const promptFromUrl = searchParams?.get("prompt");
     const returnUrlFromUrl = searchParams?.get("returnUrl") || searchParams?.get("redirect");
 
@@ -87,40 +88,24 @@ function SignInContent() {
     setIsGoogleSubmitting(true);
 
     try {
-      const res = await signInWithGoogle("/auth/callback?redirect=/");
+      const existingState = getAuthReturnState();
+      const returnUrl = sanitizeReturnUrl(
+        searchParams?.get("returnUrl") || searchParams?.get("redirect") || existingState?.returnUrl || "/"
+      );
+
+      const res = await signInWithGoogle(returnUrl);
       if (res.error) {
-        setShowGmailFallback(true);
-        setErrorMessage("Google OAuth provider is not yet enabled in your Supabase dashboard. You can continue instantly with your Google email below.");
+        setErrorMessage(res.error);
         setIsGoogleSubmitting(false);
       } else if (res.url) {
-        // Redirecting to provider
+        // Redirect initiated
       } else {
-        handleSuccessfulAuth();
+        handleSuccessfulAuth(returnUrl);
       }
-    } catch {
-      setShowGmailFallback(true);
-      setErrorMessage("Failed to connect to Google. You can sign in using your email below.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to connect to Google.";
+      setErrorMessage(msg);
       setIsGoogleSubmitting(false);
-    }
-  }
-
-  async function handleDirectGmailFallback(e: React.FormEvent) {
-    e.preventDefault();
-    const cleanEmail = directGmail.trim();
-    if (!cleanEmail || !cleanEmail.includes("@")) {
-      setErrorMessage("Please enter a valid Google email address.");
-      return;
-    }
-
-    setErrorMessage(null);
-    setIsSubmitting(true);
-
-    try {
-      await loginWithGoogleFallback(cleanEmail);
-      handleSuccessfulAuth();
-    } catch {
-      setErrorMessage("Failed to authenticate. Please try again.");
-      setIsSubmitting(false);
     }
   }
 
@@ -274,34 +259,6 @@ function SignInContent() {
                 </>
               )}
             </button>
-
-            {/* Direct Gmail fallback */}
-            {showGmailFallback && (
-              <form
-                onSubmit={handleDirectGmailFallback}
-                className="mt-3 p-3 bg-ink rounded-md border border-slate-line space-y-2"
-              >
-                <span className="block text-xs font-semibold text-amber">
-                  Instant Google Email Authentication
-                </span>
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    value={directGmail}
-                    onChange={(e) => setDirectGmail(e.target.value)}
-                    placeholder="name@gmail.com"
-                    className="flex-1 h-9 px-3 rounded bg-ink-raised border border-slate-line text-xs text-cream focus:outline-none focus:border-amber"
-                  />
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="h-9 px-4 rounded bg-amber text-[#201404] text-xs font-semibold hover:bg-amber-deep transition-colors"
-                  >
-                    Continue
-                  </button>
-                </div>
-              </form>
-            )}
           </div>
 
           {/* Bottom Sign Up Link */}

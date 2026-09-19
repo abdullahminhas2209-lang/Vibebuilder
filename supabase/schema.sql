@@ -60,3 +60,24 @@ create policy "Allow all access to project_files" on public.project_files
 
 create policy "Allow all access to chat_messages" on public.chat_messages
   for all using (true) with check (true);
+
+-- 4. Klyro Users Table (Google OAuth & Native Accounts)
+create table if not exists public.klyro_users (
+  id text primary key,
+  google_id text unique,
+  name text not null,
+  email text not null,
+  avatar_url text,
+  provider text default 'google' not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  last_login timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+create index if not exists idx_klyro_users_google_id on public.klyro_users(google_id);
+create index if not exists idx_klyro_users_email on public.klyro_users(email);
+
+alter table public.klyro_users enable row level security;
+
+create policy "Allow all access to klyro_users" on public.klyro_users
+  for all using (true) with check (true);
+

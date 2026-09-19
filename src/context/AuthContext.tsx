@@ -4,6 +4,31 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
+declare global {
+  interface Window {
+    google?: {
+      accounts?: {
+        oauth2?: {
+          initTokenClient: (config: {
+            client_id: string;
+            scope: string;
+            prompt?: string;
+            callback: (response: { access_token?: string; error?: string; [key: string]: unknown }) => void;
+            error_callback?: (err: unknown) => void;
+          }) => {
+            requestAccessToken: (overrideConfig?: { prompt?: string }) => void;
+          };
+          initCodeClient?: (config: unknown) => unknown;
+        };
+        id?: {
+          initialize: (config: unknown) => void;
+          prompt: (notification?: unknown) => void;
+        };
+      };
+    };
+  }
+}
+
 export interface UserProfile {
   id: string;
   email: string;
@@ -13,6 +38,7 @@ export interface UserProfile {
   initials: string;
   avatarUrl?: string;
   provider?: string;
+  googleId?: string;
 }
 
 interface SignUpData {
@@ -28,8 +54,9 @@ interface AuthContextType {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error?: string }>;
   signUp: (data: SignUpData) => Promise<{ error?: string; message?: string }>;
-  signInWithGoogle: (redirectPath?: string) => Promise<{ error?: string; url?: string }>;
+  signInWithGoogle: (redirectPath?: string) => Promise<{ error?: string; user?: UserProfile; url?: string }>;
   loginWithGoogleFallback: (email: string, name?: string) => Promise<void>;
+  setSessionUser: (profile: UserProfile) => void;
   signOut: () => Promise<void>;
 }
 
@@ -49,8 +76,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<UserProfile | null>(() => {
     if (typeof window !== "undefined") {
       try {
-        const stored = localStorage.getItem("vibebuilder_user");
-        return stored ? JSON.parse(stored) : null;
+        const stored =
+          localStorage.getItem(USER_STORAGE_KEY) ||
+          localStorage.getItem(LEGACY_USER_STORAGE_KEY);
+        if (stored) return JSON.parse(stored);
+
+        // Check cookie hint
+        const match = document.cookie.match(/(^|;)\s*klyro_user_hint=([^;]+)/);
+        if (match && match[2]) {
+          const parsed = JSON.parse(decodeURIComponent(match[2]));
+          if (parsed && parsed.email) return parsed;
+        }
       } catch {
         return null;
       }
@@ -121,6 +157,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (session?.user) {
           setUser(session.user);
           setProfile(mapUserToProfile(session.user));
+        } else {
+          // If no Supabase user, check local storage Klyro user / cookie hint
+          const stored =
+            typeof window !== "undefined"
+              ? localStorage.getItem(USER_STORAGE_KEY) ||
+                localStorage.getItem(LEGACY_USER_STORAGE_KEY)
+              : null;
+          if (stored) {
+            try {
+              setProfile(JSON.parse(stored));
+            } catch {
+              // ignore
+            }
+          }
         }
         setLoading(false);
       }
@@ -227,38 +277,125 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { message: "Account created! You can now access your dashboard." };
   }
 
-  async function signInWithGoogle(redirectPath: string = "project") {
-    if (!isSupabaseConfigured || !supabase) {
-      return { error: "Supabase client is not initialized in this environment." };
+  function setSessionUser(userProfile: UserProfile) {
+    setProfile(userProfile);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userProfile));
+      localStorage.setItem(LEGACY_USER_STORAGE_KEY, JSON.stringify(userProfile));
     }
+  }
 
+  async function signInWithGoogle(redirectPath: string = "/"): Promise<{ error?: string; user?: UserProfile; url?: string }> {
     try {
-      const origin = typeof window !== "undefined" ? window.location.origin : "";
-      const redirectUrl = `${origin}/auth/callback?redirect=${encodeURIComponent(redirectPath)}`;
-
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: redirectUrl,
-          queryParams: {
-            prompt: "select_account",
-            access_type: "offline",
-          },
-        },
-      });
-
-      if (error) {
-        return { error: error.message };
-      }
-
-      if (data?.url) {
-        if (typeof window !== "undefined") {
-          window.location.href = data.url;
+      // 1. Fetch configured Google Client ID from backend
+      let clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
+      if (!clientId) {
+        try {
+          const cfgRes = await fetch("/api/auth/google/config");
+          if (cfgRes.ok) {
+            const cfg = await cfgRes.json();
+            clientId = cfg.clientId || "";
+          }
+        } catch {
+          // ignore
         }
-        return { url: data.url };
       }
 
-      return {};
+      if (!clientId) {
+        return {
+          error: "Google Client ID is not configured. Please set GOOGLE_CLIENT_ID in your environment variables.",
+        };
+      }
+
+      // 2. Official Google Identity Services Popup (Account Chooser)
+      if (typeof window !== "undefined" && window.google?.accounts?.oauth2?.initTokenClient) {
+        return new Promise((resolve) => {
+          let hasResolved = false;
+
+          try {
+            const tokenClient = window.google!.accounts!.oauth2!.initTokenClient({
+              client_id: clientId,
+              scope: "openid email profile",
+              prompt: "select_account",
+              error_callback: (err: unknown) => {
+                if (hasResolved) return;
+                hasResolved = true;
+                console.error("GIS error callback:", err);
+                resolve({ error: "Google authentication was cancelled or encountered an error." });
+              },
+              callback: async (tokenResponse: { access_token?: string; error?: string }) => {
+                if (hasResolved) return;
+                hasResolved = true;
+
+                if (tokenResponse.error) {
+                  resolve({ error: `Google authentication failed: ${tokenResponse.error}` });
+                  return;
+                }
+
+                if (!tokenResponse.access_token) {
+                  resolve({ error: "No access token received from Google." });
+                  return;
+                }
+
+                try {
+                  // Verify credential with server endpoint
+                  const verifyRes = await fetch("/api/auth/google/verify", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      token: tokenResponse.access_token,
+                      returnUrl: redirectPath,
+                    }),
+                  });
+
+                  const data = await verifyRes.json();
+
+                  if (!verifyRes.ok || !data.success || !data.user) {
+                    resolve({
+                      error: data.error || "Failed to verify Google identity on server.",
+                    });
+                    return;
+                  }
+
+                  const userProfile: UserProfile = {
+                    id: data.user.id,
+                    googleId: data.user.googleId,
+                    email: data.user.email,
+                    firstName: data.user.firstName || data.user.name?.split(" ")[0] || "User",
+                    lastName: data.user.lastName || data.user.name?.split(" ").slice(1).join(" ") || "",
+                    fullName: data.user.fullName || data.user.name,
+                    initials: getInitials(data.user.firstName || "", data.user.lastName || ""),
+                    avatarUrl: data.user.avatarUrl,
+                    provider: "google",
+                  };
+
+                  setSessionUser(userProfile);
+                  resolve({ user: userProfile });
+                } catch (err: unknown) {
+                  const msg = err instanceof Error ? err.message : "Error verifying Google token";
+                  resolve({ error: msg });
+                }
+              },
+            });
+
+            tokenClient.requestAccessToken({ prompt: "select_account" });
+          } catch (initErr: unknown) {
+            console.warn("GIS tokenClient error, redirecting:", initErr);
+            const loginUrl = `/api/auth/google/login?returnUrl=${encodeURIComponent(redirectPath)}`;
+            window.location.href = loginUrl;
+            resolve({ url: loginUrl });
+          }
+        });
+      }
+
+      // 3. Fallback to Google OAuth 2.0 redirect flow
+      if (typeof window !== "undefined") {
+        const loginUrl = `/api/auth/google/login?returnUrl=${encodeURIComponent(redirectPath)}`;
+        window.location.href = loginUrl;
+        return { url: loginUrl };
+      }
+
+      return { error: "Google authentication service is unavailable." };
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Failed to initiate Google sign in.";
       return { error: message };
@@ -300,6 +437,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.removeItem(LEGACY_USER_STORAGE_KEY);
       sessionStorage.removeItem("klyro_pending_prompt");
       localStorage.removeItem("klyro_pending_prompt");
+      document.cookie = "klyro_session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+      document.cookie = "klyro_user_hint=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
     }
   }
 
@@ -313,6 +452,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signUp,
         signInWithGoogle,
         loginWithGoogleFallback,
+        setSessionUser,
         signOut,
       }}
     >
