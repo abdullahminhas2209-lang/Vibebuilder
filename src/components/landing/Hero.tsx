@@ -11,6 +11,7 @@ import {
   saveAuthReturnState,
   consumeAuthReturnState,
 } from "@/lib/auth-return";
+import { AI_MODEL_DISPLAY_NAME } from "@/lib/constants";
 
 const TYPEWRITER_PLACEHOLDERS = [
   "Build a modern SaaS analytics dashboard with metrics...",
@@ -182,10 +183,10 @@ export function Hero() {
       <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
         {/* Top Header / Eyebrow Badge */}
         <div className="flex flex-col items-center text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-line bg-ink-raised px-3.5 py-1.5 font-mono text-xs text-fog shadow-xs backdrop-blur-md">
+          <div className="inline-flex items-center gap-2 rounded-[3px] border border-slate-line bg-ink-raised px-3 py-1 font-mono text-xs text-fog shadow-xs">
             <span className="flex size-1.5 rounded-full bg-amber animate-pulse" />
-            <TextEffect per="char" as="span" preset="fade" delay={0.05}>
-              Built on Gemini 3.5 Flash
+            <TextEffect per="word" as="span" preset="fade" delay={0.05}>
+              {`Built on ${AI_MODEL_DISPLAY_NAME}`}
             </TextEffect>
           </div>
 
@@ -305,7 +306,7 @@ export function Hero() {
                 </Button>
                 <div className="hidden sm:inline-flex items-center gap-1.5 rounded-[3px] bg-ink border border-slate-line px-2.5 py-1 text-[11px] font-mono text-fog">
                   <Cpu className="size-3 text-amber" />
-                  <span>Gemini 3.5 Flash</span>
+                  <span>{AI_MODEL_DISPLAY_NAME}</span>
                 </div>
               </div>
 

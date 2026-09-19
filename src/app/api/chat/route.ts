@@ -68,9 +68,11 @@ CRITICAL DESIGN RULES (OVERRIDE ALL DEFAULT AI STYLING HABITS):
 - Write concrete, specific product copy. NEVER use generic SaaS buzzwords ("Unlock the power of...", "Seamlessly integrate...", "Supercharge...", "Next-gen...").
 - Break hero symmetry — left-aligned or split layouts are preferred over centered-everything.`;
 
+import { AI_MODEL_ID } from "@/lib/constants";
+
 const SUPPORTED_MODELS = [
+  AI_MODEL_ID, // "gemini-3.5-flash"
   "gemini-3.6-flash",
-  "gemini-3.5-flash",
   "gemini-flash-latest",
   "gemini-3.5-flash-lite",
   "gemini-3.1-flash-lite",
