@@ -1,8 +1,9 @@
-﻿import React from "react";
+import React from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
+import { CONTACT_EMAIL, NEXT_PUBLIC_SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Klyro Privacy Policy",
@@ -398,17 +399,10 @@ export default function PrivacyPage() {
                   To request the permanent deletion of your Klyro account, project code, and Google
                   identity associations, email our support team at{" "}
                   <a
-                    href="mailto:support@klyro.ai"
+                    href={`mailto:${CONTACT_EMAIL}`}
                     className="font-mono text-amber hover:underline"
                   >
-                    support@klyro.ai
-                  </a>{" "}
-                  or{" "}
-                  <a
-                    href="mailto:privacy@klyro.ai"
-                    className="font-mono text-amber hover:underline"
-                  >
-                    privacy@klyro.ai
+                    {CONTACT_EMAIL}
                   </a>{" "}
                   with the subject line <code className="font-mono text-cream">&ldquo;Account Deletion Request&rdquo;</code>.
                 </p>
@@ -472,10 +466,10 @@ export default function PrivacyPage() {
               <p className="text-xs text-fog">
                 To exercise any of these rights, contact our privacy team at{" "}
                 <a
-                  href="mailto:privacy@klyro.ai"
+                  href={`mailto:${CONTACT_EMAIL}`}
                   className="font-mono text-amber hover:underline"
                 >
-                  privacy@klyro.ai
+                  {CONTACT_EMAIL}
                 </a>
                 .
               </p>
@@ -527,27 +521,18 @@ export default function PrivacyPage() {
               <div className="mt-3 space-y-1.5 text-xs sm:text-sm">
                 <p className="font-medium text-cream">Klyro Data Protection &amp; Privacy</p>
                 <p className="text-fog">
-                  Privacy Inquiries:{" "}
+                  Email &amp; Inquiries:{" "}
                   <a
-                    href="mailto:privacy@klyro.ai"
+                    href={`mailto:${CONTACT_EMAIL}`}
                     className="font-mono text-amber hover:underline"
                   >
-                    privacy@klyro.ai
+                    {CONTACT_EMAIL}
                   </a>
                 </p>
                 <p className="text-fog">
-                  General Support:{" "}
-                  <a
-                    href="mailto:support@klyro.ai"
-                    className="font-mono text-amber hover:underline"
-                  >
-                    support@klyro.ai
-                  </a>
-                </p>
-                <p className="text-fog">
-                  Website:{" "}
+                  Official Website:{" "}
                   <Link href="/" className="text-amber hover:underline">
-                    https://vibebuilder-gamma.vercel.app
+                    {NEXT_PUBLIC_SITE_URL}
                   </Link>
                 </p>
               </div>
