@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import {
   verifyGoogleToken,
@@ -38,6 +38,30 @@ export async function POST(req: NextRequest) {
 
     const firstName = user.name.split(" ")[0] || "User";
     const lastName = user.name.split(" ").slice(1).join(" ") || "";
+
+    cookieStore.set(
+      "klyro_user_hint",
+      encodeURIComponent(
+        JSON.stringify({
+          id: user.id,
+          googleId: user.google_id,
+          name: user.name,
+          fullName: user.name,
+          firstName,
+          lastName,
+          email: user.email,
+          avatarUrl: user.avatar_url,
+          provider: "google",
+        })
+      ),
+      {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 30,
+        path: "/",
+      }
+    );
 
     return NextResponse.json({
       success: true,

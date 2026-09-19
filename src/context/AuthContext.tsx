@@ -285,20 +285,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+function waitForGoogleGIS(maxWaitMs: number = 2000): Promise<boolean> {
+  if (typeof window === "undefined") return Promise.resolve(false);
+  if (window.google?.accounts?.oauth2?.initTokenClient) return Promise.resolve(true);
+
+  return new Promise((resolve) => {
+    let elapsed = 0;
+    const interval = setInterval(() => {
+      elapsed += 100;
+      if (window.google?.accounts?.oauth2?.initTokenClient) {
+        clearInterval(interval);
+        resolve(true);
+      } else if (elapsed >= maxWaitMs) {
+        clearInterval(interval);
+        resolve(false);
+      }
+    }, 100);
+  });
+}
+
   async function signInWithGoogle(redirectPath: string = "/"): Promise<{ error?: string; user?: UserProfile; url?: string }> {
     try {
-      // 1. Fetch configured Google Client ID from backend
-      let clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
-      if (!clientId) {
-        try {
-          const cfgRes = await fetch("/api/auth/google/config");
-          if (cfgRes.ok) {
-            const cfg = await cfgRes.json();
-            clientId = cfg.clientId || "";
-          }
-        } catch {
-          // ignore
+      // 1. Fetch configured Google Client ID from backend or environment
+      let clientId =
+        process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
+        "256108955409-t1g1bm30jmph3dq18rndi5jaglhsnq05.apps.googleusercontent.com";
+      try {
+        const cfgRes = await fetch("/api/auth/google/config");
+        if (cfgRes.ok) {
+          const cfg = await cfgRes.json();
+          if (cfg.clientId) clientId = cfg.clientId;
         }
+      } catch {
+        // ignore
       }
 
       if (!clientId) {
@@ -307,7 +326,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         };
       }
 
-      // 2. Official Google Identity Services Popup (Account Chooser)
+      // 2. Wait for Google Identity Services script if still initializing
+      await waitForGoogleGIS(2000);
+
+      // 3. Official Google Identity Services Popup (Account Chooser)
       if (typeof window !== "undefined" && window.google?.accounts?.oauth2?.initTokenClient) {
         return new Promise((resolve) => {
           let hasResolved = false;
