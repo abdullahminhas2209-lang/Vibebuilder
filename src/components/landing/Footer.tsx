@@ -19,13 +19,13 @@ export function Footer() {
       <div className="max-w-[1180px] mx-auto px-5 sm:px-8">
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 flex-wrap">
           <Logo />
-          <div className="flex items-center gap-6 text-[13.5px] text-fog">
+          <nav aria-label="Footer" className="flex items-center gap-6 text-[13.5px] text-fog flex-wrap justify-center sm:justify-end">
             <Link
               href="/#how"
               onClick={(e) => handleNavScroll(e, "how")}
               className="hover:text-cream transition-colors"
             >
-              Product
+              How it works
             </Link>
             <Link
               href="/#what-you-can-build"
@@ -42,16 +42,36 @@ export function Footer() {
               Pricing
             </Link>
             <Link
+              href="/#faq"
+              onClick={(e) => handleNavScroll(e, "faq")}
+              className="hover:text-cream transition-colors"
+            >
+              FAQs
+            </Link>
+            <Link
               href="/signin"
               className="hover:text-cream transition-colors"
             >
               Sign in
             </Link>
-          </div>
+          </nav>
         </div>
+
         <div className="font-mono text-[11.5px] text-fog-dim mt-8 pt-6 border-t border-slate-line/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
           <span>© 2026 Klyro. Prompt to app, in one sitting.</span>
-          <div className="flex items-center gap-4 text-fog">
+          <div className="flex items-center gap-5 text-fog">
+            <Link
+              href="/contact"
+              className="hover:text-cream transition-colors"
+            >
+              Contact
+            </Link>
+            <Link
+              href="/terms"
+              className="hover:text-cream transition-colors"
+            >
+              Terms of Service
+            </Link>
             <Link
               href="/privacy"
               className="hover:text-cream transition-colors"

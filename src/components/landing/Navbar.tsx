@@ -36,19 +36,39 @@ export function Navbar() {
   const [authOpen, setAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState<"signin" | "signup">("signin");
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
   const { profile, signOut } = useAuth();
 
   useEffect(() => {
+    const sectionIds = ["how", "what-you-can-build", "pricing", "faq"];
+
     function handleScroll() {
-      if (window.scrollY > 20) {
+      const scrollY = window.scrollY;
+      if (scrollY > 20) {
         setScrolled(true);
       } else {
         setScrolled(false);
       }
+
+      const headerOffset = 160;
+      let current: string | null = null;
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (el) {
+          const top = el.offsetTop - headerOffset;
+          const bottom = top + el.offsetHeight;
+          if (scrollY >= top && scrollY < bottom) {
+            current = id;
+          }
+        }
+      }
+      setActiveSection(current);
     }
+
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -120,18 +140,13 @@ export function Navbar() {
               enableHover
             >
               <Link
-                data-id="product"
-                href="#how"
-                onClick={(e) => handleNavScroll(e, "how")}
-                className="px-3.5 py-1.5 text-fog hover:text-cream transition-colors data-[checked=true]:text-cream"
-              >
-                Product
-              </Link>
-              <Link
                 data-id="how-it-works"
                 href="#how"
                 onClick={(e) => handleNavScroll(e, "how")}
-                className="px-3.5 py-1.5 text-fog hover:text-cream transition-colors data-[checked=true]:text-cream"
+                className={cn(
+                  "px-3.5 py-1.5 transition-colors data-[checked=true]:text-cream",
+                  activeSection === "how" ? "text-cream font-medium" : "text-fog hover:text-cream"
+                )}
               >
                 How it works
               </Link>
@@ -139,7 +154,10 @@ export function Navbar() {
                 data-id="examples"
                 href="#what-you-can-build"
                 onClick={(e) => handleNavScroll(e, "what-you-can-build")}
-                className="px-3.5 py-1.5 text-fog hover:text-cream transition-colors data-[checked=true]:text-cream"
+                className={cn(
+                  "px-3.5 py-1.5 transition-colors data-[checked=true]:text-cream",
+                  activeSection === "what-you-can-build" ? "text-cream font-medium" : "text-fog hover:text-cream"
+                )}
               >
                 Examples
               </Link>
@@ -147,9 +165,23 @@ export function Navbar() {
                 data-id="pricing"
                 href="#pricing"
                 onClick={(e) => handleNavScroll(e, "pricing")}
-                className="px-3.5 py-1.5 text-fog hover:text-cream transition-colors data-[checked=true]:text-cream"
+                className={cn(
+                  "px-3.5 py-1.5 transition-colors data-[checked=true]:text-cream",
+                  activeSection === "pricing" ? "text-cream font-medium" : "text-fog hover:text-cream"
+                )}
               >
                 Pricing
+              </Link>
+              <Link
+                data-id="faq"
+                href="#faq"
+                onClick={(e) => handleNavScroll(e, "faq")}
+                className={cn(
+                  "px-3.5 py-1.5 transition-colors data-[checked=true]:text-cream",
+                  activeSection === "faq" ? "text-cream font-medium" : "text-fog hover:text-cream"
+                )}
+              >
+                FAQs
               </Link>
             </AnimatedBackground>
           </nav>
@@ -249,17 +281,10 @@ export function Navbar() {
                     setIsOpen(false);
                     handleNavScroll(e, "how");
                   }}
-                  className="py-2 hover:text-cream transition-colors"
-                >
-                  Product
-                </Link>
-                <Link
-                  href="#how"
-                  onClick={(e) => {
-                    setIsOpen(false);
-                    handleNavScroll(e, "how");
-                  }}
-                  className="py-2 hover:text-cream transition-colors"
+                  className={cn(
+                    "py-2 transition-colors",
+                    activeSection === "how" ? "text-cream font-medium" : "hover:text-cream"
+                  )}
                 >
                   How it works
                 </Link>
@@ -269,7 +294,10 @@ export function Navbar() {
                     setIsOpen(false);
                     handleNavScroll(e, "what-you-can-build");
                   }}
-                  className="py-2 hover:text-cream transition-colors"
+                  className={cn(
+                    "py-2 transition-colors",
+                    activeSection === "what-you-can-build" ? "text-cream font-medium" : "hover:text-cream"
+                  )}
                 >
                   Examples
                 </Link>
@@ -279,9 +307,25 @@ export function Navbar() {
                     setIsOpen(false);
                     handleNavScroll(e, "pricing");
                   }}
-                  className="py-2 hover:text-cream transition-colors"
+                  className={cn(
+                    "py-2 transition-colors",
+                    activeSection === "pricing" ? "text-cream font-medium" : "hover:text-cream"
+                  )}
                 >
                   Pricing
+                </Link>
+                <Link
+                  href="#faq"
+                  onClick={(e) => {
+                    setIsOpen(false);
+                    handleNavScroll(e, "faq");
+                  }}
+                  className={cn(
+                    "py-2 transition-colors",
+                    activeSection === "faq" ? "text-cream font-medium" : "hover:text-cream"
+                  )}
+                >
+                  FAQs
                 </Link>
               </nav>
 
