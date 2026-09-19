@@ -18,6 +18,7 @@ function SignUpContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { signUp, signInWithGoogle } = useAuth();
+  const plan = searchParams?.get("plan");
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -149,6 +150,18 @@ function SignUpContent() {
               Start building modern websites and applications with Klyro
             </p>
 
+            {plan === "pro" && (
+              <div className="mt-4 rounded-md border border-amber/40 bg-amber/10 p-3.5 text-xs text-cream space-y-1">
+                <div className="flex items-center gap-2 font-mono text-amber font-semibold">
+                  <span className="flex size-1.5 rounded-full bg-amber animate-pulse" />
+                  <span>PRO TIER · LAUNCHING SOON</span>
+                </div>
+                <p className="text-fog leading-relaxed">
+                  Pro plans are launching soon! Sign up below to join the priority waitlist and get first access.
+                </p>
+              </div>
+            )}
+
             {errorMessage && (
               <div
                 role="alert"
@@ -241,7 +254,7 @@ function SignUpContent() {
                     <span>Creating Account...</span>
                   </>
                 ) : (
-                  <span>Create Account</span>
+                  <span>{plan === "pro" ? "Join Pro Waitlist & Create Account" : "Create Account"}</span>
                 )}
               </button>
             </form>
