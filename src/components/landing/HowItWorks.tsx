@@ -16,35 +16,35 @@ const TIMELINE_STEPS: StepItem[] = [
     title: "You describe it",
     description:
       "Write what you want in plain English, or paste a screenshot of a design you like. No need to mention frameworks or components.",
-    meta: "input: text, image, or URL",
+    meta: "Input: text description or reference screenshot",
   },
   {
     number: "02",
     title: "Klyro plans the structure",
     description:
       "It works out what pages, data, and states your idea needs before writing a single line, so the result holds together instead of feeling bolted on.",
-    meta: "output: page map + data model",
+    meta: "Output: page map and data model",
   },
   {
     number: "03",
     title: "The app gets written",
     description:
       "Klyro generates real, readable Next.js and Tailwind code across multiple files — the kind you could hand to another developer.",
-    meta: "stack: Next.js 15 · Tailwind CSS",
+    meta: "Stack: Next.js 16 and Tailwind CSS",
   },
   {
     number: "04",
     title: "You try it live",
     description:
       "A running sandbox opens next to the code, on desktop and mobile sizes, so you can click through it the way a visitor would.",
-    meta: "preview: desktop · tablet · mobile",
+    meta: "Preview: responsive desktop, tablet, and mobile",
   },
   {
     number: "05",
     title: "You ship it",
     description:
-      "Export the full source as a zip, or deploy straight to Vercel and your own domain when it's ready.",
-    meta: "export: zip · Vercel · custom domain",
+      "Export the full source as a zip, or deploy straight to Vercel when it's ready.",
+    meta: "Export: project zip or direct Vercel deployment",
   },
 ];
 
