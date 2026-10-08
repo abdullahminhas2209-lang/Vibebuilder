@@ -9,11 +9,20 @@ import {
 } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { HelpCircle, Check, Info } from "lucide-react";
+import { CheckoutModal } from "@/components/checkout/CheckoutModal";
+import { PlanId } from "@/lib/payment-service";
 
 export function PricingSection() {
   const [billingCycle, setBillingCycle] = useState<"annual" | "monthly">("annual");
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [selectedPlanForCheckout, setSelectedPlanForCheckout] = useState<PlanId>("pro");
 
   const isAnnual = billingCycle === "annual";
+
+  function handlePlanSelection(planId: PlanId) {
+    setSelectedPlanForCheckout(planId);
+    setCheckoutOpen(true);
+  }
 
   return (
     <section
@@ -137,12 +146,13 @@ export function PricingSection() {
             </div>
 
             <div className="mt-8 pt-4">
-              <Link
-                href="/signup"
+              <button
+                type="button"
+                onClick={() => handlePlanSelection("starter")}
                 className="w-full h-11 inline-flex items-center justify-center rounded-[3px] border border-slate-line text-cream hover:border-fog-dim bg-transparent hover:bg-ink-raised font-sans font-medium text-sm transition-colors cursor-pointer"
               >
                 Start free
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -223,12 +233,13 @@ export function PricingSection() {
             </div>
 
             <div className="mt-8 pt-4">
-              <Link
-                href="/signup?plan=pro"
+              <button
+                type="button"
+                onClick={() => handlePlanSelection("pro")}
                 className="w-full h-11 inline-flex items-center justify-center rounded-[3px] bg-amber text-[#201404] hover:bg-amber-deep font-sans font-semibold text-sm transition-colors cursor-pointer shadow-xs"
               >
                 Start with Pro
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -294,12 +305,19 @@ export function PricingSection() {
               </ul>
             </div>
 
-            <div className="mt-8 pt-4">
-              <Link
-                href="/contact"
+            <div className="mt-8 pt-4 flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => handlePlanSelection("team")}
                 className="w-full h-11 inline-flex items-center justify-center rounded-[3px] border border-slate-line text-cream hover:border-fog-dim bg-transparent hover:bg-ink-raised font-sans font-medium text-sm transition-colors cursor-pointer"
               >
-                Talk to us
+                Choose Team
+              </button>
+              <Link
+                href="/contact"
+                className="text-center text-xs font-mono text-fog-dim hover:text-amber transition-colors pt-0.5"
+              >
+                Or talk to us for custom billing
               </Link>
             </div>
           </div>
@@ -315,6 +333,14 @@ export function PricingSection() {
             {CODE_OWNERSHIP_STATEMENT}
           </p>
         </div>
+
+        {/* Interactive Pricing-to-Checkout Modal */}
+        <CheckoutModal
+          open={checkoutOpen}
+          onOpenChange={setCheckoutOpen}
+          initialPlan={selectedPlanForCheckout}
+          initialBillingCycle={billingCycle}
+        />
       </div>
     </section>
   );
